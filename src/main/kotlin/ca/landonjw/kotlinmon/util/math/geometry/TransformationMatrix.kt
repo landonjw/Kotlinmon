@@ -56,13 +56,14 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
          * If rotating by multiple axes, this should be called several times for each axis.
          * When doing so, keep in mind multiplication is non-commutative and order does matter.
          *
-         * @param angle the angle to rotate by
+         * @param angle the angle to rotate by in radians
+         *              positive values for clockwise, negative values for counter-clockwise
          * @param axis  the axis to rotate on
          * @param matrix an optional matrix to concatenate to
          *
          * @return a new transformation matrix for a given rotation
          */
-        fun rotate(angle: Float, axis: Axis, matrix: TransformationMatrix ? = null): TransformationMatrix {
+        fun rotate(angle: Float, axis: Axis, matrix: TransformationMatrix? = null): TransformationMatrix {
             val transformation = axis.getRotationMatrix(angle)
             return if (matrix == null) transformation else combine(matrix, transformation)
         }
@@ -76,14 +77,8 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
          *
          * @return a new transformation matrix for a given scalar
          */
-        fun scale(scalar: Float, matrix: TransformationMatrix? = null): TransformationMatrix {
-            val values = identityArray()
-            values[0][0] = scalar
-            values[1][1] = scalar
-            values[2][2] = scalar
-            val transformation = TransformationMatrix(values.toImmutable())
-            return if (matrix == null) transformation else combine(matrix, transformation)
-        }
+        fun scale(scalar: Float, matrix: TransformationMatrix? = null): TransformationMatrix =
+            this.scale(scalar, scalar, scalar, matrix)
 
         /**
          * Gets the transformation matrix for a set of scalars.
@@ -97,7 +92,12 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
          *
          * @return a new transformation matrix for a given scalars
          */
-        fun scale(scalarX: Float, scalarY: Float, scalarZ: Float, matrix: TransformationMatrix? = null): TransformationMatrix {
+        fun scale(
+            scalarX: Float,
+            scalarY: Float,
+            scalarZ: Float,
+            matrix: TransformationMatrix? = null
+        ): TransformationMatrix {
             val values = identityArray()
             values[0][0] = scalarX
             values[1][1] = scalarY
