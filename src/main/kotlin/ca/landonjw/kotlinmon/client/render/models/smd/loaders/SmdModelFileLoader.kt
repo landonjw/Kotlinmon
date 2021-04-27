@@ -86,12 +86,12 @@ object SmdModelFileLoader {
         val xPos = values[1].toFloatOrNull() ?: throw IllegalStateException("could not parse x position")
         val yPos = values[2].toFloatOrNull() ?: throw IllegalStateException("could not parse y position")
         val zPos = values[3].toFloatOrNull() ?: throw IllegalStateException("could not parse z position")
-        val location = GeometricPoint(xPos, zPos, yPos)
+        val location = GeometricPoint(xPos, -yPos, -zPos)
 
         val xRot = values[4].toFloatOrNull() ?: throw IllegalStateException("could not parse x rotation")
         val yRot = values[5].toFloatOrNull() ?: throw IllegalStateException("could not parse y rotation")
         val zRot = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z rotation")
-        val orientation = Vector3f(xRot, zRot, yRot)
+        val orientation = Vector3f(xRot, -yRot, -zRot)
 
         return SmdBoneLocationDefinition(boneId, location, orientation)
     }
@@ -126,12 +126,12 @@ object SmdModelFileLoader {
         val xPos = values[1].toFloatOrNull() ?: throw IllegalStateException("could not parse x position")
         val yPos = values[2].toFloatOrNull() ?: throw IllegalStateException("could not parse y position")
         val zPos = values[3].toFloatOrNull() ?: throw IllegalStateException("could not parse z position")
-        val position = GeometricPoint(xPos, yPos, zPos)
+        val position = GeometricPoint(xPos, -yPos, -zPos)
 
         val xNorm = values[4].toFloatOrNull() ?: throw IllegalStateException("could not parse x normal")
         val yNorm = values[5].toFloatOrNull() ?: throw IllegalStateException("could not parse y normal")
         val zNorm = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z normal")
-        val normal = GeometricPoint(xNorm, yNorm, zNorm)
+        val normal = GeometricPoint(xNorm, -yNorm, -zNorm)
 
         val u = values[7].toFloatOrNull() ?: throw IllegalStateException("could not parse u texture coordinate")
         val v = values[8].toFloatOrNull() ?: throw IllegalStateException("could not parse v texture coordinate")

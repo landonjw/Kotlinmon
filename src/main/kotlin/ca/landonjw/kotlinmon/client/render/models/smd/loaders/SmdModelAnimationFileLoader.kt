@@ -64,12 +64,12 @@ object SmdModelAnimationFileLoader {
         val xPos = values[1].toFloatOrNull() ?: throw IllegalStateException("could not parse x position")
         val yPos = values[2].toFloatOrNull() ?: throw IllegalStateException("could not parse y position")
         val zPos = values[3].toFloatOrNull() ?: throw IllegalStateException("could not parse z position")
-        val translation = GeometricPoint(xPos, zPos, yPos) // TODO: Fix order
+        val translation = GeometricPoint(xPos, -yPos, -zPos) // TODO: Fix order
 
         val xRot = values[4].toFloatOrNull() ?: throw IllegalStateException("could not parse x rotation")
         val yRot = values[5].toFloatOrNull() ?: throw IllegalStateException("could not parse y rotation")
         val zRot = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z rotation")
-        val rotation = Vector3f(xRot, zRot, yRot) // TODO: Fix order
+        val rotation = Vector3f(xRot, -yRot, -zRot) // TODO: Fix order
 
         return SmdBoneTransformation(boneId, translation, rotation)
     }

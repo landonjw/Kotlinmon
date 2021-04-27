@@ -80,9 +80,9 @@ class SmdModelBone(
 //        val rotate = TransformationMatrix.rotate(rotation)
 //        val translateFromOrigin = TransformationMatrix.translate(jointLocation)
 //        val transformation = translateFromOrigin * rotate * orientLocally * translateToOrigin
-        val rotation = TransformationMatrix.rotate(rotation)
+//        val rotation = TransformationMatrix.rotate(rotation)
 //        transformOrientation(rotation)
-        orientation = orientation * rotation
+//        orientation = orientation * rotation
         transform(transformation)
     }
 

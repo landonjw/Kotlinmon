@@ -21,12 +21,4 @@ class SmdModelSkeleton(
         bones.forEach { it.reset() }
     }
 
-    fun setInitialPosture(animation: SmdModelAnimation) {
-        val firstFrame = animation.frames.firstOrNull() ?: return
-        for (movement in firstFrame.boneMovements) {
-            val bone = boneById[movement.boneId] ?: continue
-            bone.move(movement.position, movement.rotation)
-        }
-    }
-
 }
