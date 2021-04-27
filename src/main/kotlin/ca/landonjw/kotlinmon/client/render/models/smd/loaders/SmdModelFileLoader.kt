@@ -131,7 +131,7 @@ object SmdModelFileLoader {
         val xNorm = values[4].toFloatOrNull() ?: throw IllegalStateException("could not parse x normal")
         val yNorm = values[5].toFloatOrNull() ?: throw IllegalStateException("could not parse y normal")
         val zNorm = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z normal")
-        val normal = GeometricPoint(xNorm, -yNorm, -zNorm)
+        val normal = GeometricPoint(xNorm, -yNorm, -zNorm, 0f)
 
         val u = values[7].toFloatOrNull() ?: throw IllegalStateException("could not parse u texture coordinate")
         val v = values[8].toFloatOrNull() ?: throw IllegalStateException("could not parse v texture coordinate")

@@ -7,9 +7,7 @@ package ca.landonjw.kotlinmon.util.math.geometry
  *
  * @author landonjw
  */
-data class GeometricPoint(val x: Float, val y: Float, val z: Float) {
-
-    val w = 1
+data class GeometricPoint(val x: Float, val y: Float, val z: Float, val w: Float = 1f) {
 
     operator fun plus(right: GeometricPoint): GeometricPoint = add(this, right)
     operator fun times(scalar: Float): GeometricPoint = multiply(this, scalar)

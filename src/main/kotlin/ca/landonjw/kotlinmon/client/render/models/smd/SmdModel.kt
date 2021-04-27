@@ -39,7 +39,7 @@ class SmdModel(
             tPose()
         }
         else {
-            skeleton.setInitialPosture(_animations[animation]!!)
+//            skeleton.setInitialPosture(_animations[animation]!!)
         }
         this._currentAnimation = animations[animation]
     }

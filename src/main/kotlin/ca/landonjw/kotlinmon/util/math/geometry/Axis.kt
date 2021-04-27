@@ -24,14 +24,14 @@ enum class Axis(val x: Float, val y: Float, val z: Float) {
     fun getRotationMatrix(angle: Float = 0f): TransformationMatrix = when (this) {
         X_AXIS -> TransformationMatrix(immutableArrayOf(
             immutableArrayOf(1f,   0f,           0f,          0f),
-            immutableArrayOf(0f,   cos(angle),   sin(angle),  0f),
-            immutableArrayOf(0f,   -sin(angle),  cos(angle),  0f),
+            immutableArrayOf(0f,   cos(angle),   -sin(angle),  0f),
+            immutableArrayOf(0f,   sin(angle),  cos(angle),  0f),
             immutableArrayOf(0f,   0f,           0f,          1f),
         ))
         Y_AXIS -> TransformationMatrix(immutableArrayOf(
-            immutableArrayOf(cos(angle),  0f,   -sin(angle), 0f),
+            immutableArrayOf(cos(angle),  0f,   sin(angle), 0f),
             immutableArrayOf(0f,          1f,   0f,          0f),
-            immutableArrayOf(sin(angle),  0f,   cos(angle),  0f),
+            immutableArrayOf(-sin(angle),  0f,   cos(angle),  0f),
             immutableArrayOf(0f,          0f,   0f,          1f),
         ))
         Z_AXIS -> TransformationMatrix(immutableArrayOf(

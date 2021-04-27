@@ -1,8 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.models.test
 
-import ca.landonjw.kotlinmon.Matrix4f
-import ca.landonjw.kotlinmon.Vector4f
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+
 class TestMeshVertex(
     val baseLocation: GeometricPoint,
     val baseNormal: GeometricPoint,
@@ -27,13 +26,8 @@ class TestMeshVertex(
         if (transformedLocation == null) transformedLocation = GeometricPoint()
         if (transformedNormal == null) transformedNormal = GeometricPoint()
 
-        val baseLoc = Vector4f(baseLocation.x, baseLocation.y, baseLocation.z, 1f)
-        val baseNorm = Vector4f(baseNormal.x, baseNormal.y, baseNormal.z, 0f)
-
-        val scaledLocation = Matrix4f.transform(transformation, baseLoc, null)
-        val scaledNormal = Matrix4f.transform(transformation, baseNorm, null)
-        scaledLocation.scale(weight)
-        scaledNormal.scale(weight)
+        val scaledLocation = transformation * baseLocation * weight
+        val scaledNormal = transformation * baseNormal * weight
 
         transformedLocation = transformedLocation!! + GeometricPoint(scaledLocation.x, scaledLocation.y, scaledLocation.z)
         transformedNormal = transformedNormal!! + GeometricPoint(scaledNormal.x, scaledNormal.y, scaledLocation.z)

@@ -3,6 +3,7 @@ package ca.landonjw.kotlinmon.client.render.models.test
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.SmdModelFileLoader
 import ca.landonjw.kotlinmon.util.math.geometry.Axis
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 import net.minecraft.util.ResourceLocation
 
@@ -19,10 +20,12 @@ object TestModelLoader {
             ))
         }
         for (boneLoc in definition.boneLocations) {
-            val loc = boneLoc.location
-            val rot = boneLoc.orientation
-            val matrix = matrix4FromLocRot(loc.x, loc.y, loc.z, rot.x, rot.y, rot.z)
-            bones.firstOrNull { it.id == boneLoc.boneId }?.rest = matrix
+            val translation = TransformationMatrix.translate(boneLoc.location)
+            val rotationZ = TransformationMatrix.rotate(boneLoc.orientation.z, Axis.Z_AXIS)
+            val rotationY = TransformationMatrix.rotate(boneLoc.orientation.y, Axis.Y_AXIS)
+            val rotationX = TransformationMatrix.rotate(boneLoc.orientation.x, Axis.X_AXIS)
+            val transformation = translation * rotationZ * rotationY * rotationX
+            bones.firstOrNull { it.id == boneLoc.boneId }?.rest = transformation
         }
         val vertices: MutableList<TestMeshVertex> = mutableListOf()
         for (vertex in definition.polygonMesh) {

@@ -46,7 +46,7 @@ object TestRender {
         val v = vertex.v
 
         val transformation = TransformationBuilder()
-            .rotate(-90f.toRadians(), Axis.X_AXIS)
+            .rotate(90f.toRadians(), Axis.X_AXIS)
 //            .translate(GeometricPoint(0f, 20f, 0f))
 //            .scale(5f, 1f, f)
             .build()

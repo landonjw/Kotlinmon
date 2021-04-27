@@ -1,14 +1,14 @@
 package ca.landonjw.kotlinmon.client.render.models.test
 
-import ca.landonjw.kotlinmon.Matrix4f
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 
 
 class TestBone(val id: Int, val parentId: Int, val name: String, var currentFrame: TestAnimationFrame? = null) {
 
-    var rest: Matrix4f? = null
-    var restInverted: Matrix4f? = null
+    var rest: TransformationMatrix? = null
+    var restInverted: TransformationMatrix? = null
 
-    var transformation: Matrix4f? = Matrix4f()
+    var transformation: TransformationMatrix? = TransformationMatrix.identityMatrix
 
     var vertices: MutableList<TestMeshVertex> = mutableListOf()
 
@@ -16,31 +16,30 @@ class TestBone(val id: Int, val parentId: Int, val name: String, var currentFram
     var parent: TestBone? = null
 
     fun setModified() {
-        var real: Matrix4f? = null
-        var realInverted: Matrix4f? = null
+        var real: TransformationMatrix?
+        var realInverted: TransformationMatrix?
         if (currentFrame != null) {
             realInverted = currentFrame?.transformations?.get(id)!!
-            real = Matrix4f.invert(currentFrame?.transformations?.get(id)!!, null)
+            real = TransformationMatrix.invert(currentFrame?.transformations?.get(id)!!)
         }
         else {
             realInverted = rest
             real = restInverted
         }
-        val delta = Matrix4f()
-        Matrix4f.mul(realInverted!!, real!!, delta)
-        this.transformation = if (parent != null) Matrix4f.mul(parent!!.transformation, delta, initTransform()) else delta
+        val delta = realInverted!! * real!!
+        this.transformation = if (parent != null) parent!!.transformation!! * delta else delta
         children.forEach { it.setModified() }
     }
 
-    fun initTransform(): Matrix4f {
+    fun initTransform(): TransformationMatrix {
         if (transformation == null) {
-            transformation = Matrix4f()
+            transformation = TransformationMatrix.identityMatrix
         }
         return transformation!!
     }
 
-    fun reform(parentTransform: Matrix4f) {
-        rest = Matrix4f.mul(parentTransform, rest!!, null)
+    fun reform(parentTransform: TransformationMatrix) {
+        rest = parentTransform * rest!!
         reformChildren()
     }
 
@@ -49,16 +48,15 @@ class TestBone(val id: Int, val parentId: Int, val name: String, var currentFram
     }
 
     fun invertRest() {
-        restInverted = Matrix4f.invert(rest, null)
+        restInverted = TransformationMatrix.invert(rest!!)
     }
 
     fun transform() {
         if (currentFrame != null) {
             val transformation = currentFrame!!.transformations[id]
             if (transformation != null) {
-                val change = Matrix4f()
-                Matrix4f.mul(transformation, restInverted, change)
-                this.transformation = if (this.transformation == null) change else Matrix4f.mul(this.transformation, change, this.transformation)
+                val change = transformation * restInverted!!
+                this.transformation = if (this.transformation == null) change else (this.transformation!! * change)
             }
         }
         vertices.forEach { it.transform(this) }
@@ -66,7 +64,7 @@ class TestBone(val id: Int, val parentId: Int, val name: String, var currentFram
     }
 
     fun reset() {
-        transformation?.setIdentity()
+        transformation = TransformationMatrix.identityMatrix
     }
 
 }
