@@ -2,6 +2,7 @@ package ca.landonjw.kotlinmon.util.math.geometry
 
 import ca.landonjw.kotlinmon.util.collections.ImmutableArray
 import ca.landonjw.kotlinmon.util.collections.immutableArrayOf
+import net.minecraft.util.math.vector.Vector3f
 
 /**
  * A 4x4 matrix that is used to represent transformations in three dimensional space.
@@ -13,7 +14,9 @@ import ca.landonjw.kotlinmon.util.collections.immutableArrayOf
  */
 data class TransformationMatrix internal constructor(val values: ImmutableArray<ImmutableArray<Float>>) {
 
-    operator fun get(row: Int) = values[row] // Allows for accessing the matrix as if it was a two-dimensional array
+    operator fun get(row: Int): ImmutableArray<Float> = values[row]
+    operator fun times(right: TransformationMatrix): TransformationMatrix = combine(this, right)
+    operator fun times(point: GeometricPoint): GeometricPoint = transform(this, point)
 
     companion object {
 
@@ -46,7 +49,7 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             values[1][3] = point.y
             values[2][3] = point.z
             val transformation = TransformationMatrix(values.toImmutable())
-            return if (matrix == null) transformation else combine(matrix, transformation)
+            return if (matrix == null) transformation else matrix * transformation
         }
 
         /**
@@ -65,7 +68,40 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
          */
         fun rotate(angle: Float, axis: Axis, matrix: TransformationMatrix? = null): TransformationMatrix {
             val transformation = axis.getRotationMatrix(angle)
-            return if (matrix == null) transformation else combine(matrix, transformation)
+            return if (matrix == null) transformation else matrix * transformation
+        }
+
+        fun rotate(angles: Vector3f, matrix: TransformationMatrix? = null): TransformationMatrix {
+            val rotationX = Axis.X_AXIS.getRotationMatrix(angles.x)
+            val rotationY = Axis.Y_AXIS.getRotationMatrix(angles.y)
+            val rotationZ = Axis.Z_AXIS.getRotationMatrix(angles.z)
+            val transformation = rotationX * rotationY * rotationZ
+            return if (matrix == null) transformation else matrix * transformation
+        }
+
+        fun rotateAroundPoint(
+            point: GeometricPoint,
+            angle: Float,
+            axis: Axis,
+            matrix: TransformationMatrix? = null
+        ): TransformationMatrix {
+            val translateToOrigin = translate(point * -1f)
+            val rotation = rotate(angle, axis)
+            val translateFromOrigin = translate(point)
+            val transformation = translateFromOrigin * rotation * translateToOrigin
+            return if (matrix == null) transformation else matrix * transformation
+        }
+
+        fun rotateAroundPoint(
+            point: GeometricPoint,
+            angles: Vector3f,
+            matrix: TransformationMatrix? = null
+        ): TransformationMatrix {
+            val translateToOrigin = translate(point * -1f)
+            val rotation = rotate(angles)
+            val translateFromOrigin = translate(point)
+            val transformation = translateFromOrigin * rotation * translateToOrigin
+            return if (matrix == null) transformation else matrix * transformation
         }
 
         /**
@@ -103,7 +139,7 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             values[1][1] = scalarY
             values[2][2] = scalarZ
             val transformation = TransformationMatrix(values.toImmutable())
-            return if (matrix == null) transformation else combine(matrix, transformation)
+            return if (matrix == null) transformation else matrix * transformation
         }
 
         /**
@@ -120,6 +156,171 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             val y = matrix[1][0] * point.x + matrix[1][1] * point.y + matrix[1][2] * point.z + matrix[1][3]
             val z = matrix[2][0] * point.x + matrix[2][1] * point.y + matrix[2][2] * point.z + matrix[2][3]
             return GeometricPoint(x, y, z)
+        }
+
+        fun invert(matrix: TransformationMatrix): TransformationMatrix? {
+            val determinant = determinant(matrix)
+            if (determinant == 0f) return null
+
+            val inverseDeterminant = 1 / determinant
+
+            val t00: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[1][1], matrix[2][1], matrix[3][1]),
+                    arrayOf(matrix[1][2], matrix[2][2], matrix[3][2]),
+                    arrayOf(matrix[1][3], matrix[2][3], matrix[3][3])
+                )
+            )
+            val t01: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][1], matrix[2][1], matrix[3][1]),
+                    arrayOf(matrix[0][2], matrix[2][2], matrix[3][2]),
+                    arrayOf(matrix[0][3], matrix[2][3], matrix[3][3])
+                )
+            )
+            val t02: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][1], matrix[1][1], matrix[3][1]),
+                    arrayOf(matrix[0][2], matrix[1][2], matrix[3][2]),
+                    arrayOf(matrix[0][3], matrix[1][3], matrix[3][3])
+                )
+            )
+            val t03: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][1], matrix[1][1], matrix[2][1]),
+                    arrayOf(matrix[0][2], matrix[1][2], matrix[2][2]),
+                    arrayOf(matrix[0][3], matrix[1][3], matrix[2][3])
+                )
+            )
+            val t10: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[1][0], matrix[2][0], matrix[3][0]),
+                    arrayOf(matrix[1][2], matrix[2][2], matrix[3][2]),
+                    arrayOf(matrix[1][3], matrix[2][3], matrix[3][3])
+                )
+            )
+            val t11: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[2][0], matrix[3][0]),
+                    arrayOf(matrix[0][2], matrix[2][2], matrix[3][2]),
+                    arrayOf(matrix[0][3], matrix[2][3], matrix[3][3])
+                )
+            )
+            val t12: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[1][0], matrix[3][0]),
+                    arrayOf(matrix[0][2], matrix[1][2], matrix[3][2]),
+                    arrayOf(matrix[0][3], matrix[1][3], matrix[3][3])
+                )
+            )
+            val t13: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[1][0], matrix[2][0]),
+                    arrayOf(matrix[0][2], matrix[1][2], matrix[2][2]),
+                    arrayOf(matrix[0][3], matrix[1][3], matrix[2][3])
+                )
+            )
+            val t20: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[1][0], matrix[2][0], matrix[3][0]),
+                    arrayOf(matrix[1][1], matrix[2][1], matrix[3][1]),
+                    arrayOf(matrix[1][3], matrix[2][3], matrix[3][3])
+                )
+            )
+            val t21: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[2][0], matrix[3][0]),
+                    arrayOf(matrix[0][1], matrix[2][1], matrix[3][1]),
+                    arrayOf(matrix[0][3], matrix[2][3], matrix[3][3])
+                )
+            )
+            val t22: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[1][0], matrix[3][0]),
+                    arrayOf(matrix[0][1], matrix[1][1], matrix[3][1]),
+                    arrayOf(matrix[0][3], matrix[1][3], matrix[3][3])
+                )
+            )
+            val t23: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[1][0], matrix[2][0]),
+                    arrayOf(matrix[0][1], matrix[1][1], matrix[2][1]),
+                    arrayOf(matrix[0][3], matrix[1][3], matrix[2][3])
+                )
+            )
+            val t30: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[1][0], matrix[2][0], matrix[3][0]),
+                    arrayOf(matrix[1][1], matrix[2][1], matrix[3][1]),
+                    arrayOf(matrix[1][2], matrix[2][2], matrix[3][2])
+                )
+            )
+            val t31: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[2][0], matrix[3][0]),
+                    arrayOf(matrix[0][1], matrix[2][1], matrix[3][1]),
+                    arrayOf(matrix[0][2], matrix[2][2], matrix[3][2])
+                )
+            )
+            val t32: Float = -determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[1][0], matrix[3][0]),
+                    arrayOf(matrix[0][1], matrix[1][1], matrix[3][1]),
+                    arrayOf(matrix[0][2], matrix[1][2], matrix[3][2])
+                )
+            )
+            val t33: Float = determinant3x3(
+                arrayOf(
+                    arrayOf(matrix[0][0], matrix[1][0], matrix[2][0]),
+                    arrayOf(matrix[0][1], matrix[1][1], matrix[2][1]),
+                    arrayOf(matrix[0][2], matrix[1][2], matrix[2][2])
+                )
+            )
+
+            val values = identityArray()
+            values[0][0] = t00 * inverseDeterminant
+            values[0][1] = t01 * inverseDeterminant
+            values[0][2] = t02 * inverseDeterminant
+            values[0][3] = t03 * inverseDeterminant
+            values[1][0] = t10 * inverseDeterminant
+            values[1][1] = t11 * inverseDeterminant
+            values[1][2] = t12 * inverseDeterminant
+            values[1][3] = t13 * inverseDeterminant
+            values[2][0] = t20 * inverseDeterminant
+            values[2][1] = t21 * inverseDeterminant
+            values[2][2] = t22 * inverseDeterminant
+            values[2][3] = t23 * inverseDeterminant
+            values[3][0] = t30 * inverseDeterminant
+            values[3][1] = t31 * inverseDeterminant
+            values[3][2] = t32 * inverseDeterminant
+            values[3][3] = t33 * inverseDeterminant
+
+            return TransformationMatrix(values.toImmutable())
+        }
+
+        fun determinant(matrix: TransformationMatrix): Float {
+            var determinant: Float = (matrix[0][0]
+                    * (matrix[1][1] * matrix[2][2] * matrix[3][3] + matrix[2][1] * matrix[3][2] * matrix[1][3] + matrix[3][1] * matrix[1][2] * matrix[2][3]
+                    - matrix[3][1] * matrix[2][2] * matrix[1][3] - matrix[1][1] * matrix[3][2] * matrix[2][3] - matrix[2][1] * matrix[1][2] * matrix[3][3]))
+            determinant -= (matrix[1][0]
+                    * (matrix[0][1] * matrix[2][2] * matrix[3][3] + matrix[2][1] * matrix[3][2] * matrix[0][3] + matrix[3][1] * matrix[0][2] * matrix[2][3]
+                    - matrix[3][1] * matrix[2][2] * matrix[0][3] - matrix[0][1] * matrix[3][2] * matrix[2][3] - matrix[2][1] * matrix[0][2] * matrix[3][3]))
+            determinant += (matrix[2][0]
+                    * (matrix[0][1] * matrix[1][2] * matrix[3][3] + matrix[1][1] * matrix[3][2] * matrix[0][3] + matrix[3][1] * matrix[0][2] * matrix[1][3]
+                    - matrix[3][1] * matrix[1][2] * matrix[0][3] - matrix[0][1] * matrix[3][2] * matrix[1][3] - matrix[1][1] * matrix[0][2] * matrix[3][3]))
+            determinant -= (matrix[3][0]
+                    * (matrix[0][1] * matrix[1][2] * matrix[2][3] + matrix[1][1] * matrix[2][2] * matrix[0][3] + matrix[2][1] * matrix[0][2] * matrix[1][3]
+                    - matrix[2][1] * matrix[1][2] * matrix[0][3] - matrix[0][1] * matrix[2][2] * matrix[1][3] - matrix[1][1] * matrix[0][2] * matrix[2][3]))
+            return determinant
+        }
+
+        fun determinant3x3(values: Array<Array<Float>>): Float {
+            assert(values.size == 3)
+            for (row in values) assert(row.size == 3)
+
+            return values[0][0] * (values[1][1] * values[2][2] - values[1][2] * values[2][1]) +
+                    values[0][1] * (values[1][2] * values[2][0] - values[1][0] * values[2][2]) +
+                    values[0][2] * (values[1][0] * values[2][1] - values[1][1] * values[2][0])
         }
 
         /**

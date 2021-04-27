@@ -9,25 +9,18 @@ class SmdModelAnimationFrame(
 ) {
 
     fun apply(skeleton: SmdModelSkeleton) {
-        skeleton.resetAllBones()
-        boneMovements.forEach { movement ->
-            val bone = skeleton[movement.boneId]
-            if (bone != null) {
-//                val translation = getDifference(bone.location, movement.translation)
-//                val rotation = getDifference(bone.orientation, movement.rotation)
-//                skeleton[movement.boneId]?.move(translation, rotation)
-
-                val translation = getDifference(bone.location, movement.translation)
-                val rotation = getDifference(bone.orientation, movement.rotation)
-                skeleton[movement.boneId]?.move(translation, rotation)
+//        for (bone in skeleton.bones) {
+//            bone.reset()
+//        }
+        for (bone in skeleton.bones) {
+            val movement = boneMovements.firstOrNull { it.boneId == bone.id }
+            if (movement == null) {
+//                bone.applyLastTransformation()
+            }
+            else {
+                bone.move(movement.position, movement.rotation)
             }
         }
-    }
-
-    private fun getDifference(vector1: Vector3f, vector2: Vector3f): Vector3f {
-        val difference = vector1.copy()
-        difference.sub(vector2)
-        return difference
     }
 
 }

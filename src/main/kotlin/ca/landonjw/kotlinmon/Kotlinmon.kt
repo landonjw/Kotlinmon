@@ -39,9 +39,6 @@ class Kotlinmon {
 
     fun clientInit(event: FMLClientSetupEvent) {
         LOGGER.info("Setting up client")
-//        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.POKEBALL.get()) { manager ->
-//            RenderPokeball(manager)
-//        }
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.POKEMON.get()) { manager ->
             RenderPokemon(manager)
         }

@@ -4,9 +4,12 @@ import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.SmdTriangl
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.SmdVertex
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelBone
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
+import ca.landonjw.kotlinmon.util.math.geometry.Axis
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationBuilder
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Tuple
-import net.minecraft.util.math.vector.Vector3f
 
 class SmdMesh(
     triangles: List<SmdTriangle>,
@@ -14,7 +17,7 @@ class SmdMesh(
     var texture: Material
 ) {
 
-    private val links: MutableMap<SmdVertex, List<VertexBoneLink>> = mutableMapOf()
+    val links: MutableMap<SmdVertex, List<VertexBoneLink>> = mutableMapOf()
 
     init {
         triangles.forEach { triangle ->
@@ -31,69 +34,45 @@ class SmdMesh(
             ?.toList()
     }
 
+    fun transform(bone: SmdModelBone, transformation: TransformationMatrix) {
+        for (vertex in links.keys) {
+            if (vertex.links?.containsKey(bone.id) == true) {
+                val transformed = transformation * vertex.dirtyPosition
+                vertex.dirtyPosition = transformed
+            }
+        }
+    }
+
     fun getVertices(): List<MeshVertex> {
         val vertices: MutableList<MeshVertex> = mutableListOf()
         links.forEach { (vertex, links) ->
-            val translation: Vector3f? = getWeightedTranslation(links)
-            val rotation: Vector3f? = getWeightedRotation(links)
-            vertices.add(MeshVertex(
-                position = vertex.position,
-                normal = vertex.normal,
-                uvMap = vertex.uvMap,
-                translation = translation,
-                rotation = rotation
-            ))
+            val parent = links.firstOrNull { it.bone.id == 11 || it.bone.id == 10 }
+            if (parent != null) {
+                val position: GeometricPoint = vertex.dirtyPosition.copy()
+                val normal: GeometricPoint = vertex.dirtyPosition.copy()
+                vertices.add(MeshVertex(
+                    position = position,
+                    normal = normal,
+                    uvMap = vertex.uvMap
+                ))
+            }
         }
         return vertices
-    }
-
-    private fun getWeightedTranslation(links: List<VertexBoneLink>): Vector3f? {
-        var translation: Vector3f? = null
-
-        links.forEach { link ->
-            if (translation == null) {
-                translation = link.bone.translation?.copy()
-            }
-            else {
-                val weightedTranslation = link.bone.translation?.copy()
-                weightedTranslation?.mul(link.weight)
-                if (weightedTranslation != null) translation!!.add(weightedTranslation)
-            }
-        }
-        return translation
-    }
-
-    private fun getWeightedRotation(links: List<VertexBoneLink>): Vector3f? {
-        var rotation: Vector3f? = null
-
-        links.forEach { link ->
-            if (rotation == null) {
-                rotation = link.bone.rotation?.copy()
-            }
-            else {
-                val weightedRotation = link.bone.rotation?.copy()
-                weightedRotation?.mul(link.weight)
-                if (weightedRotation != null) rotation!!.add(weightedRotation)
-            }
-        }
-        return rotation
     }
 
 }
 
 data class MeshVertex(
-    val position: Vector3f,
-    val normal: Vector3f,
-    val uvMap: Tuple<Float, Float>,
-    val translation: Vector3f?,
-    val rotation: Vector3f?
+    val position: GeometricPoint,
+    val normal: GeometricPoint,
+    val uvMap: Tuple<Float, Float>
 )
 
 data class Material(
     val resourceLocation: ResourceLocation
 )
 
-private data class VertexBoneLink(
+data class VertexBoneLink(
     val vertex: SmdVertex,
     val bone: SmdModelBone,
     val weight: Float

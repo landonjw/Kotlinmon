@@ -1,5 +1,6 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas
 
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import net.minecraft.util.Tuple
 import net.minecraft.util.math.vector.Vector3f
 
@@ -18,7 +19,7 @@ data class SmdBoneDefinition(
 
 data class SmdBoneLocationDefinition(
     val boneId: Int,
-    val location: Vector3f,
+    val location: GeometricPoint,
     val orientation: Vector3f
 )
 
@@ -34,10 +35,11 @@ data class SmdTriangle(
 data class SmdVertex(
     // The unique identifier of the parent bone
     val parentId: Int,
-    val position: Vector3f,
+    val position: GeometricPoint,
+    var dirtyPosition: GeometricPoint = position.copy(),
     // Used to smooth the surface of the model.
     // See: https://en.wikipedia.org/wiki/Normal_%28geometry%29
-    val normal: Vector3f,
+    val normal: GeometricPoint,
     // The vertex's UV map co-ordinates.
     // See: https://developer.valvesoftware.com/wiki/UV_map
     val uvMap: Tuple<Float, Float>,

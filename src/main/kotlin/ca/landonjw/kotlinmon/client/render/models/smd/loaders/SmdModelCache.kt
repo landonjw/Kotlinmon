@@ -13,6 +13,10 @@ object SmdCache {
     fun getModel(location: ResourceLocation, texture: ResourceLocation): SmdModel {
         val model = modelCache[location] ?: SmdModelLoader.load(location, texture)
         if (modelCache[location] == null) modelCache[location] = model
+
+//        val model = SmdModelLoader.load(location, texture)
+//        modelCache[location] = model
+
         model.mesh.texture = Material(texture)
         return model
     }
@@ -20,6 +24,10 @@ object SmdCache {
     fun getModelAnimation(location: ResourceLocation, model: SmdModel): SmdModelAnimation {
         val animation = animationCache[location] ?: SmdModelAnimationLoader.load(location, model)
         if (animationCache[location] == null) animationCache[location] = animation
+
+//        val animation = SmdModelAnimationLoader.load(location, model)
+//        animationCache[location] = animation
+
         return animation
     }
 

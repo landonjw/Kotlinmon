@@ -11,6 +11,11 @@ data class GeometricPoint(val x: Float, val y: Float, val z: Float) {
 
     val w = 1
 
+    operator fun plus(right: GeometricPoint): GeometricPoint = add(this, right)
+    operator fun times(scalar: Float): GeometricPoint = multiply(this, scalar)
+
+    constructor(): this(0f, 0f, 0f)
+
     companion object {
 
         /**

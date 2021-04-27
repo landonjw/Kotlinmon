@@ -168,9 +168,7 @@ dependencies {
 	compile group: "org.jetbrains", name: "annotations", version: annotations_version
 	compile group: "org.jetbrains.kotlinx", name: "kotlinx-coroutines-core", version: coroutines_version
 	compile group: "org.jetbrains.kotlinx", name: "kotlinx-coroutines-jdk8", version: coroutines_version
-	compile 'com.google.inject:guice:4.1.0'
-	compile 'com.google.inject.extensions:guice-assistedinject:4.1.0'
-	compile 'com.google.guava:guava:21.0'
+	compile 'org.kodein.di:kodein-di-generic-jvm:6.4.1'
 }
 
 shadowJar {
@@ -183,13 +181,11 @@ shadowJar {
 		include dependency("org.jetbrains:annotations:${annotations_version}")
 		include dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
 		include dependency("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-		include dependency('com.google.inject:guice:4.1.0')
-		include dependency('com.google.inject.extensions:guice-assistedinject:4.1.0')
-		include dependency('com.google.guava:guava:21.0')
-		include dependency("javax.inject:javax.inject:1")
-		include dependency("aopalliance:aopalliance:1.0")
+		include dependency("org.kodein.di:kodein-di-generic-jvm:6.4.1")
 	}
-
+	relocate 'org', 'ca.landonjw.kotlinmon.util.shadow.org'
+	relocate 'kotlin', 'ca.landonjw.kotlinmon.util.shadow.kotlin'
+	relocate 'kotlinx', 'ca.landonjw.kotlinmon.util.shadow.kotlinx'
 }
 
 // Testing ---------------

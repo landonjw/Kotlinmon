@@ -22,11 +22,11 @@ class RenderPokemon(
         buffer: IRenderTypeBuffer,
         packedLight: Int
     ) {
-        val modelLocation = ResourceLocation(Kotlinmon.MODID, "pokemon/kingler/model/kingler.smd")
-        val textureLocation = ResourceLocation(Kotlinmon.MODID, "pokemon/kingler/texture/kingler.png")
+        val modelLocation = ResourceLocation(Kotlinmon.MODID, "pokemon/crobat/model/crobat.smd")
+        val textureLocation = ResourceLocation(Kotlinmon.MODID, "pokemon/crobat/texture/crobat.png")
         val model = SmdCache.getModel(modelLocation, textureLocation)
 
-        val animationLocation = ResourceLocation(Kotlinmon.MODID, "pokemon/kingler/animations/idle.smd")
+        val animationLocation = ResourceLocation(Kotlinmon.MODID, "pokemon/crobat/animations/idle.smd")
         val animation = SmdCache.getModelAnimation(animationLocation, model)
 
         if (model.animations["idle"] == null) {
@@ -36,7 +36,7 @@ class RenderPokemon(
             model.setAnimation("idle")
         }
 
-//        model.setAnimation("walk")
+//        model.setAnimation("idle")
 
         SmdModelRenderer.render(matrixStack, model)
     }

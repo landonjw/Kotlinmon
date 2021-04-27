@@ -23,7 +23,7 @@ class PokemonEntity(
     val scale: Float = 1.0f
 
     init {
-        species = getRandomSpecies()
+        species = "crobat"
         texture = ResourceLocation(Kotlinmon.MODID, "pokemon/textures/$species.png")
         rotation = listOf(0f, 0.62f, -0.62f).random()
     }

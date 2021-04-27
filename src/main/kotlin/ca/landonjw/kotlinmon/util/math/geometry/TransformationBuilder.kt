@@ -15,7 +15,15 @@ package ca.landonjw.kotlinmon.util.math.geometry
  *
  * @author landonjw
  */
-class TransformationBuilder {
+class TransformationBuilder() {
+
+    private constructor(builder: TransformationBuilder) : this() {
+        builder.translationTransformations.forEach { this.translationTransformations.add(it) }
+        builder.rotationTransformations[Axis.X_AXIS]!!.forEach { this.rotationTransformations[Axis.X_AXIS]!!.add(it) }
+        builder.rotationTransformations[Axis.Y_AXIS]!!.forEach { this.rotationTransformations[Axis.Y_AXIS]!!.add(it) }
+        builder.rotationTransformations[Axis.Z_AXIS]!!.forEach { this.rotationTransformations[Axis.Z_AXIS]!!.add(it) }
+        builder.scalingTransformations.forEach { this.scalingTransformations.add(it) }
+    }
 
     private val translationTransformations: MutableList<TransformationMatrix> = mutableListOf()
     private val rotationTransformations: Map<Axis, MutableList<TransformationMatrix>> = mutableMapOf(
@@ -80,9 +88,9 @@ class TransformationBuilder {
      */
     fun build(): TransformationMatrix {
         val translationMatrix = getMatrixProduct(translationTransformations)
-        val xRotationMatrix = getMatrixProduct(rotationTransformations[Axis.X_AXIS]!!)
-        val yRotationMatrix = getMatrixProduct(rotationTransformations[Axis.Y_AXIS]!!)
         val zRotationMatrix = getMatrixProduct(rotationTransformations[Axis.Z_AXIS]!!)
+        val yRotationMatrix = getMatrixProduct(rotationTransformations[Axis.Y_AXIS]!!)
+        val xRotationMatrix = getMatrixProduct(rotationTransformations[Axis.X_AXIS]!!)
         val scalingMatrix = getMatrixProduct(scalingTransformations)
 
         var result = TransformationMatrix.identityMatrix
@@ -112,6 +120,17 @@ class TransformationBuilder {
         rotationTransformations[Axis.Y_AXIS]!!.clear()
         rotationTransformations[Axis.Z_AXIS]!!.clear()
         scalingTransformations.clear()
+        return this
+    }
+
+    fun clone(): TransformationBuilder = TransformationBuilder(this)
+
+    fun add(builder: TransformationBuilder): TransformationBuilder {
+        builder.translationTransformations.forEach { this.translationTransformations.add(it) }
+        builder.rotationTransformations[Axis.X_AXIS]!!.forEach { this.rotationTransformations[Axis.X_AXIS]!!.add(it) }
+        builder.rotationTransformations[Axis.Y_AXIS]!!.forEach { this.rotationTransformations[Axis.Y_AXIS]!!.add(it) }
+        builder.rotationTransformations[Axis.Z_AXIS]!!.forEach { this.rotationTransformations[Axis.Z_AXIS]!!.add(it) }
+        builder.scalingTransformations.forEach { this.scalingTransformations.add(it) }
         return this
     }
 

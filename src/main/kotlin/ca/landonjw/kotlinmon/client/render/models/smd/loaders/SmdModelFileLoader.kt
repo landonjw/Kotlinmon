@@ -1,13 +1,10 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders
 
-import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.*
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Tuple
 import net.minecraft.util.math.vector.Vector3f
-import java.io.InputStream
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 object SmdModelFileLoader {
 
@@ -89,12 +86,12 @@ object SmdModelFileLoader {
         val xPos = values[1].toFloatOrNull() ?: throw IllegalStateException("could not parse x position")
         val yPos = values[2].toFloatOrNull() ?: throw IllegalStateException("could not parse y position")
         val zPos = values[3].toFloatOrNull() ?: throw IllegalStateException("could not parse z position")
-        val location = Vector3f(xPos, -1 * yPos, -1 * zPos)
+        val location = GeometricPoint(xPos, zPos, yPos)
 
         val xRot = values[4].toFloatOrNull() ?: throw IllegalStateException("could not parse x rotation")
         val yRot = values[5].toFloatOrNull() ?: throw IllegalStateException("could not parse y rotation")
         val zRot = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z rotation")
-        val orientation = Vector3f(xRot, -1 * yRot, -1 * zRot)
+        val orientation = Vector3f(xRot, zRot, yRot)
 
         return SmdBoneLocationDefinition(boneId, location, orientation)
     }
@@ -129,12 +126,12 @@ object SmdModelFileLoader {
         val xPos = values[1].toFloatOrNull() ?: throw IllegalStateException("could not parse x position")
         val yPos = values[2].toFloatOrNull() ?: throw IllegalStateException("could not parse y position")
         val zPos = values[3].toFloatOrNull() ?: throw IllegalStateException("could not parse z position")
-        val position = Vector3f(xPos, yPos, zPos)
+        val position = GeometricPoint(xPos, yPos, zPos)
 
         val xNorm = values[4].toFloatOrNull() ?: throw IllegalStateException("could not parse x normal")
         val yNorm = values[5].toFloatOrNull() ?: throw IllegalStateException("could not parse y normal")
         val zNorm = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z normal")
-        val normal = Vector3f(xNorm, yNorm, zNorm)
+        val normal = GeometricPoint(xNorm, yNorm, zNorm)
 
         val u = values[7].toFloatOrNull() ?: throw IllegalStateException("could not parse u texture coordinate")
         val v = values[8].toFloatOrNull() ?: throw IllegalStateException("could not parse v texture coordinate")
@@ -154,7 +151,7 @@ object SmdModelFileLoader {
             }
         }
 
-        return SmdVertex(parentBone, position, normal, uvMap, links)
+        return SmdVertex(parentBone, position, normal, GeometricPoint(), uvMap, links)
     }
 
 }
@@ -218,12 +215,12 @@ private data class SmdModelFileDefinitionBuilder(
             throw IllegalStateException("polygon vertex mapped to unknown bone id")
 
         var weightSum = 0f
-        vertex?.links?.forEach { (boneId, weight) ->
+        vertex.links?.forEach { (boneId, weight) ->
             if (boneIdToBone[boneId] == null) throw IllegalStateException("polygon vertex mapped to unknown bone id")
             weightSum += weight
         }
 
-        if (weightSum != 1f) throw IllegalStateException("polygon vertex has illegal weight sum")
+        if (weightSum != 1f) throw IllegalStateException("polygon vertex has illegal weight sum ($weightSum)")
     }
 
 }

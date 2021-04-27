@@ -7,4 +7,5 @@ interface ModelAnimation {
     val totalFrames: Int
 
     fun apply()
+    fun apply(frame: Int)
 }

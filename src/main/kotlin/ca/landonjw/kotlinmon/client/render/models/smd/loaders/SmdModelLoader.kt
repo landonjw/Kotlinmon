@@ -7,6 +7,9 @@ import ca.landonjw.kotlinmon.client.render.models.smd.mesh.Material
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMesh
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelBone
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
+import ca.landonjw.kotlinmon.util.math.geometry.Axis
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationBuilder
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.vector.Vector3f
 
@@ -31,7 +34,7 @@ object SmdModelLoader {
 
         for (bone in definition.bones) {
             val boneLocation = boneIdToBoneLocation[bone.id] ?: throw IllegalStateException("bone location not found")
-            val builder = SmdModelBoneBuilder(bone.id, boneLocation.location, boneLocation.orientation, bone.parent)
+            val builder = SmdModelBoneBuilder(bone.id, bone.name, boneLocation.location, boneLocation.orientation, bone.parent)
             boneBuilders[bone.id] = builder
         }
 
@@ -58,20 +61,22 @@ object SmdModelLoader {
             val parentBuilder = boneBuilders[builder.parent] ?: throw IllegalStateException("parent bone not found")
             buildBone(parentBuilder, boneIdToBone, boneBuilders)
         }
-
-        boneIdToBone[builder.id] = SmdModelBone(
+        val bone = SmdModelBone(
             id = builder.id,
-            baseLocation = builder.baseLocation,
-            baseOrientation = builder.baseOrientation,
+            name = builder.name,
             parent = boneIdToBone[builder.parent]
         )
+        bone.move(builder.baseLocation, builder.baseOrientation)
+
+        boneIdToBone[builder.id] = bone
     }
 
 }
 
 private data class SmdModelBoneBuilder(
     var id: Int,
-    var baseLocation: Vector3f,
+    var name: String,
+    var baseLocation: GeometricPoint,
     var baseOrientation: Vector3f,
     var parent: Int
 )
