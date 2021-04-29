@@ -1,6 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas
 
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 import net.minecraft.util.math.vector.Vector3f
 
 data class SmdModelAnimationFileDefinition(
@@ -9,11 +10,15 @@ data class SmdModelAnimationFileDefinition(
 
 data class SmdAnimationFrame(
     val frame: Int,
-    val transformations: List<SmdBoneTransformation>
+    val transformations: List<SmdBoneMovement>
 )
 
-data class SmdBoneTransformation(
+data class SmdBoneMovement(
     val boneId: Int,
-    val position: GeometricPoint,
+    val translation: GeometricPoint,
     val rotation: Vector3f
-)
+) {
+    val transformation: TransformationMatrix by lazy {
+        TransformationMatrix.of(translation, rotation)
+    }
+}

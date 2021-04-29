@@ -1,53 +1,34 @@
 package ca.landonjw.kotlinmon.client.render.models.smd
 
 import ca.landonjw.kotlinmon.client.render.models.api.Model
-import ca.landonjw.kotlinmon.client.render.models.api.animations.ModelAnimation
+import ca.landonjw.kotlinmon.client.render.models.api.renderer.RenderProperty
 import ca.landonjw.kotlinmon.client.render.models.smd.animations.SmdModelAnimation
-import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMesh
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
-import net.minecraft.util.math.vector.Vector3f
 
 class SmdModel(
     override val skeleton: SmdModelSkeleton,
-    val mesh: SmdMesh,
-    val scale: Float = 1f
+    val renderProperties: MutableList<RenderProperty<*>> = mutableListOf()
 ) : Model {
 
     private val _animations: MutableMap<String, SmdModelAnimation> = mutableMapOf()
-    override val animations: Map<String, ModelAnimation>
-        get() = _animations
+    override val animations: Map<String, SmdModelAnimation>
+        get() = _animations.toMap()
 
-    private var _currentAnimation: ModelAnimation? = null
-    override val currentAnimation: ModelAnimation?
-        get() = _currentAnimation
+    override var currentAnimation: String? = null
+        private set
 
-    init {
-        skeleton.bones.forEach { it.mesh = mesh }
+    override fun animate(animation: String?) {
+        if (currentAnimation == animation) return
+        reset()
+        currentAnimation = animation
     }
 
-    override fun addAnimation(token: String, animation: ModelAnimation) {
-        val smdAnimation = animation as? SmdModelAnimation ?: return
-
-        if (animations.containsKey(token)) throw IllegalArgumentException("token $token has already been registered")
-        _animations[token] = animation
+    fun addAnimation(name: String, animation: SmdModelAnimation) {
+        _animations[name] = animation
     }
 
-    override fun setAnimation(animation: String?) {
-        if (animation == null) tPose()
-        if (animations[animation] == null) {
-            tPose()
-        }
-        else {
-//            skeleton.setInitialPosture(_animations[animation]!!)
-        }
-        this._currentAnimation = animations[animation]
-    }
-
-    override fun tPose() {
-        skeleton.resetPosture()
-        currentAnimation?.apply(0)
-        _currentAnimation = null
+    private fun reset() {
+        skeleton.reset()
     }
 
 }

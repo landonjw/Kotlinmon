@@ -15,8 +15,19 @@ import net.minecraft.util.math.vector.Vector3f
 data class TransformationMatrix internal constructor(val values: ImmutableArray<ImmutableArray<Float>>) {
 
     operator fun get(row: Int): ImmutableArray<Float> = values[row]
+
     operator fun times(right: TransformationMatrix): TransformationMatrix = combine(this, right)
     operator fun times(point: GeometricPoint): GeometricPoint = transform(this, point)
+    operator fun times(normal: GeometricNormal): GeometricNormal = transform(this, normal)
+
+    override fun toString(): String {
+        return """
+            ${this[0][0]} ${this[0][1]} ${this[0][2]} ${this[0][3]}
+            ${this[1][0]} ${this[1][1]} ${this[1][2]} ${this[1][3]}
+            ${this[2][0]} ${this[2][1]} ${this[2][2]} ${this[2][3]}
+            ${this[3][0]} ${this[3][1]} ${this[3][2]} ${this[3][3]}
+        """.trimIndent()
+    }
 
     companion object {
 
@@ -33,6 +44,10 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             arrayOf(0f, 0f, 1f, 0f),
             arrayOf(0f, 0f, 0f, 1f)
         )
+
+        fun of(translation: GeometricPoint, rotation: Vector3f): TransformationMatrix {
+            return translate(translation) * rotate(rotation)
+        }
 
         /**
          * Gets the transformation matrix for a given set of translation values.
@@ -71,36 +86,22 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             return if (matrix == null) transformation else matrix * transformation
         }
 
+        /**
+         * Gets a transformation matrix for a combination of rotation values.
+         * This will rotate among all three axes.
+         * **These are multiplied in the order Z, Y, X.**
+         *
+         * @param angles the angles to rotate each axis, in radians
+         *               positive values for clockwise, negative values for counter-clockwise
+         * @param matrix an optional matrix to concatenate to
+         *
+         * @return a new transformation matrix for the given rotations
+         */
         fun rotate(angles: Vector3f, matrix: TransformationMatrix? = null): TransformationMatrix {
             val rotationX = Axis.X_AXIS.getRotationMatrix(angles.x)
             val rotationY = Axis.Y_AXIS.getRotationMatrix(angles.y)
             val rotationZ = Axis.Z_AXIS.getRotationMatrix(angles.z)
-            val transformation = rotationX * rotationY * rotationZ
-            return if (matrix == null) transformation else matrix * transformation
-        }
-
-        fun rotateAroundPoint(
-            point: GeometricPoint,
-            angle: Float,
-            axis: Axis,
-            matrix: TransformationMatrix? = null
-        ): TransformationMatrix {
-            val translateToOrigin = translate(point * -1f)
-            val rotation = rotate(angle, axis)
-            val translateFromOrigin = translate(point)
-            val transformation = translateFromOrigin * rotation * translateToOrigin
-            return if (matrix == null) transformation else matrix * transformation
-        }
-
-        fun rotateAroundPoint(
-            point: GeometricPoint,
-            angles: Vector3f,
-            matrix: TransformationMatrix? = null
-        ): TransformationMatrix {
-            val translateToOrigin = translate(point * -1f)
-            val rotation = rotate(angles)
-            val translateFromOrigin = translate(point)
-            val transformation = translateFromOrigin * rotation * translateToOrigin
+            val transformation = rotationZ * rotationY * rotationX
             return if (matrix == null) transformation else matrix * transformation
         }
 
@@ -158,6 +159,27 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             return GeometricPoint(x, y, z)
         }
 
+        /**
+         * Transforms a normal to get the new position, based off of the given transformation matrix.
+         *
+         * @param matrix the transformation matrix to use to transform the normal
+         * @param point the point to transform
+         *
+         * @return a new normal that has been transformed by the given matrix
+         */
+        fun transform(matrix: TransformationMatrix, point: GeometricNormal): GeometricNormal {
+            val x = matrix[0][0] * point.x + matrix[0][1] * point.y + matrix[0][2] * point.z
+            val y = matrix[1][0] * point.x + matrix[1][1] * point.y + matrix[1][2] * point.z
+            val z = matrix[2][0] * point.x + matrix[2][1] * point.y + matrix[2][2] * point.z
+            return GeometricNormal(x, y, z)
+        }
+
+        /**
+         * Inverts the given transformation matrix, if possible.
+         *
+         * @param matrix the transformation matrix to invert
+         * @return a new transformation matrix if successfully inverted, or null if inversion was not possible
+         */
         fun invert(matrix: TransformationMatrix): TransformationMatrix? {
             val determinant = determinant(matrix)
             if (determinant == 0f) return null
@@ -298,6 +320,12 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             return TransformationMatrix(values.toImmutable())
         }
 
+        /**
+         * Gets the [determinant](https://en.wikipedia.org/wiki/Determinant) of a given transformation matrix.
+         *
+         * @param matrix the transformation matrix to get determinant for
+         * @return the determinant of the matrix
+         */
         fun determinant(matrix: TransformationMatrix): Float {
             var determinant: Float = (matrix[0][0]
                     * (matrix[1][1] * matrix[2][2] * matrix[3][3] + matrix[2][1] * matrix[3][2] * matrix[1][3] + matrix[3][1] * matrix[1][2] * matrix[2][3]
@@ -314,7 +342,7 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
             return determinant
         }
 
-        fun determinant3x3(values: Array<Array<Float>>): Float {
+        private fun determinant3x3(values: Array<Array<Float>>): Float {
             assert(values.size == 3)
             for (row in values) assert(row.size == 3)
 

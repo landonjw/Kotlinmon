@@ -1,4 +1,4 @@
-package ca.landonjw.kotlinmon.tangrowth
+package ca.landonjw.kotlinmon.pokemon
 
 import ca.landonjw.kotlinmon.Kotlinmon
 import net.minecraft.entity.AgeableEntity
@@ -32,7 +32,9 @@ class PokemonEntity(
 
     override fun createChild(world: ServerWorld, mate: AgeableEntity): AgeableEntity? = null
     override fun createSpawnPacket() = NetworkHooks.getEntitySpawningPacket(this)
-    override fun tick() { super.tick() }
+    override fun tick() {
+        super.tick()
+    }
 
     companion object {
         fun prepareAttributes(): AttributeModifierMap {

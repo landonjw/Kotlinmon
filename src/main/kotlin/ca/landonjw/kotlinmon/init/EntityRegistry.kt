@@ -1,12 +1,11 @@
 package ca.landonjw.kotlinmon.init
 
-import ca.landonjw.kotlinmon.Kotlinmon
 //import ca.landonjw.kotlinmon.pokeball.entity.PokeballEntity
-import ca.landonjw.kotlinmon.tangrowth.PokemonEntity
+import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.pokemon.PokemonEntity
 import net.minecraft.entity.EntityClassification
 import net.minecraft.entity.EntityType
 import net.minecraft.util.ResourceLocation
-import net.minecraft.world.World
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.RegistryObject
@@ -19,24 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries
 object EntityRegistry {
     val ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Kotlinmon.MODID)
 
-//    val POKEBALL: RegistryObject<EntityType<PokeballEntity>> =
-//        createPokeball("pokeball") { type, world -> PokeballEntity(type, world) }
-
     val POKEMON: RegistryObject<EntityType<PokemonEntity>> = registerPokemon()
-
-//    private inline fun <reified T : PokeballEntity> createPokeball(
-//        name: String,
-//        noinline supplier: (EntityType<T>, World) -> T
-//    ): RegistryObject<EntityType<T>> {
-//        val resourceLoc = ResourceLocation(Kotlinmon.MODID, name)
-//        val builder = EntityType.Builder.create<T>(EntityType.IFactory(supplier), EntityClassification.MISC)
-//        val registry = builder
-//            .size(3f, 3f)
-//            .immuneToFire()
-//            .build(resourceLoc.toString())
-//
-//        return ENTITIES.register(name) { registry }
-//    }
 
     fun registerPokemon(): RegistryObject<EntityType<PokemonEntity>> {
         val resourceLoc = ResourceLocation(Kotlinmon.MODID, "pokemon")

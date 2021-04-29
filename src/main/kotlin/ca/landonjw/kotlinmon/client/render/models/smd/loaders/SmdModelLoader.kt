@@ -1,82 +1,83 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders
 
+import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.SmdBoneLocationDefinition
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.SmdModelFileDefinition
-import ca.landonjw.kotlinmon.client.render.models.smd.mesh.Material
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.*
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMesh
+import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelBone
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
-import ca.landonjw.kotlinmon.util.math.geometry.Axis
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
-import ca.landonjw.kotlinmon.util.math.geometry.TransformationBuilder
 import net.minecraft.util.ResourceLocation
-import net.minecraft.util.math.vector.Vector3f
 
 object SmdModelLoader {
 
-    fun load(location: ResourceLocation, texture: ResourceLocation): SmdModel {
-        val modelDefinition = SmdModelFileLoader.load(location)
+    fun load(location: ResourceLocation): SmdModel {
+        val schema = SmdModelFileLoader.load(location)
 
-        val skeleton = getSkeleton(modelDefinition)
-        val mesh = SmdMesh(modelDefinition.polygonMesh, skeleton, Material(texture))
-        val model = SmdModel(skeleton, mesh)
+        val texture = getDefaultTexture(location)
+        val vertices = getMeshVertices(schema)
+        val mesh = SmdMesh(vertices, texture)
 
-        return model
+        val skeleton = getSkeleton(schema, mesh)
+        return SmdModel(skeleton)
     }
 
-    private fun getSkeleton(definition: SmdModelFileDefinition): SmdModelSkeleton {
-        val boneIdToBoneLocation: MutableMap<Int, SmdBoneLocationDefinition> = mutableMapOf()
-        definition.boneLocations.forEach { boneLoc -> boneIdToBoneLocation[boneLoc.boneId] = boneLoc }
-
-        val boneIdToBone: MutableMap<Int, SmdModelBone> = mutableMapOf()
-        val boneBuilders: MutableMap<Int, SmdModelBoneBuilder> = mutableMapOf()
-
-        for (bone in definition.bones) {
-            val boneLocation = boneIdToBoneLocation[bone.id] ?: throw IllegalStateException("bone location not found")
-            val builder = SmdModelBoneBuilder(bone.id, bone.name, boneLocation.location, boneLocation.orientation, bone.parent)
-            boneBuilders[bone.id] = builder
+    private fun getMeshVertices(schema: SmdModelFileDefinition): List<SmdMeshVertex> {
+        val meshVertices = mutableListOf<SmdMeshVertex>()
+        schema.polygonMesh.forEach {
+            meshVertices.add(getMeshVertexFromDefinition(it.vertex1))
+            meshVertices.add(getMeshVertexFromDefinition(it.vertex2))
+            meshVertices.add(getMeshVertexFromDefinition(it.vertex3))
         }
-
-        for (builder in boneBuilders.values) {
-            buildBone(builder, boneIdToBone, boneBuilders)
-        }
-
-        for (bone in boneIdToBone.values) {
-            bone.parent?.addChildBone(bone)
-        }
-
-        return SmdModelSkeleton(boneIdToBone.values.sortedBy { it.id })
+        return meshVertices
     }
 
-    private fun buildBone(
-        builder: SmdModelBoneBuilder,
-        boneIdToBone: MutableMap<Int, SmdModelBone>,
-        boneBuilders: MutableMap<Int, SmdModelBoneBuilder>
-    ) {
-        // Captures the case that a bone was already constructed if it was a dependency of a child
-        if (boneIdToBone[builder.id] != null) return
+    private fun getDefaultTexture(location: ResourceLocation): ResourceLocation {
+        val split = location.path.split("/")
+        val parentPath = split.subList(0, split.size - 2)
+            .reduce { acc, s -> "$acc/$s" }
+        val fileName = split.last().replace(".smd", "")
+        return ResourceLocation(Kotlinmon.MODID, "$parentPath/textures/$fileName.png")
+    }
 
-        if (builder.parent != -1 && boneIdToBone[builder.parent] == null) {
-            val parentBuilder = boneBuilders[builder.parent] ?: throw IllegalStateException("parent bone not found")
-            buildBone(parentBuilder, boneIdToBone, boneBuilders)
+    private fun getSkeleton(schema: SmdModelFileDefinition, mesh: SmdMesh): SmdModelSkeleton {
+        val boneLocationDefById = mutableMapOf<Int, SmdBoneLocationDefinition>()
+        schema.boneLocations.forEach { boneLocationDefById[it.boneId] = it }
+
+        val modelBones = mutableListOf<SmdModelBone>()
+        for (boneDef in schema.bones) {
+            val boneLocDef = boneLocationDefById[boneDef.id] ?: continue
+            modelBones.add(getBoneFromDefinition(boneDef, boneLocDef))
         }
-        val bone = SmdModelBone(
-            id = builder.id,
-            name = builder.name,
-            parent = boneIdToBone[builder.parent]
+        linkBones(schema.bones, modelBones)
+        return SmdModelSkeleton(modelBones, mesh)
+    }
+
+    private fun getBoneFromDefinition(
+        boneDef: SmdBoneDefinition,
+        locationDef: SmdBoneLocationDefinition
+    ): SmdModelBone {
+        return SmdModelBone(boneDef.id, boneDef.name, locationDef.location, locationDef.orientation)
+    }
+
+    private fun linkBones(boneDefinitions: List<SmdBoneDefinition>, bones: List<SmdModelBone>) {
+        val boneById = mutableMapOf<Int, SmdModelBone>()
+        bones.forEach { boneById[it.id] = it }
+        for (boneDef in boneDefinitions) {
+            val bone = boneById[boneDef.id] ?: continue
+            val parent = boneById[boneDef.parent] ?: continue
+            bone.parent = parent
+        }
+    }
+
+    private fun getMeshVertexFromDefinition(vertex: SmdVertex): SmdMeshVertex {
+        return SmdMeshVertex(
+            weights = vertex.links ?: mapOf(),
+            basePosition = vertex.position,
+            baseNormal = vertex.normal,
+            u = vertex.uvMap.a,
+            v = vertex.uvMap.b
         )
-        bone.move(builder.baseLocation, builder.baseOrientation)
-
-        boneIdToBone[builder.id] = bone
     }
 
 }
-
-private data class SmdModelBoneBuilder(
-    var id: Int,
-    var name: String,
-    var baseLocation: GeometricPoint,
-    var baseOrientation: Vector3f,
-    var parent: Int
-)

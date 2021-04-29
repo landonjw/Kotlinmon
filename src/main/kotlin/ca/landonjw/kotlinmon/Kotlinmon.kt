@@ -2,9 +2,7 @@ package ca.landonjw.kotlinmon
 
 import ca.landonjw.kotlinmon.blocks.KotlinmonBlocks
 import ca.landonjw.kotlinmon.init.EntityRegistry
-//import ca.landonjw.kotlinmon.pokeball.entity.RenderPokeball
-import ca.landonjw.kotlinmon.pokeball.item.PokeballItemRegistry
-import ca.landonjw.kotlinmon.tangrowth.RenderPokemon
+import ca.landonjw.kotlinmon.pokemon.RenderPokemon
 import net.minecraft.block.Block
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.RegistryEvent
@@ -29,10 +27,9 @@ class Kotlinmon {
         registerListeners()
 
         KotlinmonBlocks.register()
-        PokeballItemRegistry.register()
         EntityRegistry.register()
 
-        FMLJavaModLoadingContext.get().modEventBus.addListener { event : FMLClientSetupEvent ->
+        FMLJavaModLoadingContext.get().modEventBus.addListener { event: FMLClientSetupEvent ->
             clientInit(event)
         }
     }
@@ -45,7 +42,7 @@ class Kotlinmon {
     }
 
     fun registerListeners() {
-        FMLJavaModLoadingContext.get().modEventBus.addListener { event : FMLCommonSetupEvent ->
+        FMLJavaModLoadingContext.get().modEventBus.addListener { event: FMLCommonSetupEvent ->
             setup(event)
         }
         MinecraftForge.EVENT_BUS.register(this)

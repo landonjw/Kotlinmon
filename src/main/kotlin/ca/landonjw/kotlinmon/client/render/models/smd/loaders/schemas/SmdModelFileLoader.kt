@@ -1,6 +1,6 @@
-package ca.landonjw.kotlinmon.client.render.models.smd.loaders
+package ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas
 
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.*
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricNormal
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Tuple
@@ -131,7 +131,7 @@ object SmdModelFileLoader {
         val xNorm = values[4].toFloatOrNull() ?: throw IllegalStateException("could not parse x normal")
         val yNorm = values[5].toFloatOrNull() ?: throw IllegalStateException("could not parse y normal")
         val zNorm = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z normal")
-        val normal = GeometricPoint(xNorm, -yNorm, -zNorm, 0f)
+        val normal = GeometricNormal(xNorm, -yNorm, -zNorm)
 
         val u = values[7].toFloatOrNull() ?: throw IllegalStateException("could not parse u texture coordinate")
         val v = values[8].toFloatOrNull() ?: throw IllegalStateException("could not parse v texture coordinate")
@@ -151,7 +151,7 @@ object SmdModelFileLoader {
             }
         }
 
-        return SmdVertex(parentBone, position, normal, GeometricPoint(), uvMap, links)
+        return SmdVertex(parentBone, position, normal, uvMap, links)
     }
 
 }

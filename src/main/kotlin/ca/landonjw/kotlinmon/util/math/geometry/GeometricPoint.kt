@@ -7,12 +7,14 @@ package ca.landonjw.kotlinmon.util.math.geometry
  *
  * @author landonjw
  */
-data class GeometricPoint(val x: Float, val y: Float, val z: Float, val w: Float = 1f) {
+data class GeometricPoint(val x: Float, val y: Float, val z: Float) {
+
+    val w: Float = 1f // This is always one for translations used within transformation matrices
 
     operator fun plus(right: GeometricPoint): GeometricPoint = add(this, right)
     operator fun times(scalar: Float): GeometricPoint = multiply(this, scalar)
 
-    constructor(): this(0f, 0f, 0f)
+    constructor() : this(0f, 0f, 0f)
 
     companion object {
 

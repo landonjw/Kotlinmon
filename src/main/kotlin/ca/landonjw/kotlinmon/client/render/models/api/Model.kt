@@ -6,9 +6,8 @@ import ca.landonjw.kotlinmon.client.render.models.api.skeleton.ModelSkeleton
 interface Model {
     val skeleton: ModelSkeleton
     val animations: Map<String, ModelAnimation>
-    val currentAnimation: ModelAnimation?
+    val currentAnimation: String?
 
-    fun addAnimation(token: String, animation: ModelAnimation)
-    fun setAnimation(animation: String?)
-    fun tPose()
+    fun animate(animation: String?)
+
 }
