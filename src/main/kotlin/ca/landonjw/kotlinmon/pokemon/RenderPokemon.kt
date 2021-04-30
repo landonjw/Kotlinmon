@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.culling.ClippingHelper
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
 import net.minecraft.util.ResourceLocation
+import net.minecraft.world.biome.Biome
 
 class RenderPokemon(
     manager: EntityRendererManager

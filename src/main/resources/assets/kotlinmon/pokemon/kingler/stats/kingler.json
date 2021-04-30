@@ -1,0 +1,17 @@
+{
+  "forms": [
+    {
+      "name": "base",
+      "modelLocation": "pokemon/kingler/kingler.pqc",
+      "baseStats": {
+        "health": 55,
+        "attack": 130,
+        "defence": 115,
+        "specialAttack": 50,
+        "specialDefence": 50,
+        "speed": 75
+      },
+      "type1": "water"
+    }
+  ]
+}

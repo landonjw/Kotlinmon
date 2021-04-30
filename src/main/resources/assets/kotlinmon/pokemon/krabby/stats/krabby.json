@@ -1,0 +1,17 @@
+{
+  "forms": [
+    {
+      "name": "base",
+      "modelLocation": "pokemon/krabby/krabby.pqc",
+      "baseStats": {
+        "health": 30,
+        "attack": 105,
+        "defence": 90,
+        "specialAttack": 25,
+        "specialDefence": 25,
+        "speed": 50
+      },
+      "type1": "water"
+    }
+  ]
+}
