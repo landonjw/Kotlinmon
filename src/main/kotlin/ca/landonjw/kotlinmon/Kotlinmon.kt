@@ -2,6 +2,8 @@ package ca.landonjw.kotlinmon
 
 import ca.landonjw.kotlinmon.blocks.KotlinmonBlocks
 import ca.landonjw.kotlinmon.init.EntityRegistry
+import ca.landonjw.kotlinmon.init.ItemRegistry
+import ca.landonjw.kotlinmon.pokeball.RenderPokeball
 import ca.landonjw.kotlinmon.pokemon.RenderPokemon
 import net.minecraft.block.Block
 import net.minecraftforge.common.MinecraftForge
@@ -28,6 +30,7 @@ class Kotlinmon {
 
         KotlinmonBlocks.register()
         EntityRegistry.register()
+        ItemRegistry.register()
 
         FMLJavaModLoadingContext.get().modEventBus.addListener { event: FMLClientSetupEvent ->
             clientInit(event)
@@ -38,6 +41,9 @@ class Kotlinmon {
         LOGGER.info("Setting up client")
         RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.POKEMON.get()) { manager ->
             RenderPokemon(manager)
+        }
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.POKEBALL.get()) { manager ->
+            RenderPokeball(manager)
         }
     }
 

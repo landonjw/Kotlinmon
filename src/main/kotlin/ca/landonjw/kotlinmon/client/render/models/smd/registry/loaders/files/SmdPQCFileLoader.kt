@@ -95,10 +95,10 @@ private data class PQCSchemaBuilder(
         return PQCSchema(
             animations = animations ?: listOf(),
             modelPath = modelPath!!,
-            scale = scale ?: Vector3f(1.0f, 1.0f, 1.0f),
-            rotationOffset = rotationOffset ?: Vector3f(0f, 0f, 0f),
-            positionOffset = positionOffset ?: GeometricPoint(),
-            glitch = glitch ?: Vector3f(0f, 0f, 0f)
+            scale = scale,
+            rotationOffset = rotationOffset,
+            positionOffset = positionOffset,
+            glitch = glitch
         )
     }
 }

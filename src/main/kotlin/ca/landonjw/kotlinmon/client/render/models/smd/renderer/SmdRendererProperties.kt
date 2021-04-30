@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.renderer
 
-import ca.landonjw.kotlinmon.api.data.Key
 import ca.landonjw.kotlinmon.util.math.geometry.Axis
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import net.minecraft.util.math.vector.Vector3f
@@ -10,7 +9,9 @@ import net.minecraft.util.math.vector.Vector3f
  *
  * @author landonjw
  */
-interface SmdRenderProperty<T>: Key<T>
+interface SmdRenderProperty<T> {
+    val value: T
+}
 
 /**
  * Defines a global scaling transformation for a model.
@@ -20,7 +21,6 @@ interface SmdRenderProperty<T>: Key<T>
  * @author landonjw
  */
 class Scale : SmdRenderProperty<Vector3f> {
-    override val token = "scale"
     override val value: Vector3f
 
     constructor(scalars: Vector3f) {
@@ -40,7 +40,6 @@ class Scale : SmdRenderProperty<Vector3f> {
  * @author landonjw
  */
 class RotationOffset : SmdRenderProperty<Vector3f> {
-    override val token = "rotation"
     override val value: Vector3f
 
     constructor(angles: Vector3f) {
@@ -60,7 +59,6 @@ class RotationOffset : SmdRenderProperty<Vector3f> {
  * @author landonjw
  */
 class PositionOffset(offset: GeometricPoint) : SmdRenderProperty<GeometricPoint> {
-    override val token = "position"
     override val value: GeometricPoint = offset
 }
 
@@ -74,7 +72,6 @@ class PositionOffset(offset: GeometricPoint) : SmdRenderProperty<GeometricPoint>
  * @property value the amount of noise for each axis in radians
  */
 class GlitchNoise : SmdRenderProperty<Vector3f> {
-    override val token = "shake"
     override val value: Vector3f
 
     constructor(noise: Vector3f) {

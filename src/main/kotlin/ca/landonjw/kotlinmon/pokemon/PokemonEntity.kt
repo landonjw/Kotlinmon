@@ -38,7 +38,7 @@ class PokemonEntity(
 
     companion object {
         fun prepareAttributes(): AttributeModifierMap {
-            return TameableEntity.registerAttributes()
+            return registerAttributes()
                 .createMutableAttribute(Attributes.FOLLOW_RANGE)
                 .create()
         }

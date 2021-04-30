@@ -2,6 +2,7 @@ package ca.landonjw.kotlinmon.client.render.models.smd.renderer
 
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricNormal
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 import com.google.common.collect.ImmutableList
@@ -21,7 +22,7 @@ import java.util.*
  *
  * @author landonjw
  */
-class SmdModelRenderer {
+object SmdModelRenderer {
 
     /** Allows us to bind the model's texture to the model. */
     private val textureManager = Minecraft.getInstance().textureManager
@@ -62,16 +63,25 @@ class SmdModelRenderer {
         globalTransforms: TransformationMatrix,
         properties: List<SmdRenderProperty<*>>
     ) {
-        val shakeNoise = getProperty<GlitchNoise>(properties)?.value ?: Vector3f(0f, 0f, 0f)
-        val shakeRotation = Vector3f(
-            shakeNoise.x * random.nextFloat(),
-            shakeNoise.y * random.nextFloat(),
-            shakeNoise.z * random.nextFloat()
-        )
-        val shakeMatrix = TransformationMatrix.rotate(shakeRotation)
+        val glitchNoise = getProperty<GlitchNoise>(properties)?.value
 
-        val position = globalTransforms * shakeMatrix * vertex.position
-        val normal = globalTransforms * shakeMatrix * vertex.normal
+        val position: GeometricPoint
+        val normal: GeometricNormal
+
+        if (glitchNoise != null) {
+            val shakeRotation = Vector3f(
+                glitchNoise.x * random.nextFloat(),
+                glitchNoise.y * random.nextFloat(),
+                glitchNoise.z * random.nextFloat()
+            )
+            val shakeMatrix = TransformationMatrix.rotate(shakeRotation)
+            position = globalTransforms * shakeMatrix * vertex.position
+            normal = globalTransforms * shakeMatrix * vertex.normal
+        }
+        else {
+            position = globalTransforms * vertex.position
+            normal = globalTransforms * vertex.normal
+        }
 
         buffer
             .pos(matrix.last.matrix, position.x, position.y, position.z)

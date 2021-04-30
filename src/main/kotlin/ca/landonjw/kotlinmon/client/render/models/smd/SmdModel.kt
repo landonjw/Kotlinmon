@@ -1,6 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.models.smd
 
 import ca.landonjw.kotlinmon.client.render.models.smd.animations.SmdModelAnimation
+import ca.landonjw.kotlinmon.client.render.models.smd.renderer.Scale
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdRenderProperty
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
 
@@ -58,6 +59,23 @@ class SmdModel(
     private fun reset() {
         currentAnimation = null
         skeleton.reset()
+    }
+
+    inline fun <reified T: SmdRenderProperty<*>> getProperty(): T? {
+        return renderProperties.firstOrNull { it is T } as? T
+    }
+
+    inline fun <reified T: SmdRenderProperty<*>> replaceProperty(new: T) {
+        renderProperties.removeIf { it is T }
+        renderProperties.add(new)
+    }
+
+    inline fun <reified T: SmdRenderProperty<*>> replaceProperty(replacement: (T) -> T) {
+        val old = renderProperties.firstOrNull { it is T } as T
+        val new = replacement(old)
+
+        renderProperties.remove(old)
+        renderProperties.add(new)
     }
 
 }

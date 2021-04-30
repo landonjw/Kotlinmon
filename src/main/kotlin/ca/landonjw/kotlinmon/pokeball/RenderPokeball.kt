@@ -1,45 +1,50 @@
-package ca.landonjw.kotlinmon.pokemon
+package ca.landonjw.kotlinmon.pokeball
 
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
-import ca.landonjw.kotlinmon.client.render.models.smd.registry.SmdModelRegistry
 import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.SmdPQCLoader
+import ca.landonjw.kotlinmon.client.render.models.smd.renderer.RotationOffset
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
+import ca.landonjw.kotlinmon.util.math.geometry.toRadians
 import com.mojang.blaze3d.matrix.MatrixStack
-import kotlinx.coroutines.Deferred
 import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.culling.ClippingHelper
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
 import net.minecraft.util.ResourceLocation
 
-class RenderPokemon(
-    manager: EntityRendererManager
-) : EntityRenderer<PokemonEntity>(manager) {
+class RenderPokeball(manager: EntityRendererManager): EntityRenderer<PokeballEntity>(manager) {
 
-    val kinglerPQC = ResourceLocation(Kotlinmon.MODID, "pokemon/kingler/kingler.pqc")
+    val pokeballPQC = ResourceLocation(Kotlinmon.MODID, "pokeballs/pokeball.pqc")
+    var pokeballModel: SmdModel? = null
+
+    init {
+        println("foo")
+    }
 
     override fun render(
-        entity: PokemonEntity,
+        entity: PokeballEntity,
         entityYaw: Float,
         partialTicks: Float,
         matrixStack: MatrixStack,
         buffer: IRenderTypeBuffer,
         packedLight: Int
     ) {
-        val model: Deferred<SmdModel> = SmdModelRegistry.getOrLoad(kinglerPQC)
-        if (model.isCompleted && !model.isCancelled) {
-            val actual = model.getCompleted()
-            actual.setAnimation("idle")
-            SmdModelRenderer.render(matrixStack, actual)
+        if (pokeballModel == null) {
+            pokeballModel = SmdPQCLoader.load(pokeballPQC)
         }
+        pokeballModel?.replaceProperty<RotationOffset> {
+            val copy = it.value.copy()
+            copy.add(1f.toRadians(), 1f.toRadians(), 1f.toRadians())
+            return@replaceProperty RotationOffset(copy)
+        }
+        SmdModelRenderer.render(matrixStack, pokeballModel!!)
     }
 
-    override fun getEntityTexture(entity: PokemonEntity) = null
+    override fun getEntityTexture(entity: PokeballEntity) = null
 
-    // TODO: Make better. Should take into account player frustum to prevent unnecessary rendering.
     override fun shouldRender(
-        livingEntityIn: PokemonEntity,
+        livingEntityIn: PokeballEntity,
         camera: ClippingHelper,
         camX: Double,
         camY: Double,
