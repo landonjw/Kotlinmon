@@ -1,13 +1,15 @@
-package ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas
+package ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files
 
 import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.getParentPath
+import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.getParentPath
+import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.PQCAnimation
+import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.PQCSchema
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import ca.landonjw.kotlinmon.util.math.geometry.toRadians
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.vector.Vector3f
 
-object PQCFileLoader {
+internal object PQCFileLoader {
 
     fun load(location: ResourceLocation): PQCSchema {
         val parentPath = getParentPath(location)

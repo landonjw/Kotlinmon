@@ -2,7 +2,7 @@ package ca.landonjw.kotlinmon.pokemon
 
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.render.models.smd.registry.SmdModelRegistry
-import ca.landonjw.kotlinmon.client.render.models.smd.renderer.StandardSmdModelRenderer
+import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
 import com.mojang.blaze3d.matrix.MatrixStack
 import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.culling.ClippingHelper
@@ -15,7 +15,7 @@ class RenderPokemon(
 ) : EntityRenderer<PokemonEntity>(manager) {
 
     val kinglerPQC = ResourceLocation(Kotlinmon.MODID, "pokemon/kingler/kingler.pqc")
-    private val smdRenderer = StandardSmdModelRenderer()
+    private val smdRenderer = SmdModelRenderer()
 
     override fun render(
         entity: PokemonEntity,
@@ -28,7 +28,7 @@ class RenderPokemon(
         val model = SmdModelRegistry.getOrLoad(kinglerPQC)
         if (model.isCompleted && !model.isCancelled) {
             val actual = model.getCompleted()
-            actual.animate("idle")
+            actual.setAnimation("idle")
             smdRenderer.render(matrixStack, actual)
         }
     }

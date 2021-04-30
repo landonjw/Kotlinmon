@@ -1,4 +1,4 @@
-package ca.landonjw.kotlinmon.client.render.models.smd.loaders
+package ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders
 
 import net.minecraft.util.ResourceLocation
 

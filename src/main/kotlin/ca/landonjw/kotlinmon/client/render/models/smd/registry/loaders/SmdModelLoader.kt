@@ -1,16 +1,31 @@
-package ca.landonjw.kotlinmon.client.render.models.smd.loaders
+package ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders
 
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.*
+import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.*
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMesh
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
+import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.SmdModelFileLoader
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelBone
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
 import net.minecraft.util.ResourceLocation
 
+/**
+ * Loads a [SmdModel] from a `.smd` file.
+ * This loading is done synchronously by default, and should often be handled otherwise
+ * in any implementations that use it.
+ *
+ * @author landonjw
+ */
 object SmdModelLoader {
 
+    /**
+     * Loads a [SmdModel] from a `.smd` file.
+     * This simply loads the model, it will not add any animations and will be t-posed.
+     *
+     * @param location the location to load `.smd` file from
+     * @return an smd model from the location
+     */
     fun load(location: ResourceLocation): SmdModel {
         val schema = SmdModelFileLoader.load(location)
 

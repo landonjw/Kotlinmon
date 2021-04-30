@@ -1,9 +1,20 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.animations
 
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas.SmdBoneMovement
+import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.SmdBoneMovement
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
 import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 
+/**
+ * A single frame within a [SmdModelAnimation]
+ * Defines a list of movements for each bone, at an instant in time.
+ *
+ * @property skeleton the skeleton of the model to apply animation frame to
+ * @property boneTransformations the transformations to apply to each bone
+ *                               key is bone id, value is the transformation matrix
+ * @param movements the movements within the frame
+ *
+ * @author landonjw
+ */
 class SmdModelAnimationFrame(
     movements: List<SmdBoneMovement>,
     private val skeleton: SmdModelSkeleton
@@ -29,6 +40,7 @@ class SmdModelAnimationFrame(
         this.boneTransformations = boneTransformations
     }
 
+    /** Applies the frame's transformations to the skeleton of model. */
     fun apply() {
         skeleton.mesh.reset()
         for (bone in skeleton.bones) {

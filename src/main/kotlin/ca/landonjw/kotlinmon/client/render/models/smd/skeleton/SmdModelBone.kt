@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.skeleton
 
-import ca.landonjw.kotlinmon.client.render.models.api.skeleton.ModelBone
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
@@ -13,6 +12,10 @@ import net.minecraft.util.math.vector.Vector3f
  * @property id the unique id the bone
  *              this value is only unique to the skeleton the bone belongs to
  * @property name the name of the bone
+ * @property parent the parent of the bone, if it has one.
+ *                  an example would be an arm bone being the parent of a hand bone
+ * @property children all children of the bone.
+ *                    an example would be finger bones being children of a hand bone
  *
  * @param basePosition the base position of the bone at rest, when the model is t-posed
  * @param baseOrientation the base orientation of the bone at rest, when the model is t-posed
@@ -24,28 +27,34 @@ class SmdModelBone(
     val name: String,
     basePosition: GeometricPoint,
     baseOrientation: Vector3f
-) : ModelBone {
+) {
 
     private val vertices: MutableList<SmdMeshVertex> = mutableListOf()
 
     internal var _children: MutableList<SmdModelBone> = mutableListOf()
-    override val children: List<SmdModelBone>
+    val children: List<SmdModelBone>
         get() = _children.toList()
 
-    override var parent: SmdModelBone? = null
+    var parent: SmdModelBone? = null
         internal set
 
     private var baseTransformation: TransformationMatrix = TransformationMatrix.of(basePosition, baseOrientation)
     private lateinit var invertedBaseTransformation: TransformationMatrix
 
-    override fun transform(transformation: TransformationMatrix) {
+    /**
+     * Moves the bone by a given transformation.
+     * This will reflect the transformation to each vertex bound to the bone.
+     *
+     * @param transformation the transformation to apply
+     */
+    fun transform(transformation: TransformationMatrix) {
         // Calculates the different between the base transformation and supplied transformation
         val delta = transformation * invertedBaseTransformation
         // Applies the change to each vertex the bone has influence over
         vertices.forEach { it.transform(this, delta) }
     }
 
-    fun invertBaseTransformation() {
+    internal fun invertBaseTransformation() {
         invertedBaseTransformation = TransformationMatrix.invert(baseTransformation)!!
     }
 

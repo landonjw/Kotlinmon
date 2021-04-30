@@ -1,7 +1,5 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.renderer
 
-import ca.landonjw.kotlinmon.client.render.models.api.renderer.ModelRenderer
-import ca.landonjw.kotlinmon.client.render.models.api.renderer.RenderProperty
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
@@ -18,8 +16,14 @@ import net.minecraft.util.math.vector.Vector3f
 import org.lwjgl.opengl.GL11
 import java.util.*
 
-class StandardSmdModelRenderer : ModelRenderer<SmdModel> {
+/**
+ * The renderer used to render `.smd` models.
+ *
+ * @author landonjw
+ */
+class SmdModelRenderer {
 
+    /** Allows us to bind the model's texture to the model. */
     private val textureManager = Minecraft.getInstance().textureManager
     private val random = Random()
 
@@ -32,11 +36,15 @@ class StandardSmdModelRenderer : ModelRenderer<SmdModel> {
         )
     )
 
-    override fun render(matrix: MatrixStack, model: SmdModel) {
-        if (model.currentAnimation != null) model.animations[model.currentAnimation]?.animate()
+    fun render(matrix: MatrixStack, model: SmdModel) {
+        // Get the next frame of current animation, if there is one
+        // TODO: Remove this and make a separate animation handler
+        if (model.currentAnimation != null) model.currentAnimation?.animate()
         val globalTransforms = getGlobalTransforms(model.renderProperties)
 
         textureManager.bindTexture(model.skeleton.mesh.texture)
+
+        // Start drawing every vertex in the model's mesh
         val buffer = Tessellator.getInstance().buffer
         RenderSystem.enableDepthTest()
         buffer.begin(GL11.GL_TRIANGLES, meshFormat)
@@ -52,7 +60,7 @@ class StandardSmdModelRenderer : ModelRenderer<SmdModel> {
         buffer: BufferBuilder,
         vertex: SmdMeshVertex,
         globalTransforms: TransformationMatrix,
-        properties: List<RenderProperty<*>>
+        properties: List<SmdRenderProperty<*>>
     ) {
         val shakeNoise = getProperty<GlitchNoise>(properties)?.value ?: Vector3f(0f, 0f, 0f)
         val shakeRotation = Vector3f(
@@ -72,7 +80,7 @@ class StandardSmdModelRenderer : ModelRenderer<SmdModel> {
             .endVertex()
     }
 
-    private fun getGlobalTransforms(properties: List<RenderProperty<*>>): TransformationMatrix {
+    private fun getGlobalTransforms(properties: List<SmdRenderProperty<*>>): TransformationMatrix {
         val scale = getProperty<Scale>(properties)?.value ?: Vector3f(1f, 1f, 1f)
         val positionOffset = getProperty<PositionOffset>(properties)?.value ?: GeometricPoint()
         val rotationOffset = getProperty<RotationOffset>(properties)?.value ?: Vector3f(0f, 0f, 0f)
@@ -84,7 +92,7 @@ class StandardSmdModelRenderer : ModelRenderer<SmdModel> {
         return translationMatrix * rotationMatrix * scaleMatrix
     }
 
-    private inline fun <reified T : RenderProperty<*>> getProperty(properties: List<RenderProperty<*>>): T? {
+    private inline fun <reified T : SmdRenderProperty<*>> getProperty(properties: List<SmdRenderProperty<*>>): T? {
         return properties.firstOrNull { it is T } as? T
     }
 

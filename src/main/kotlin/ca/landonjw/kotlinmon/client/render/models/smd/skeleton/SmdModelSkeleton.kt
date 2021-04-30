@@ -1,11 +1,11 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.skeleton
 
-import ca.landonjw.kotlinmon.client.render.models.api.skeleton.ModelSkeleton
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMesh
 
 /**
  * A skeleton for a [SmdModel], storing all bones for the model.
  *
+ * @property bones all of the bones within the skeleton
  * @property boneById a map of unique bone id to bone within the skeleton for quick lookup
  *                    key is bone id, value is bone instance
  * @property boneByName a map of bone name to bone within the skeleton for quick lookup
@@ -16,9 +16,9 @@ import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMesh
  * @author landonjw
  */
 class SmdModelSkeleton(
-    override val bones: List<SmdModelBone>,
+    val bones: List<SmdModelBone>,
     val mesh: SmdMesh
-) : ModelSkeleton {
+) {
 
     val root: SmdModelBone = findRoot()
 
@@ -49,7 +49,8 @@ class SmdModelSkeleton(
         return bones.firstOrNull { it.name != "blender_implicit" } ?: throw IllegalStateException("no root bone found")
     }
 
-    override fun reset() {
+    /** Resets the skeleton, causing the model to t-pose. */
+    fun reset() {
         mesh.reset()
     }
 

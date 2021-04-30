@@ -1,4 +1,4 @@
-package ca.landonjw.kotlinmon.client.render.models.smd.loaders.schemas
+package ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas
 
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
