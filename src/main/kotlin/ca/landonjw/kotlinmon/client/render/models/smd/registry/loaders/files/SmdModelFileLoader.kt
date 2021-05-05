@@ -1,8 +1,8 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files
 
 import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.*
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricNormal
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricNormal
+import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricPoint
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Tuple
 import net.minecraft.util.math.vector.Vector3f
@@ -221,7 +221,7 @@ private data class SmdModelFileDefinitionBuilder(
             weightSum += weight
         }
 
-        if (weightSum != 1f) throw IllegalStateException("polygon vertex has illegal weight sum ($weightSum)")
+        if (weightSum <= 0.99f) throw IllegalStateException("polygon vertex has illegal weight sum ($weightSum)")
     }
 
 }

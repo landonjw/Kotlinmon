@@ -3,7 +3,7 @@ package ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files
 import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.SmdAnimationFrame
 import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.SmdBoneMovement
 import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.SmdModelAnimationFileDefinition
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricPoint
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.vector.Vector3f
 

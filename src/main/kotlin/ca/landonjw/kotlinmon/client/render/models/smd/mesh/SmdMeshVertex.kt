@@ -1,9 +1,9 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.mesh
 
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelBone
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricNormal
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
-import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
+import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricNormal
+import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.common.util.math.geometry.TransformationMatrix
 
 /**
  * A single vertex in a [SmdMesh].

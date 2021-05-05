@@ -1,12 +1,16 @@
 package ca.landonjw.kotlinmon
 
-import ca.landonjw.kotlinmon.blocks.KotlinmonBlocks
-import ca.landonjw.kotlinmon.init.EntityRegistry
-import ca.landonjw.kotlinmon.init.ItemRegistry
-import ca.landonjw.kotlinmon.pokeball.RenderPokeball
-import ca.landonjw.kotlinmon.pokemon.RenderPokemon
+import ca.landonjw.kotlinmon.common.blocks.KotlinmonBlocks
+import ca.landonjw.kotlinmon.server.command.CreatePokemon
+import ca.landonjw.kotlinmon.common.init.EntityRegistry
+import ca.landonjw.kotlinmon.common.init.ItemRegistry
+import ca.landonjw.kotlinmon.common.pokeball.RenderPokeball
+import ca.landonjw.kotlinmon.common.pokemon.RenderPokemon
+import com.mojang.brigadier.arguments.StringArgumentType
 import net.minecraft.block.Block
+import net.minecraft.command.Commands
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.RegistryEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.client.registry.RenderingRegistry
@@ -66,6 +70,21 @@ class Kotlinmon {
     @SubscribeEvent
     fun onBlockRegistry(event: RegistryEvent.Register<Block>) {
         LOGGER.info("Registering block")
+    }
+
+    @SubscribeEvent
+    fun onCommandRegistration(event: RegisterCommandsEvent) {
+        val test = Commands.literal("pokecreate")
+            .then(
+                Commands.argument("species", StringArgumentType.word())
+                    .executes(CreatePokemon())
+            )
+            .requires { it.hasPermissionLevel(0) }
+            .executes {
+                println("No argument supplied")
+                return@executes 0
+            }
+        event.dispatcher.register(test)
     }
 
 }

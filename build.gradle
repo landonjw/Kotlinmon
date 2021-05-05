@@ -183,9 +183,9 @@ shadowJar {
 		include dependency("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
 		include dependency("org.kodein.di:kodein-di-generic-jvm:6.4.1")
 	}
-	relocate 'org', 'ca.landonjw.kotlinmon.util.shadow.org'
-	relocate 'kotlin', 'ca.landonjw.kotlinmon.util.shadow.kotlin'
-	relocate 'kotlinx', 'ca.landonjw.kotlinmon.util.shadow.kotlinx'
+	relocate 'org', 'ca.landonjw.kotlinmon.common.util.shadow.org'
+	relocate 'kotlin', 'ca.landonjw.kotlinmon.common.util.shadow.kotlin'
+	relocate 'kotlinx', 'ca.landonjw.kotlinmon.common.util.shadow.kotlinx'
 }
 
 // Testing ---------------
