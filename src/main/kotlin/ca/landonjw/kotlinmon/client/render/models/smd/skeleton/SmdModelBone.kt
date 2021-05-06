@@ -1,8 +1,8 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.skeleton
 
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
-import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricPoint
-import ca.landonjw.kotlinmon.common.util.math.geometry.TransformationMatrix
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 import net.minecraft.util.math.vector.Vector3f
 
 /**

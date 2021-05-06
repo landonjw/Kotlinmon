@@ -1,8 +1,8 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.animations
 
-import ca.landonjw.kotlinmon.client.render.models.smd.registry.loaders.files.schemas.SmdBoneMovement
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.SmdBoneMovement
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
-import ca.landonjw.kotlinmon.common.util.math.geometry.TransformationMatrix
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 
 /**
  * A single frame within a [SmdModelAnimation]

@@ -2,9 +2,9 @@ package ca.landonjw.kotlinmon.client.render.models.smd.renderer
 
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
-import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricNormal
-import ca.landonjw.kotlinmon.common.util.math.geometry.GeometricPoint
-import ca.landonjw.kotlinmon.common.util.math.geometry.TransformationMatrix
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricNormal
+import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
+import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 import com.google.common.collect.ImmutableList
 import com.mojang.blaze3d.matrix.MatrixStack
 import com.mojang.blaze3d.systems.RenderSystem
@@ -22,7 +22,7 @@ import java.util.*
  *
  * @author landonjw
  */
-object SmdModelRenderer {
+class SmdModelRenderer {
 
     /** Allows us to bind the model's texture to the model. */
     private val textureManager = Minecraft.getInstance().textureManager

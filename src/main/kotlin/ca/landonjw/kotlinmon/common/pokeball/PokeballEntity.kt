@@ -1,7 +1,7 @@
 package ca.landonjw.kotlinmon.common.pokeball
 
-import ca.landonjw.kotlinmon.common.init.ItemRegistry
-import ca.landonjw.kotlinmon.common.pokemon.PokemonEntity
+import ca.landonjw.kotlinmon.common.ItemRegistry
+import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.projectile.ThrowableEntity
 import net.minecraft.item.ItemStack

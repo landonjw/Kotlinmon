@@ -168,7 +168,7 @@ dependencies {
 	compile group: "org.jetbrains", name: "annotations", version: annotations_version
 	compile group: "org.jetbrains.kotlinx", name: "kotlinx-coroutines-core", version: coroutines_version
 	compile group: "org.jetbrains.kotlinx", name: "kotlinx-coroutines-jdk8", version: coroutines_version
-	compile 'org.kodein.di:kodein-di-generic-jvm:6.4.1'
+	compile 'org.kodein.di:kodein-di:7.5.0'
 }
 
 shadowJar {
@@ -181,7 +181,7 @@ shadowJar {
 		include dependency("org.jetbrains:annotations:${annotations_version}")
 		include dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
 		include dependency("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-		include dependency("org.kodein.di:kodein-di-generic-jvm:6.4.1")
+		include dependency("org.kodein.di:kodein-di:7.5.0")
 	}
 	relocate 'org', 'ca.landonjw.kotlinmon.common.util.shadow.org'
 	relocate 'kotlin', 'ca.landonjw.kotlinmon.common.util.shadow.kotlin'
