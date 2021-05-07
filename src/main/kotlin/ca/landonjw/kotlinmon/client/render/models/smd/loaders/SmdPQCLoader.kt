@@ -39,7 +39,6 @@ object SmdPQCLoader {
         if (schema.scale != null) properties.add(Scale(schema.scale))
         if (schema.rotationOffset != null) properties.add(RotationOffset(schema.rotationOffset))
         if (schema.positionOffset != null) properties.add(PositionOffset(schema.positionOffset))
-        if (schema.glitch != null) properties.add(GlitchNoise(schema.glitch))
         model.renderProperties.addAll(properties)
     }
 }

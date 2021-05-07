@@ -61,24 +61,3 @@ class RotationOffset : SmdRenderProperty<Vector3f> {
 class PositionOffset(offset: GeometricPoint) : SmdRenderProperty<GeometricPoint> {
     override val value: GeometricPoint = offset
 }
-
-/**
- * Defines a range to randomly rotate each vertex for a model.
- * This produces a 'shakey' or 'glitchy' effect.
- *
- * For example, a value of [0, 0, 1] will make each vertex rotate
- * between 0-1 radian on the z axis.
- *
- * @property value the amount of noise for each axis in radians
- */
-class GlitchNoise : SmdRenderProperty<Vector3f> {
-    override val value: Vector3f
-
-    constructor(noise: Vector3f) {
-        value = noise
-    }
-
-    constructor(noise: Float, axis: Axis) {
-        value = Vector3f(axis.x * noise, axis.y * noise, axis.z * noise)
-    }
-}

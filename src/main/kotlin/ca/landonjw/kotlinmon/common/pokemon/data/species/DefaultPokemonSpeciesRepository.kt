@@ -25,6 +25,7 @@ class DefaultPokemonSpeciesRepository: PokemonSpeciesRepository {
         val species: MutableList<PokemonSpecies> = mutableListOf()
         val corphish = PokemonSpecies {
             name = "Corphish"
+            catchRate = 205
             defaultForm {
                 types(ProvidedType.WATER)
                 modelLocation = ResourceLocation(Kotlinmon.MODID,"pokemon/corphish/corphish.pqc")

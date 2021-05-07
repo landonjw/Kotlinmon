@@ -9,8 +9,7 @@ data class PQCSchema(
     val modelPath: ResourceLocation,
     val scale: Vector3f?,
     val rotationOffset: Vector3f?,
-    val positionOffset: GeometricPoint?,
-    val glitch: Vector3f?
+    val positionOffset: GeometricPoint?
 )
 
 data class PQCAnimation(

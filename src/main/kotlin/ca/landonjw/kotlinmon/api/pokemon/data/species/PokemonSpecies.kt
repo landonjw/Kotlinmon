@@ -4,6 +4,7 @@ import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 
 class PokemonSpecies(
     val name: String,
+    val catchRate: Int,
     val defaultForm: PokemonForm,
     val alternativeForms: List<PokemonForm>
 ) {
@@ -20,6 +21,7 @@ class PokemonSpecies(
 
         class Builder internal constructor() {
             var name: String? = null
+            var catchRate: Int? = null
             var defaultForm: PokemonForm? = null
             val alternativeForms: MutableList<PokemonForm> = mutableListOf()
 
@@ -39,7 +41,7 @@ class PokemonSpecies(
 
             fun build(): PokemonSpecies {
                 validate()
-                return PokemonSpecies(name!!, defaultForm!!, alternativeForms)
+                return PokemonSpecies(name!!, catchRate!!, defaultForm!!, alternativeForms)
             }
 
             private fun validate() {

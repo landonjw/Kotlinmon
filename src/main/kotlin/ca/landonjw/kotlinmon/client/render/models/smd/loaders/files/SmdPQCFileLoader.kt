@@ -53,13 +53,6 @@ internal object PQCFileLoader {
                     val z = split[3].toFloat()
                     builder.positionOffset = GeometricPoint(x, y, z)
                 }
-                "\$glitch" -> {
-                    checkArgumentSize(4, split.size)
-                    val x = split[1].toFloat().toRadians()
-                    val y = split[2].toFloat().toRadians()
-                    val z = split[3].toFloat().toRadians()
-                    builder.glitch = Vector3f(x, y, z)
-                }
             }
         }
         builder.animations = animations
@@ -88,8 +81,7 @@ private data class PQCSchemaBuilder(
     var modelPath: ResourceLocation? = null,
     var scale: Vector3f? = null,
     var rotationOffset: Vector3f? = null,
-    var positionOffset: GeometricPoint? = null,
-    var glitch: Vector3f? = null
+    var positionOffset: GeometricPoint? = null
 ) {
     fun build(): PQCSchema {
         return PQCSchema(
@@ -97,8 +89,7 @@ private data class PQCSchemaBuilder(
             modelPath = modelPath!!,
             scale = scale,
             rotationOffset = rotationOffset,
-            positionOffset = positionOffset,
-            glitch = glitch
+            positionOffset = positionOffset
         )
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.culling.ClippingHelper
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
 
-class RenderPokemon(
+class PokemonRenderer(
     manager: EntityRendererManager
 ) : EntityRenderer<PokemonEntity>(manager) {
 

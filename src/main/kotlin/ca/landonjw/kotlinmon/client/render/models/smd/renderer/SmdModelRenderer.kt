@@ -51,7 +51,7 @@ class SmdModelRenderer {
         buffer.begin(GL11.GL_TRIANGLES, meshFormat)
 
         model.skeleton.mesh.vertices.forEach { vertex ->
-            renderVertex(matrix, buffer, vertex, globalTransforms, model.renderProperties)
+            renderVertex(matrix, buffer, vertex, globalTransforms)
         }
         Tessellator.getInstance().draw()
     }
@@ -60,28 +60,10 @@ class SmdModelRenderer {
         matrix: MatrixStack,
         buffer: BufferBuilder,
         vertex: SmdMeshVertex,
-        globalTransforms: TransformationMatrix,
-        properties: List<SmdRenderProperty<*>>
+        globalTransforms: TransformationMatrix
     ) {
-        val glitchNoise = getProperty<GlitchNoise>(properties)?.value
-
-        val position: GeometricPoint
-        val normal: GeometricNormal
-
-        if (glitchNoise != null) {
-            val shakeRotation = Vector3f(
-                glitchNoise.x * random.nextFloat(),
-                glitchNoise.y * random.nextFloat(),
-                glitchNoise.z * random.nextFloat()
-            )
-            val shakeMatrix = TransformationMatrix.rotate(shakeRotation)
-            position = globalTransforms * shakeMatrix * vertex.position
-            normal = globalTransforms * shakeMatrix * vertex.normal
-        }
-        else {
-            position = globalTransforms * vertex.position
-            normal = globalTransforms * vertex.normal
-        }
+        val position = globalTransforms * vertex.position
+        val normal = globalTransforms * vertex.normal
 
         buffer
             .pos(matrix.last.matrix, position.x, position.y, position.z)

@@ -1,5 +1,7 @@
 package ca.landonjw.kotlinmon
 
+import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
+import ca.landonjw.kotlinmon.api.pokeball.PokeBallRepository
 import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.type.PokemonTypeRepository
@@ -7,6 +9,8 @@ import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.AsyncModelRepository
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.ModelRepository
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.SyncModelRepository
+import ca.landonjw.kotlinmon.common.pokeball.DefaultPokeBallFactory
+import ca.landonjw.kotlinmon.common.pokeball.DefaultPokeBallRepository
 import ca.landonjw.kotlinmon.common.pokemon.DefaultPokemonFactory
 import ca.landonjw.kotlinmon.common.pokemon.data.species.DefaultPokemonSpeciesRepository
 import ca.landonjw.kotlinmon.common.pokemon.data.species.type.DefaultPokemonTypeRepository
@@ -38,6 +42,10 @@ object KotlinmonDI {
             bind<PokemonFactory> { singleton { DefaultPokemonFactory() } }
             bind<PokemonSpeciesRepository> { singleton { DefaultPokemonSpeciesRepository() } }
             bind<PokemonTypeRepository> { singleton { DefaultPokemonTypeRepository() } }
+
+            // Poke Balls
+            bind<PokeBallFactory> { singleton { DefaultPokeBallFactory() } }
+            bind<PokeBallRepository> { singleton { DefaultPokeBallRepository() } }
         }
     }
 
