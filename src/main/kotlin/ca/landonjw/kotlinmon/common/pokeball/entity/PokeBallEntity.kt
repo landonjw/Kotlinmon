@@ -5,13 +5,9 @@ import ca.landonjw.kotlinmon.api.pokeball.PokeBall
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallRepository
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
-import ca.landonjw.kotlinmon.common.ItemRegistry
 import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
-import ca.landonjw.kotlinmon.util.math.geometry.toRadians
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.projectile.ThrowableEntity
-import net.minecraft.item.ItemStack
-import net.minecraft.nbt.CompoundNBT
 import net.minecraft.network.datasync.DataParameter
 import net.minecraft.network.datasync.DataSerializers
 import net.minecraft.network.datasync.EntityDataManager
@@ -19,7 +15,6 @@ import net.minecraft.util.math.EntityRayTraceResult
 import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.World
 import net.minecraftforge.fml.network.NetworkHooks
-import java.util.*
 
 class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): ThrowableEntity(type, world) {
 
@@ -39,10 +34,6 @@ class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): Throwa
     }
 
     override fun registerData() { }
-
-    override fun tick() {
-        super.tick()
-    }
 
     override fun onImpact(result: RayTraceResult) {
         if (!world.isRemote) {

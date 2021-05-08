@@ -2,9 +2,7 @@ package ca.landonjw.kotlinmon.client.render.models.smd.renderer
 
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMeshVertex
-import ca.landonjw.kotlinmon.util.math.geometry.GeometricNormal
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
-import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 import com.google.common.collect.ImmutableList
 import com.mojang.blaze3d.matrix.MatrixStack
 import com.mojang.blaze3d.systems.RenderSystem
@@ -13,9 +11,9 @@ import net.minecraft.client.renderer.BufferBuilder
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.client.renderer.vertex.VertexFormat
+import net.minecraft.util.math.vector.Quaternion
 import net.minecraft.util.math.vector.Vector3f
 import org.lwjgl.opengl.GL11
-import java.util.*
 
 /**
  * The renderer used to render `.smd` models.
@@ -26,7 +24,6 @@ class SmdModelRenderer {
 
     /** Allows us to bind the model's texture to the model. */
     private val textureManager = Minecraft.getInstance().textureManager
-    private val random = Random()
 
     private val meshFormat = VertexFormat(
         ImmutableList.of(
@@ -41,8 +38,17 @@ class SmdModelRenderer {
         // Get the next frame of current animation, if there is one
         // TODO: Remove this and make a separate animation handler
         if (model.currentAnimation != null) model.currentAnimation?.animate()
-        val globalTransforms = getGlobalTransforms(model.renderProperties)
 
+        /* Apply transformations that apply to every vertex in the model
+         *
+         * Transformations of this fashion are done using the origin matrix rather
+         * than our in-house TransformationMatrix in order to save on computation of
+         * several matrix multiplication operations, resulting in higher frames,
+         * and it also makes more sense to apply once than on every vertex. - landonjw
+         */
+        applyGlobalTransforms(matrix, model.renderProperties)
+
+        // TODO: Check if this has performance impact
         textureManager.bindTexture(model.skeleton.mesh.texture)
 
         // Start drawing every vertex in the model's mesh
@@ -51,7 +57,7 @@ class SmdModelRenderer {
         buffer.begin(GL11.GL_TRIANGLES, meshFormat)
 
         model.skeleton.mesh.vertices.forEach { vertex ->
-            renderVertex(matrix, buffer, vertex, globalTransforms)
+            renderVertex(matrix, buffer, vertex)
         }
         Tessellator.getInstance().draw()
     }
@@ -59,29 +65,38 @@ class SmdModelRenderer {
     private fun renderVertex(
         matrix: MatrixStack,
         buffer: BufferBuilder,
-        vertex: SmdMeshVertex,
-        globalTransforms: TransformationMatrix
+        vertex: SmdMeshVertex
     ) {
-        val position = globalTransforms * vertex.position
-        val normal = globalTransforms * vertex.normal
-
         buffer
-            .pos(matrix.last.matrix, position.x, position.y, position.z)
+            .pos(matrix.last.matrix, vertex.position.x, vertex.position.y, vertex.position.z)
             .tex(vertex.u, vertex.v)
-            .normal(matrix.last.normal, normal.x, normal.y, normal.z)
+            .normal(matrix.last.normal, vertex.normal.x, vertex.normal.y, vertex.normal.z)
             .endVertex()
     }
 
-    private fun getGlobalTransforms(properties: List<SmdRenderProperty<*>>): TransformationMatrix {
-        val scale = getProperty<Scale>(properties)?.value ?: Vector3f(1f, 1f, 1f)
-        val positionOffset = getProperty<PositionOffset>(properties)?.value ?: GeometricPoint()
-        val rotationOffset = getProperty<RotationOffset>(properties)?.value ?: Vector3f(0f, 0f, 0f)
+    private fun applyGlobalTransforms(matrix: MatrixStack, properties: List<SmdRenderProperty<*>>) {
+        val globalTranslation = getProperty<PositionOffset>(properties)?.value
+        if (globalTranslation != null) applyGlobalTranslation(matrix, globalTranslation)
 
-        val scaleMatrix = TransformationMatrix.scale(scale.x, scale.y, scale.z)
-        val translationMatrix = TransformationMatrix.translate(positionOffset)
-        val rotationMatrix = TransformationMatrix.rotate(rotationOffset)
+        val globalRotation = getProperty<RotationOffset>(properties)?.value
+        if (globalRotation != null) applyGlobalRotation(matrix, globalRotation)
 
-        return translationMatrix * rotationMatrix * scaleMatrix
+        val globalScalars = getProperty<Scale>(properties)?.value
+        if (globalScalars != null) applyGlobalScale(matrix, globalScalars)
+    }
+
+    private fun applyGlobalTranslation(matrix: MatrixStack, translation: GeometricPoint) {
+        matrix.translate(translation.x.toDouble(), translation.y.toDouble(), translation.z.toDouble())
+    }
+
+    private fun applyGlobalRotation(matrix: MatrixStack, rotation: Vector3f) {
+        matrix.rotate(Quaternion(Vector3f.ZP, rotation.z, false))
+        matrix.rotate(Quaternion(Vector3f.YP, rotation.y, false))
+        matrix.rotate(Quaternion(Vector3f.XP, rotation.x, false))
+    }
+
+    private fun applyGlobalScale(matrix: MatrixStack, scalars: Vector3f) {
+        matrix.scale(scalars.x, scalars.y, scalars.z)
     }
 
     private inline fun <reified T : SmdRenderProperty<*>> getProperty(properties: List<SmdRenderProperty<*>>): T? {
