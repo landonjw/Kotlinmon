@@ -6,3 +6,4 @@ Name TBD
 * Use dependency injection for services, rather than direct initialization
 * Prefer composition over inheritance, where applicable.
     * Particular emphasis should be given for entities or problem spaces that would resolve into a convoluted hierarchy or god object.
+* Prefer case-insensitivity in situations where it's appropriate (ie. repositories)
