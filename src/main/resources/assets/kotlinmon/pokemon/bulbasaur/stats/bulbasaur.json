@@ -1,0 +1,33 @@
+{
+  "name": "Bulbasaur",
+  "catchRate": 205,
+  "defaultForm": {
+    "name": "default",
+    "type1": "Grass",
+    "type2": "Poison",
+    "modelLocation":"kotlinmon:pokemon/bulbasaur/bulbasaur.pqc",
+    "baseStats": {
+      "health": 45,
+      "attack": 49,
+      "defense": 49,
+      "specialAttack": 65,
+      "specialDefense": 65,
+      "speed": 45
+    }
+  },
+  "alternativeForms": [
+    {
+      "name": "foo",
+      "type1": "Water",
+      "modelLocation":"kotlinmon:pokemon/bulbasaur/bulbasaur.pqc",
+      "baseStats": {
+        "health": 45,
+        "attack": 49,
+        "defense": 49,
+        "specialAttack": 65,
+        "specialDefense": 65,
+        "speed": 45
+      }
+    }
+  ]
+}

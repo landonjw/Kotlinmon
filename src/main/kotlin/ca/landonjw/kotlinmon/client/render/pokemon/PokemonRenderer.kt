@@ -13,7 +13,7 @@ class PokemonRenderer(
     manager: EntityRendererManager
 ) : EntityRenderer<PokemonEntity>(manager) {
 
-    val modelRenderer: SmdModelRenderer by KotlinmonDI.inject()
+    private val modelRenderer: SmdModelRenderer by KotlinmonDI.inject()
 
     override fun render(
         entity: PokemonEntity,

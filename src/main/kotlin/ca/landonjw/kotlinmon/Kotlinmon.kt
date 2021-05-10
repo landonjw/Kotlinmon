@@ -24,7 +24,6 @@ class Kotlinmon {
         ItemRegistry.register()
     }
 
-
     private fun initialize() {
         MinecraftForge.EVENT_BUS.register(ServerInitialization)
         FMLJavaModLoadingContext.get().modEventBus.addListener { event: ModelBakeEvent ->

@@ -14,8 +14,8 @@ class DefaultPokemonTypeRepository: PokemonTypeRepository {
     private val types: MutableMap<String, PokemonType> = mutableMapOf()
 
     init {
-        getProvidedTypes().forEach { types[it.name] = it }
-        getCustomTypes().forEach { types[it.name] = it }
+        getProvidedTypes().forEach { types[it.name.toLowerCase()] = it }
+        getCustomTypes().forEach { types[it.name.toLowerCase()] = it }
     }
 
     private fun getProvidedTypes(): List<PokemonType> = ProvidedType.values().toList()
@@ -26,9 +26,9 @@ class DefaultPokemonTypeRepository: PokemonTypeRepository {
         return registerEvent.customTypes.values.toList()
     }
 
-    override fun getByName(name: String): PokemonType? = types[name]
+    override fun getByName(name: String): PokemonType? = types[name.toLowerCase()]
 
-    override fun getProvided(type: ProvidedType): PokemonType = types[type.name]!!
+    override fun getProvided(type: ProvidedType): PokemonType = types[type.name.toLowerCase()]!!
 
     override fun getWhere(predicate: (type: PokemonType) -> Boolean): List<PokemonType> {
         return types.values.filter(predicate)

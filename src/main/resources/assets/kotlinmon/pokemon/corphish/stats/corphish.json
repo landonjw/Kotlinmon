@@ -1,0 +1,17 @@
+{
+  "name": "Corphish",
+  "catchRate": 205,
+  "defaultForm": {
+    "name": "default",
+    "type1": "Water",
+    "modelLocation":"kotlinmon:pokemon/corphish/corphish.pqc",
+    "baseStats": {
+      "health": 45,
+      "attack": 49,
+      "defense": 49,
+      "specialAttack": 65,
+      "specialDefense": 65,
+      "speed": 45
+    }
+  }
+}

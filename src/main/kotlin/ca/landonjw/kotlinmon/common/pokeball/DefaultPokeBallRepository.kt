@@ -14,8 +14,8 @@ class DefaultPokeBallRepository: PokeBallRepository {
     private val pokeBalls: MutableMap<String, PokeBall> = mutableMapOf()
 
     init {
-        getProvidedPokeBalls().forEach { pokeBalls[it.name] = it }
-        getCustomPokeBalls().forEach { pokeBalls[it.name] = it }
+        getProvidedPokeBalls().forEach { pokeBalls[it.name.toLowerCase()] = it }
+        getCustomPokeBalls().forEach { pokeBalls[it.name.toLowerCase()] = it }
     }
 
     private fun getProvidedPokeBalls(): List<PokeBall> = ProvidedPokeBall.values().toList()
@@ -26,9 +26,9 @@ class DefaultPokeBallRepository: PokeBallRepository {
         return registerEvent.customPokeBalls.values.toList()
     }
 
-    override fun getByName(name: String): PokeBall? = pokeBalls[name]
+    override fun getByName(name: String): PokeBall? = pokeBalls[name.toLowerCase()]
 
-    override fun getProvided(pokeBall: ProvidedPokeBall): PokeBall = this.pokeBalls[pokeBall.name]!!
+    override fun getProvided(pokeBall: ProvidedPokeBall): PokeBall = this.pokeBalls[pokeBall.name.toLowerCase()]!!
 
     override fun getWhere(predicate: (species: PokeBall) -> Boolean): List<PokeBall> {
         return pokeBalls.values.filter(predicate)
