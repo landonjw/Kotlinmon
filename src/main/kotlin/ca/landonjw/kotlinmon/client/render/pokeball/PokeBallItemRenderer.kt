@@ -23,7 +23,6 @@ import net.minecraftforge.client.ForgeHooksClient
 class PokeBallItemRenderer : ItemStackTileEntityRenderer() {
 
     private val modelRepository: ModelRepository by KotlinmonDI.inject("async")
-    private val modelRenderer: SmdModelRenderer by KotlinmonDI.inject()
     private val itemRenderer: ItemRenderer
         get() = Minecraft.getInstance().itemRenderer
 
@@ -126,7 +125,7 @@ class PokeBallItemRenderer : ItemStackTileEntityRenderer() {
     private fun renderModel(matrixStack: MatrixStack, model: SmdModel, rotation: Vector3f, scalars: Vector3f) {
         matrixStack.translate(0.5, -0.5, 0.5)
         globalTransform(model, rotation, scalars)
-        modelRenderer.render(matrixStack, model)
+        SmdModelRenderer.render(matrixStack, model)
     }
 
     private fun globalTransform(model: SmdModel, rotation: Vector3f, scale: Vector3f) {

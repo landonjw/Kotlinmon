@@ -28,7 +28,7 @@ class DefaultPokemonSpeciesRepository: PokemonSpeciesRepository {
     }
 
     private fun getStatResource(species: ProvidedSpecies): ResourceLocation {
-        val path = "pokemon/$species/stats/$species.json".toLowerCase()
+        val path = "pokemon/$species/$species.json".toLowerCase()
         return ResourceLocation(Kotlinmon.MODID, path)
     }
 

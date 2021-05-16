@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11
  *
  * @author landonjw
  */
-class SmdModelRenderer {
+object SmdModelRenderer {
 
     /** Allows us to bind the model's texture to the model. */
     private val textureManager = Minecraft.getInstance().textureManager

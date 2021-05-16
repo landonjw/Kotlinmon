@@ -7,6 +7,7 @@ import java.util.*
 interface Pokemon {
     val species: PokemonSpecies
     val form: PokemonForm
+    var texture: String?
 
     val owner: UUID?
 }

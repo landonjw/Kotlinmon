@@ -4,5 +4,4 @@ enum class ProvidedSpecies {
     Bulbasaur,
     Ivysaur,
     Venusaur,
-    Corphish;
 }

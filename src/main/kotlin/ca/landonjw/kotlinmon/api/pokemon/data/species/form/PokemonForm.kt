@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation
 
 class PokemonForm(
     val name: String,
-    val modelLocation: ResourceLocation,
     val baseStats: BaseStats,
     val type1: PokemonType,
     val type2: PokemonType?
@@ -23,7 +22,6 @@ class PokemonForm(
 
         class Builder internal constructor() {
             var name: String? = null
-            var modelLocation: ResourceLocation? = null
             var baseStats: BaseStats? = null
             private var type1: PokemonType? = null
             private var type2: PokemonType? = null
@@ -41,12 +39,11 @@ class PokemonForm(
 
             fun build(): PokemonForm {
                 validate()
-                return PokemonForm(name!!, modelLocation!!, baseStats!!, type1!!, type2)
+                return PokemonForm(name!!, baseStats!!, type1!!, type2)
             }
 
             private fun validate() {
                 checkNotNull(name) { "name must be defined" }
-                checkNotNull(modelLocation) { "model location must be defined" }
                 checkNotNull(baseStats) { "base stats must be defined" }
                 checkNotNull(type1) { "at least one type must be defined" }
             }

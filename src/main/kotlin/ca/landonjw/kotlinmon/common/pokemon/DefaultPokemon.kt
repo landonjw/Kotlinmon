@@ -8,6 +8,7 @@ import java.util.*
 class DefaultPokemon(
     override val species: PokemonSpecies,
     override var form: PokemonForm = species.defaultForm,
+    override var texture: String? = null,
     override var owner: UUID? = null
 ): Pokemon {
 

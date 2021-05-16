@@ -4,6 +4,7 @@ import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
+import ca.landonjw.kotlinmon.client.pokemon.getModelLocation
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.ModelRepository
 import net.minecraft.network.datasync.EntityDataManager
@@ -22,10 +23,16 @@ class PokemonEntityClient(private val dataManager: EntityDataManager) {
             return if (formOrdinal == 0) species.defaultForm else species.alternativeForms[formOrdinal - 1]
         }
 
+    val texture: String?
+        get() {
+            val texture = dataManager.get(PokemonEntity.dwTexture)
+            return if (texture.isNullOrEmpty()) null else texture
+        }
+
     val model: SmdModel?
         get() {
             return try {
-                modelRepository[form.modelLocation]
+                 modelRepository[getModelLocation(species, form)]
             }
             catch (e: IllegalStateException) {
                 null

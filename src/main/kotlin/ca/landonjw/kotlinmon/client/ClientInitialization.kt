@@ -1,6 +1,7 @@
 package ca.landonjw.kotlinmon.client
 
 import ca.landonjw.kotlinmon.client.render.models.CustomModelDecorator
+import ca.landonjw.kotlinmon.client.render.party.PokemonPartyOverlay
 import ca.landonjw.kotlinmon.client.render.pokeball.PokeBallRenderer
 import ca.landonjw.kotlinmon.client.render.pokemon.PokemonRenderer
 import ca.landonjw.kotlinmon.common.EntityRegistry
@@ -12,6 +13,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.ModelBakeEvent
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.client.registry.RenderingRegistry
@@ -33,6 +35,7 @@ object ClientInitialization {
 
     fun onClientSetup(event: FMLClientSetupEvent) {
         registerRenderers()
+        MinecraftForge.EVENT_BUS.register(PokemonPartyOverlay())
     }
 
     /* TODO: I KNOW there is a better way to do this, but it's going to end up in a rabbit hole

@@ -25,7 +25,7 @@ internal object PQCFileLoader {
                     checkArgumentSize(2, split.size)
                     val modelFile = split[1]
                     checkFileFormat(".smd", modelFile)
-                    builder.modelPath = ResourceLocation(Kotlinmon.MODID, "$parentPath/models/$modelFile")
+                    builder.modelPath = ResourceLocation(Kotlinmon.MODID, "$parentPath/$modelFile")
                 }
                 "\$anim" -> {
                     checkArgumentSize(3, split.size)

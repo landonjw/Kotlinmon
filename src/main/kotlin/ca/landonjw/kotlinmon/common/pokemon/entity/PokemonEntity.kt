@@ -30,6 +30,7 @@ class PokemonEntity(
 
         val dwSpecies: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
         val dwForm: DataParameter<Int> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.VARINT)
+        val dwTexture: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
     }
 
     val clientComponent = PokemonEntityClient(dataManager)
@@ -40,12 +41,14 @@ class PokemonEntity(
     init {
         dataManager.register(dwSpecies, "")
         dataManager.register(dwForm, 0)
+        dataManager.register(dwTexture, "")
     }
 
     fun setPokemon(pokemon: Pokemon) {
         this.pokemon = pokemon
         dataManager.set(dwSpecies, pokemon.species.name)
         dataManager.set(dwForm, getPokemonFormOrdinal(pokemon.species, pokemon.form))
+        dataManager.set(dwTexture, pokemon.texture ?: "")
     }
 
     private fun getPokemonFormOrdinal(species: PokemonSpecies, form: PokemonForm): Int = when (form) {

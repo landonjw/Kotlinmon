@@ -6,6 +6,7 @@ import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallRepository
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
 import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
+import ca.landonjw.kotlinmon.util.math.geometry.toRadians
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.projectile.ThrowableEntity
 import net.minecraft.network.datasync.DataParameter
@@ -25,12 +26,15 @@ class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): Throwa
         get() = pokeBallRepository[dataManager.get(dwType)] ?: ProvidedPokeBall.PokeBall
         set(value) = dataManager.set(dwType, value.name)
 
-    companion object {
-        val dwType: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
-    }
+    val orientationController = OrientationController()
 
     init {
         dataManager.register(dwType, ProvidedPokeBall.PokeBall.name)
+    }
+
+    override fun tick() {
+        orientationController.rotate(pitch = 4f.toRadians(), yaw = 4f.toRadians())
+        super.tick()
     }
 
     override fun registerData() { }
@@ -61,5 +65,9 @@ class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): Throwa
     }
 
     override fun createSpawnPacket() = NetworkHooks.getEntitySpawningPacket(this)
+
+    companion object {
+        val dwType: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
+    }
 
 }
