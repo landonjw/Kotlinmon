@@ -1,10 +1,10 @@
 {
-  "name": "Corphish",
+  "name": "Bulbasaur",
   "catchRate": 205,
   "defaultForm": {
     "name": "default",
-    "type1": "Water",
-    "modelLocation":"kotlinmon:pokemon/corphish/corphish.pqc",
+    "type1": "Grass",
+    "type2": "Poison",
     "baseStats": {
       "health": 45,
       "attack": 49,
@@ -13,5 +13,6 @@
       "specialDefense": 65,
       "speed": 45
     }
-  }
+  },
+  "alternativeForms": []
 }
