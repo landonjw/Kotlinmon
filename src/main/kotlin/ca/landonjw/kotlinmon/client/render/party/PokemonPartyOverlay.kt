@@ -28,6 +28,7 @@ class PokemonPartyOverlay: AbstractGui() {
     }
 
     private fun render() {
+        renderSelectedSlotBorder()
         for (slot in 0 until clientParty.capacity) {
             renderPartySlot(slot)
         }
@@ -54,6 +55,24 @@ class PokemonPartyOverlay: AbstractGui() {
         buffer.pos(x, y, 0.0).tex(0f, 0f).endVertex()
 
         RenderSystem.enableAlphaTest()
+        Tessellator.getInstance().draw()
+        RenderSystem.disableAlphaTest()
+    }
+
+    private fun renderSelectedSlotBorder() {
+        val selectedSlot = clientParty.selectedSlot ?: return
+
+        val buffer = Tessellator.getInstance().buffer
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR)
+
+        val x = 8.0
+        val y = 30.0 + (28 * selectedSlot)
+
+        buffer.pos(x, y + 24f, 0.0).color(255, 255, 255, 255).endVertex()
+        buffer.pos(x + 24f, y + 24f, 0.0).color(255, 255, 255, 255).endVertex()
+        buffer.pos(x + 24f, y, 0.0).color(255, 255, 255, 255).endVertex()
+        buffer.pos(x, y, 0.0).color(255, 255, 255, 255).endVertex()
+
         Tessellator.getInstance().draw()
     }
 

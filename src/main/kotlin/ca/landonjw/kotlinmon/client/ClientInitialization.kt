@@ -1,5 +1,6 @@
 package ca.landonjw.kotlinmon.client
 
+import ca.landonjw.kotlinmon.client.keybindings.KeyBindingController
 import ca.landonjw.kotlinmon.client.render.models.CustomModelDecorator
 import ca.landonjw.kotlinmon.client.render.party.PokemonPartyOverlay
 import ca.landonjw.kotlinmon.client.render.pokeball.PokeBallRenderer
@@ -36,6 +37,7 @@ object ClientInitialization {
     fun onClientSetup(event: FMLClientSetupEvent) {
         registerRenderers()
         MinecraftForge.EVENT_BUS.register(PokemonPartyOverlay())
+        KeyBindingController.registerBindings()
     }
 
     /* TODO: I KNOW there is a better way to do this, but it's going to end up in a rabbit hole

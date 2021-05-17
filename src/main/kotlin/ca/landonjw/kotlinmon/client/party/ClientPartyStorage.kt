@@ -72,6 +72,40 @@ class ClientPartyStorage {
 
     fun getSelectedPokemon(): ClientPokemonData? = if (selectedSlot == null) null else pokemon[selectedSlot!!]
 
+    fun selectPreviousPokemon() {
+        when {
+            selectedSlot == null -> {
+                selectedSlot = getAvailablePokemonSlot()
+            }
+            selectedSlot == 0 -> return
+            else -> {
+                for (slot in (selectedSlot!! - 1) downTo 0) {
+                    if (pokemon[slot] != null) {
+                        selectedSlot = slot
+                        return
+                    }
+                }
+            }
+        }
+    }
+
+    fun selectNextPokemon() {
+        when {
+            selectedSlot == null -> {
+                selectedSlot = getAvailablePokemonSlot()
+            }
+            selectedSlot == capacity - 1 -> return
+            else -> {
+                for (slot in (selectedSlot!! + 1) until capacity) {
+                    if (pokemon[slot] != null) {
+                        selectedSlot = slot
+                        return
+                    }
+                }
+            }
+        }
+    }
+
     private fun getAvailablePokemonSlot(): Int? {
         val slot = pokemon.indexOfFirst { it != null }
         return if (slot == -1) null else slot
