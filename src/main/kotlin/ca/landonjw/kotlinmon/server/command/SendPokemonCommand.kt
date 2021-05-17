@@ -30,6 +30,10 @@ class SendPokemonCommand: Command<CommandSource> {
         val bulbasaurSpecies = speciesRepository[ProvidedSpecies.Bulbasaur]
         val bulbasaur = pokemonFactory.create(species = bulbasaurSpecies)
 
+        val specialBulbasaur = pokemonFactory.create(species = bulbasaurSpecies).apply {
+            texture = "deltric"
+        }
+
         val ivysaurSpecies = speciesRepository[ProvidedSpecies.Ivysaur]
         val ivysaur = pokemonFactory.create(species = ivysaurSpecies)
 
@@ -38,6 +42,7 @@ class SendPokemonCommand: Command<CommandSource> {
 
         storage[0] = bulbasaur
         storage[1] = ivysaur
+        storage[2] = specialBulbasaur
         storage[3] = venusaur
 
         try{

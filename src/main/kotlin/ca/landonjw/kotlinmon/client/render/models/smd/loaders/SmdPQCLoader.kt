@@ -41,4 +41,5 @@ object SmdPQCLoader {
         if (schema.positionOffset != null) properties.add(PositionOffset(schema.positionOffset))
         model.renderProperties.addAll(properties)
     }
+
 }

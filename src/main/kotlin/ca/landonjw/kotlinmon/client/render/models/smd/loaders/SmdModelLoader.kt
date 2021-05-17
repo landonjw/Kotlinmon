@@ -49,7 +49,7 @@ object SmdModelLoader {
 
     private fun getDefaultTexture(location: ResourceLocation): ResourceLocation {
         val split = location.path.split("/")
-        val parentPath = split.subList(0, split.size - 2)
+        val parentPath = split.subList(0, split.size - 1)
             .reduce { acc, s -> "$acc/$s" }
         val fileName = split.last().replace(".smd", "")
         return ResourceLocation(Kotlinmon.MODID, "$parentPath/textures/$fileName.png")
