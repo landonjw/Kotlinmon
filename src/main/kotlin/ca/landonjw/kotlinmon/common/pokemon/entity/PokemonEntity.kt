@@ -21,18 +21,6 @@ class PokemonEntity(
     type: EntityType<out PokemonEntity>, world: World
 ) : TameableEntity(type, world) {
 
-    companion object {
-        fun prepareAttributes(): AttributeModifierMap {
-            return registerAttributes()
-                .createMutableAttribute(Attributes.FOLLOW_RANGE)
-                .create()
-        }
-
-        val dwSpecies: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
-        val dwForm: DataParameter<Int> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.VARINT)
-        val dwTexture: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
-    }
-
     val clientComponent = PokemonEntityClient(dataManager)
 
     lateinit var pokemon: Pokemon
@@ -62,5 +50,17 @@ class PokemonEntity(
     override fun createChild(world: ServerWorld, mate: AgeableEntity): AgeableEntity? = null
 
     override fun createSpawnPacket() = NetworkHooks.getEntitySpawningPacket(this)
+
+    companion object {
+        fun prepareAttributes(): AttributeModifierMap {
+            return registerAttributes()
+                .createMutableAttribute(Attributes.FOLLOW_RANGE) // TODO: Probably not needed?
+                .create()
+        }
+
+        val dwSpecies: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
+        val dwForm: DataParameter<Int> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.VARINT)
+        val dwTexture: DataParameter<String> = EntityDataManager.createKey(PokemonEntity::class.java, DataSerializers.STRING)
+    }
 
 }

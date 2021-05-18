@@ -9,11 +9,14 @@ import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
 import net.minecraft.world.World
 
 class DefaultPokemonFactory: PokemonFactory {
+
     override fun create(species: PokemonSpecies, form: PokemonForm?): Pokemon {
         return if (form == null) DefaultPokemon(species) else DefaultPokemon(species, form)
     }
 
     override fun createEntity(pokemon: Pokemon, world: World): PokemonEntity {
+        // TODO: Validate if pokemon already has an entity associated with it
         return PokemonEntity(EntityRegistry.POKEMON.get(), world).apply { setPokemon(pokemon) }
     }
+
 }

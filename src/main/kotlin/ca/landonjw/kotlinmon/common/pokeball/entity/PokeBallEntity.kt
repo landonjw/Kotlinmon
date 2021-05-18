@@ -17,10 +17,9 @@ import net.minecraft.util.math.RayTraceResult
 import net.minecraft.world.World
 import net.minecraftforge.fml.network.NetworkHooks
 
-class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): ThrowableEntity(type, world) {
+abstract class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): ThrowableEntity(type, world) {
 
     private val pokeBallRepository: PokeBallRepository by KotlinmonDI.inject()
-    private val pokeBallFactory: PokeBallFactory by KotlinmonDI.inject()
 
     var type: PokeBall
         get() = pokeBallRepository[dataManager.get(dwType)] ?: ProvidedPokeBall.PokeBall
@@ -39,6 +38,10 @@ class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): Throwa
 
     override fun registerData() { }
 
+    /**
+     * On impact, delegates to the abstract [onBlockImpact] and [onPokemonImpact] methods
+     * so the superclass implementation can handle it appropriately.
+     */
     override fun onImpact(result: RayTraceResult) {
         if (!world.isRemote) {
             when (result.type) {
@@ -54,15 +57,14 @@ class PokeBallEntity(type: EntityType<out PokeBallEntity>, world: World): Throwa
         super.onImpact(result)
     }
 
-    private fun onBlockImpact() {
-        setDead()
-        val pokeBallItem = pokeBallFactory.createItem(type)
-        entityDropItem(pokeBallItem)
-    }
+    /** An event where the poke ball collides with a block. */
+    protected abstract fun onBlockImpact()
 
-    private fun onPokemonImpact(pokemon: PokemonEntity) {
-        // TODO: Catch logic
-    }
+    /** An event where the poke ball collides with a [PokemonEntity].
+     *
+     * @param pokemon the pokemon entity that was collided with
+     */
+    protected abstract fun onPokemonImpact(pokemon: PokemonEntity)
 
     override fun createSpawnPacket() = NetworkHooks.getEntitySpawningPacket(this)
 

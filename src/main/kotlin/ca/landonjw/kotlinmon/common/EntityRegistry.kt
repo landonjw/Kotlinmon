@@ -1,11 +1,15 @@
 package ca.landonjw.kotlinmon.common
 
 import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.common.pokeball.entity.EmptyPokeBallEntity
+import ca.landonjw.kotlinmon.common.pokeball.entity.OccupiedPokeBallEntity
 import ca.landonjw.kotlinmon.common.pokeball.entity.PokeBallEntity
 import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityClassification
 import net.minecraft.entity.EntityType
 import net.minecraft.util.ResourceLocation
+import net.minecraft.world.World
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.RegistryObject
@@ -18,35 +22,40 @@ import net.minecraftforge.registries.ForgeRegistries
 object EntityRegistry {
     val ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Kotlinmon.MODID)
 
-    val POKEMON: RegistryObject<EntityType<PokemonEntity>> = registerPokemon()
-    val POKEBALL: RegistryObject<EntityType<PokeBallEntity>> = registerPokeball()
+    val POKEMON: RegistryObject<EntityType<PokemonEntity>> = registerEntity(
+        name = "pokemon",
+        classification = EntityClassification.MISC,
+        factory = { type, world -> PokemonEntity(type, world) },
+        builderModifiers = { builder -> builder.size(1f, 1f).immuneToFire() }
+    )
 
-    fun registerPokemon(): RegistryObject<EntityType<PokemonEntity>> {
-        val resourceLoc = ResourceLocation(Kotlinmon.MODID, "pokemon")
-        val factory: EntityType.IFactory<PokemonEntity> = EntityType.IFactory { type, world ->
-            return@IFactory PokemonEntity(type, world)
+    val EMPTY_POKEBALL: RegistryObject<EntityType<EmptyPokeBallEntity>> = registerEntity(
+        name = "empty_pokeball",
+        classification = EntityClassification.MISC,
+        factory = { type, world -> EmptyPokeBallEntity(type, world) },
+        builderModifiers = { builder -> builder.size(1f, 1f).immuneToFire() }
+    )
+
+    val OCCUPIED_POKEBALL: RegistryObject<EntityType<OccupiedPokeBallEntity>> = registerEntity(
+        name = "occupied_pokeball",
+        classification = EntityClassification.MISC,
+        factory = { type, world -> OccupiedPokeBallEntity(type, world) },
+        builderModifiers = { builder -> builder.size(1f, 1f).immuneToFire() }
+    )
+
+    inline fun <reified T : Entity> registerEntity(
+        name: String,
+        classification: EntityClassification,
+        crossinline factory: (EntityType<T>, World) -> T,
+        builderModifiers: (EntityType.Builder<T>) -> EntityType.Builder<T>
+    ): RegistryObject<EntityType<T>> {
+        val resourceLoc = ResourceLocation(Kotlinmon.MODID, name)
+        val entityFactory: EntityType.IFactory<T> = EntityType.IFactory { type, world ->
+            return@IFactory factory(type, world)
         }
-        val builder = EntityType.Builder.create(factory, EntityClassification.MISC)
-        val registry = builder
-            .size(1f, 1f)
-            .immuneToFire()
-            .build(resourceLoc.toString())
-
-        return ENTITIES.register("pokemon") { registry }
-    }
-
-    fun registerPokeball(): RegistryObject<EntityType<PokeBallEntity>> {
-        val resourceLoc = ResourceLocation(Kotlinmon.MODID, "pokeball")
-        val factory: EntityType.IFactory<PokeBallEntity> = EntityType.IFactory { type, world ->
-            return@IFactory PokeBallEntity(type, world)
-        }
-        val builder = EntityType.Builder.create(factory, EntityClassification.MISC)
-        val registry = builder
-            .size(1f, 1f)
-            .immuneToFire()
-            .build(resourceLoc.toString())
-
-        return ENTITIES.register("pokeball") { registry }
+        val builder = EntityType.Builder.create(entityFactory, classification)
+        val registry = builderModifiers(builder).build(resourceLoc.toString())
+        return ENTITIES.register(name) { registry }
     }
 
     @JvmStatic
