@@ -9,6 +9,7 @@ object KeyBindingController {
     fun registerBindings() {
         registerBinding(SelectPartySlotBinding(SelectPartySlotBinding.Direction.Previous))
         registerBinding(SelectPartySlotBinding(SelectPartySlotBinding.Direction.Next))
+        registerBinding(ThrowPartyPokemonBinding())
     }
 
     private fun registerBinding(binding: KeyBinding) {
