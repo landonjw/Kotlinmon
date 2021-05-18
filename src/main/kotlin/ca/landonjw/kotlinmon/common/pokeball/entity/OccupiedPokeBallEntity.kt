@@ -24,10 +24,13 @@ class OccupiedPokeBallEntity(type: EntityType<out OccupiedPokeBallEntity>, world
      * Upon collision with a block, this will spawn an entity for the pokemon that is inside the poke ball.
      */
     override fun onBlockImpact() {
-        val pokemonEntity = pokemonFactory.createEntity(pokemon, this.world).apply {
-            setPosition(this.posX, this.posY, this.posZ)
+        if (!world.isRemote) {
+            val pokemonEntity = pokemonFactory.createEntity(pokemon, entityWorld).also {
+                it.setPosition(posX, posY, posZ)
+            }
+            entityWorld.addEntity(pokemonEntity)
+            setDead()
         }
-        this.world.addEntity(pokemonEntity)
     }
 
     override fun onPokemonImpact(pokemon: PokemonEntity) {

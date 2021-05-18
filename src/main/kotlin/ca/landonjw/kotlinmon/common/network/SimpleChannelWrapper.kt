@@ -6,6 +6,7 @@ import ca.landonjw.kotlinmon.common.network.client.ClientPacket
 import ca.landonjw.kotlinmon.common.network.client.packets.TestPokemonPacket
 import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.SynchronizeParty
 import ca.landonjw.kotlinmon.common.network.server.ServerPacket
+import ca.landonjw.kotlinmon.common.network.server.packets.ThrowPartyPokemon
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.network.PacketBuffer
 import net.minecraft.util.ResourceLocation
@@ -33,8 +34,12 @@ class SimpleChannelWrapper: KotlinmonNetworkChannel {
     }
 
     private fun registerPackets() {
+        // Server-To-Client Packets
         registerClientPacket { TestPokemonPacket() }
         registerClientPacket { SynchronizeParty() }
+
+        // Client-To-Server Packets
+        registerServerPacket { ThrowPartyPokemon() }
     }
 
     private inline fun <reified T: ClientPacket> registerClientPacket(crossinline packetFactory: () -> T) {
