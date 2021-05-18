@@ -1,9 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.pokeball
 
-import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokeball.PokeBall
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.SmdPQCLoader
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.RotationOffset
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.Scale
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
@@ -14,15 +12,14 @@ import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.culling.ClippingHelper
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
-import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.vector.Vector3f
 
-class PokeBallRenderer(manager: EntityRendererManager): EntityRenderer<PokeBallEntity>(manager) {
+class PokeBallRenderer<T: PokeBallEntity>(manager: EntityRendererManager) : EntityRenderer<T>(manager) {
 
     private val modelRepository: ModelRepository by KotlinmonDI.inject(tag = "async")
 
     override fun render(
-        entity: PokeBallEntity,
+        entity: T,
         entityYaw: Float,
         partialTicks: Float,
         matrixStack: MatrixStack,
@@ -37,23 +34,16 @@ class PokeBallRenderer(manager: EntityRendererManager): EntityRenderer<PokeBallE
         SmdModelRenderer.render(matrixStack, pokeBallModel)
     }
 
-    override fun getEntityTexture(entity: PokeBallEntity) = null
+    override fun getEntityTexture(entity: T) = null
 
     override fun shouldRender(
-        livingEntityIn: PokeBallEntity,
+        livingEntityIn: T,
         camera: ClippingHelper,
         camX: Double,
         camY: Double,
         camZ: Double
     ): Boolean {
         return true
-    }
-
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            SmdPQCLoader.load(ResourceLocation(Kotlinmon.MODID, "pokeballs/friendball/friendball.pqc"))
-        }
     }
 
 }

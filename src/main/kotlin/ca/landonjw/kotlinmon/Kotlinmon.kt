@@ -16,15 +16,6 @@ import java.util.function.Supplier
 @Mod("kotlinmon")
 class Kotlinmon {
 
-    companion object {
-        const val MODID = "kotlinmon"
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            println(Kotlinmon::class.java.getResource("/assets/kotlinmon/pokemon/bulbasaur/forms/default/sprites/foo.png"))
-        }
-    }
-
     init {
         initialize()
 
@@ -50,6 +41,10 @@ class Kotlinmon {
                 }
             }
         }
+    }
+
+    companion object {
+        const val MODID = "kotlinmon"
     }
 
 }
