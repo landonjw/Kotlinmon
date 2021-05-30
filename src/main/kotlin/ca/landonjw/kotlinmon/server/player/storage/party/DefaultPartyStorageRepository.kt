@@ -20,9 +20,8 @@ class DefaultPartyStorageRepository: PartyStorageRepository {
         val devUUID = UUID.fromString("380df991-f603-344c-a090-369bad2a924a")
         val devParty = storageProvider()
 
-        val speciesRepository: PokemonSpeciesRepository by KotlinmonDI.inject()
         val pokemonFactory: PokemonFactory by KotlinmonDI.inject()
-        devParty[0] = pokemonFactory.create(speciesRepository[ProvidedSpecies.values().random()])
+        devParty[0] = pokemonFactory.create(ProvidedSpecies.values().random().get())
 
         playerStorage[devUUID] = devParty
     }

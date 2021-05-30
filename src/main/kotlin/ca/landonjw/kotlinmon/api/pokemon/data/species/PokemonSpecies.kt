@@ -2,7 +2,7 @@ package ca.landonjw.kotlinmon.api.pokemon.data.species
 
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 
-class PokemonSpecies(
+open class PokemonSpecies(
     val name: String,
     val catchRate: Int,
     val defaultForm: PokemonForm,

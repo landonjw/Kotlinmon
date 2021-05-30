@@ -4,7 +4,6 @@ import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
 import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
-import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.ProvidedSpecies
 import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.SynchronizeParty
 import com.mojang.brigadier.Command
@@ -16,10 +15,7 @@ import net.minecraft.command.Commands
 class SendPokemonCommand: Command<CommandSource> {
 
     private val pokemonFactory: PokemonFactory by KotlinmonDI.inject()
-    private val speciesRepository: PokemonSpeciesRepository by KotlinmonDI.inject()
-
     private val partyStorageRepository: PartyStorageRepository by KotlinmonDI.inject()
-
     private val network: KotlinmonNetworkChannel by KotlinmonDI.inject()
 
     override fun run(context: CommandContext<CommandSource>): Int {
@@ -27,17 +23,17 @@ class SendPokemonCommand: Command<CommandSource> {
 
         val storage = partyStorageRepository[player]
 
-        val bulbasaurSpecies = speciesRepository[ProvidedSpecies.Bulbasaur]
+        val bulbasaurSpecies = ProvidedSpecies.Bulbasaur.get()
         val bulbasaur = pokemonFactory.create(species = bulbasaurSpecies)
 
         val specialBulbasaur = pokemonFactory.create(species = bulbasaurSpecies).apply {
             texture = "deltric"
         }
 
-        val ivysaurSpecies = speciesRepository[ProvidedSpecies.Ivysaur]
+        val ivysaurSpecies = ProvidedSpecies.Ivysaur.get()
         val ivysaur = pokemonFactory.create(species = ivysaurSpecies)
 
-        val venusaurSpecies = speciesRepository[ProvidedSpecies.Venusaur]
+        val venusaurSpecies = ProvidedSpecies.Venusaur.get()
         val venusaur = pokemonFactory.create(species = venusaurSpecies)
 
         storage[0] = bulbasaur

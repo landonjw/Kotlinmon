@@ -3,9 +3,6 @@ package ca.landonjw.kotlinmon.server.command
 import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
-import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
-import ca.landonjw.kotlinmon.common.EntityRegistry
-import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
 import ca.landonjw.kotlinmon.server.command.arguments.SpeciesArgument
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
