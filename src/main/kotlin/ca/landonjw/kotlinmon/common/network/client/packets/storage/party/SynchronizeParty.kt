@@ -2,10 +2,10 @@ package ca.landonjw.kotlinmon.common.network.client.packets.storage.party
 
 import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorageRepository
-import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
-import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
+import ca.landonjw.kotlinmon.client.party.ClientPartySynchronizer
+import ca.landonjw.kotlinmon.client.party.ClientPokemonSlot
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonDecoder
-import ca.landonjw.kotlinmon.common.network.client.ClientPacket
+import ca.landonjw.kotlinmon.common.network.client.PacketToClient
 import ca.landonjw.kotlinmon.common.pokemon.network.PokemonToClientDataEncoder
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.network.PacketBuffer
@@ -17,23 +17,22 @@ import java.util.*
  *
  * @author landonjw
  */
-class SynchronizeParty: ClientPacket {
+class SynchronizeParty: PacketToClient {
 
-    // Client Side
+    // Client Side -------------------------------------------------------------
     private val decoder: ClientPokemonDecoder by KotlinmonDI.inject()
-    private val clientPartyStorage: ClientPartyStorage by KotlinmonDI.inject()
-
     /**
      * Map containing the party Pokemon in their respective slot.
      * Key is slot number, value is the pokemon data.
      */
-    private lateinit var slotData: Map<Int, ClientPokemonData>
+    private val slotData: MutableList<ClientPokemonSlot> = mutableListOf()
+    // -------------------------------------------------------------------------
 
-    // Server Side
+    // Server Side -------------------------------------------------------------
     private val encoder: PokemonToClientDataEncoder by KotlinmonDI.inject()
     private val storageRepository: PartyStorageRepository by KotlinmonDI.inject()
-
     private lateinit var playerUUID: UUID
+    // -------------------------------------------------------------------------
 
     constructor()
 
@@ -42,13 +41,12 @@ class SynchronizeParty: ClientPacket {
     }
 
     override fun readPacketData(buf: PacketBuffer) {
-        val slotData: MutableMap<Int, ClientPokemonData> = mutableMapOf()
         val numElements = buf.readInt()
         for (slot in 0 until numElements) {
             val slotIndex = buf.readInt()
-            slotData[slotIndex] = decoder.decode(buf)
+            val pokemon = decoder.decode(buf)
+            slotData.add(ClientPokemonSlot(slotIndex, pokemon))
         }
-        this.slotData = slotData
     }
 
     override fun writePacketData(buf: PacketBuffer) {
@@ -62,9 +60,7 @@ class SynchronizeParty: ClientPacket {
     }
 
     override fun processPacket(ctx: NetworkEvent.Context) {
-        for (slot in slotData.keys) {
-            clientPartyStorage[slot] = slotData[slot]
-        }
+        ClientPartySynchronizer.synchronizeClientParty(this.slotData)
     }
 
 }

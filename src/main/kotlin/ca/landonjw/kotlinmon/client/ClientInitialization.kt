@@ -1,13 +1,12 @@
 package ca.landonjw.kotlinmon.client
 
 import ca.landonjw.kotlinmon.client.keybindings.KeyBindingController
+import ca.landonjw.kotlinmon.client.party.ClientPartySynchronizer
 import ca.landonjw.kotlinmon.client.render.models.CustomModelDecorator
 import ca.landonjw.kotlinmon.client.render.party.PokemonPartyOverlay
 import ca.landonjw.kotlinmon.client.render.pokeball.PokeBallRenderer
 import ca.landonjw.kotlinmon.client.render.pokemon.PokemonRenderer
 import ca.landonjw.kotlinmon.common.EntityRegistry
-import ca.landonjw.kotlinmon.common.pokeball.entity.EmptyPokeBallEntity
-import ca.landonjw.kotlinmon.common.pokeball.entity.PokeBallEntity
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
 import net.minecraft.client.renderer.model.IBakedModel
@@ -40,6 +39,7 @@ object ClientInitialization {
     fun onClientSetup(event: FMLClientSetupEvent) {
         registerRenderers()
         MinecraftForge.EVENT_BUS.register(PokemonPartyOverlay())
+        MinecraftForge.EVENT_BUS.register(ClientPartySynchronizer)
         KeyBindingController.registerBindings()
     }
 

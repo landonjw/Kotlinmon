@@ -1,14 +1,14 @@
-package ca.landonjw.kotlinmon.common.network.server.packets
+package ca.landonjw.kotlinmon.common.network.server.packets.storage.party
 
 import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
-import ca.landonjw.kotlinmon.common.network.server.ServerPacket
+import ca.landonjw.kotlinmon.common.network.server.PacketToServer
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent
 
-class ThrowPartyPokemon : ServerPacket {
+class ThrowPartyPokemon : PacketToServer {
 
     private var slot: Int
 

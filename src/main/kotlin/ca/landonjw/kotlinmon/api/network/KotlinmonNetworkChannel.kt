@@ -1,7 +1,7 @@
 package ca.landonjw.kotlinmon.api.network
 
-import ca.landonjw.kotlinmon.common.network.client.ClientPacket
-import ca.landonjw.kotlinmon.common.network.server.ServerPacket
+import ca.landonjw.kotlinmon.common.network.client.PacketToClient
+import ca.landonjw.kotlinmon.common.network.server.PacketToServer
 import net.minecraft.entity.player.ServerPlayerEntity
 
 /**
@@ -11,8 +11,8 @@ import net.minecraft.entity.player.ServerPlayerEntity
  */
 interface KotlinmonNetworkChannel {
 
-    fun sendToServer(packet: ServerPacket)
+    fun sendToServer(packet: PacketToServer)
 
-    fun sendToClient(packet: ClientPacket, target: ServerPlayerEntity)
+    fun sendToClient(packet: PacketToClient, target: ServerPlayerEntity)
 
 }

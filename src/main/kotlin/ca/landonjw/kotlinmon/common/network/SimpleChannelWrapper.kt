@@ -2,11 +2,11 @@ package ca.landonjw.kotlinmon.common.network
 
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
-import ca.landonjw.kotlinmon.common.network.client.ClientPacket
-import ca.landonjw.kotlinmon.common.network.client.packets.TestPokemonPacket
+import ca.landonjw.kotlinmon.common.network.client.PacketToClient
 import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.SynchronizeParty
-import ca.landonjw.kotlinmon.common.network.server.ServerPacket
-import ca.landonjw.kotlinmon.common.network.server.packets.ThrowPartyPokemon
+import ca.landonjw.kotlinmon.common.network.server.PacketToServer
+import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.SynchronizePartyRequest
+import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.ThrowPartyPokemon
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.network.PacketBuffer
 import net.minecraft.util.ResourceLocation
@@ -20,7 +20,7 @@ import java.util.function.Supplier
 class SimpleChannelWrapper: KotlinmonNetworkChannel {
 
     val version = "1.0.0"
-    private var packetId = 0;
+    private var packetId = 0
     private val channel: SimpleChannel
 
     init {
@@ -35,14 +35,14 @@ class SimpleChannelWrapper: KotlinmonNetworkChannel {
 
     private fun registerPackets() {
         // Server-To-Client Packets
-        registerClientPacket { TestPokemonPacket() }
-        registerClientPacket { SynchronizeParty() }
+        registerPacketToClient { SynchronizeParty() }
 
         // Client-To-Server Packets
-        registerServerPacket { ThrowPartyPokemon() }
+        registerPacketToServer { ThrowPartyPokemon() }
+        registerPacketToServer { SynchronizePartyRequest() }
     }
 
-    private inline fun <reified T: ClientPacket> registerClientPacket(crossinline packetFactory: () -> T) {
+    private inline fun <reified T: PacketToClient> registerPacketToClient(crossinline packetFactory: () -> T) {
         channel.messageBuilder(T::class.java, packetId++, NetworkDirection.PLAY_TO_CLIENT)
             .encoder { msg: T, buf: PacketBuffer -> msg.writePacketData(buf) }
             .decoder { buf: PacketBuffer -> packetFactory().apply { readPacketData(buf) } }
@@ -53,7 +53,7 @@ class SimpleChannelWrapper: KotlinmonNetworkChannel {
             .add()
     }
 
-    private inline fun <reified T: ServerPacket> registerServerPacket(crossinline packetFactory: () -> T) {
+    private inline fun <reified T: PacketToServer> registerPacketToServer(crossinline packetFactory: () -> T) {
         channel.messageBuilder(T::class.java, packetId++, NetworkDirection.PLAY_TO_SERVER)
             .encoder { msg: T, buf: PacketBuffer -> msg.writePacketData(buf) }
             .decoder { buf -> packetFactory().apply { readPacketData(buf) } }
@@ -64,11 +64,11 @@ class SimpleChannelWrapper: KotlinmonNetworkChannel {
             .add()
     }
 
-    override fun sendToServer(packet: ServerPacket) {
+    override fun sendToServer(packet: PacketToServer) {
         channel.sendToServer(packet)
     }
 
-    override fun sendToClient(packet: ClientPacket, target: ServerPlayerEntity) {
+    override fun sendToClient(packet: PacketToClient, target: ServerPlayerEntity) {
         channel.sendTo(packet, target.connection.netManager, NetworkDirection.PLAY_TO_CLIENT)
     }
 

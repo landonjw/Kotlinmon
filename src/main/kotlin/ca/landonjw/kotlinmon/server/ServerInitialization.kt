@@ -10,7 +10,6 @@ import net.minecraft.command.arguments.ArgumentSerializer
 import net.minecraft.command.arguments.ArgumentTypes
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
-import java.util.function.Supplier
 
 object ServerInitialization {
 

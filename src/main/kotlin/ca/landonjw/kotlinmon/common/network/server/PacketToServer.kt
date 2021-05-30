@@ -11,7 +11,7 @@ import net.minecraftforge.fml.network.NetworkEvent
  *
  * @author landonjw
  */
-interface ServerPacket {
+interface PacketToServer {
 
     fun readPacketData(buf: PacketBuffer)
 
