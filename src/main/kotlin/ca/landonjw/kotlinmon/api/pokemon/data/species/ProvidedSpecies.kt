@@ -7,8 +7,6 @@ enum class ProvidedSpecies {
     Ivysaur,
     Venusaur;
 
-    private val speciesRepository: PokemonSpeciesRepository by KotlinmonDI.inject()
-
     /**
      * Gets the [PokemonSpecies] that this value represents.
      *
@@ -22,6 +20,9 @@ enum class ProvidedSpecies {
      *  - Hard-coding the PokemonSpecies for each enum
      *      - Obviously bloats the hell out of this class and isn't very feasible.
      */
-    fun get(): PokemonSpecies = speciesRepository[this]
+    fun get(): PokemonSpecies {
+        val speciesRepository: PokemonSpeciesRepository by KotlinmonDI.inject()
+        return speciesRepository[this]
+    }
 
 }

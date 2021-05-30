@@ -4,7 +4,6 @@ import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorage
 import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
-import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.ProvidedSpecies
 import net.minecraft.entity.player.ServerPlayerEntity
 import java.util.*
@@ -21,7 +20,13 @@ class DefaultPartyStorageRepository: PartyStorageRepository {
         val devParty = storageProvider()
 
         val pokemonFactory: PokemonFactory by KotlinmonDI.inject()
+
         devParty[0] = pokemonFactory.create(ProvidedSpecies.values().random().get())
+        devParty[1] = pokemonFactory.create(ProvidedSpecies.values().random().get())
+        devParty[2] = pokemonFactory.create(ProvidedSpecies.values().random().get())
+        devParty[3] = pokemonFactory.create(ProvidedSpecies.values().random().get())
+        devParty[4] = pokemonFactory.create(ProvidedSpecies.values().random().get())
+        devParty[5] = pokemonFactory.create(ProvidedSpecies.values().random().get())
 
         playerStorage[devUUID] = devParty
     }

@@ -3,7 +3,7 @@ package ca.landonjw.kotlinmon.client.keybindings
 import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
-import ca.landonjw.kotlinmon.common.network.server.packets.ThrowPartyPokemon
+import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.ThrowPartyPokemon
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.client.util.InputMappings
 import net.minecraftforge.client.event.InputEvent

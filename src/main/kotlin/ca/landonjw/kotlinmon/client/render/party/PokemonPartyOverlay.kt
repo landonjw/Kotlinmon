@@ -5,22 +5,28 @@ import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
 import ca.landonjw.kotlinmon.client.pokemon.getSpriteLocation
-import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
+import ca.landonjw.kotlinmon.client.render.renderImage
 import com.mojang.blaze3d.systems.RenderSystem
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.AbstractGui
-import net.minecraft.client.renderer.Tessellator
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
-import org.lwjgl.opengl.GL11
 
-class PokemonPartyOverlay: AbstractGui() {
-
-    private val textureManager = Minecraft.getInstance().textureManager
+class PokemonPartyOverlay : AbstractGui() {
 
     private val clientParty: ClientPartyStorage by KotlinmonDI.inject()
+
+    private val backgroundTexture: ResourceLocation = ResourceLocation(Kotlinmon.MODID, "party/background.png")
+    private val backgroundStartX: Double = 0.0
+    private val backgroundStartY: Double = 70.0
+    private val backgroundPaddingX: Double = 8.0
+    private val backgroundPaddingY: Double = 0.0
+
+    private val spriteSize: Double = 24.0
+    private val spritePadding: Double = 8.0
+
+    private val selectedSlotTexture: ResourceLocation = ResourceLocation(Kotlinmon.MODID, "party/selected_slot.png")
+    private val selectedSlotSize: Double = 32.0
 
     @SubscribeEvent
     fun onOverlayRender(event: RenderGameOverlayEvent.Pre) {
@@ -28,65 +34,70 @@ class PokemonPartyOverlay: AbstractGui() {
     }
 
     private fun render() {
-        renderSelectedSlotBorder()
+        // Render the background of the party
+        renderPartyBackground()
+        // Render all the pokemon in the party, in their appropriate slot positions
         for (slot in 0 until clientParty.capacity) {
             renderPartySlot(slot)
         }
+        // Render the slot that's currently selected
+        renderSelectedSlotBorder()
+    }
+
+    private fun renderPartyBackground() {
+        RenderSystem.enableAlphaTest()
+        renderImage(
+            texture = backgroundTexture,
+            x = backgroundStartX,
+            y = backgroundStartY,
+            height = getBackgroundHeight(),
+            width = getBackgroundWidth()
+        )
+        RenderSystem.disableAlphaTest()
+    }
+
+    private fun getBackgroundHeight(): Double {
+        val slotPartyHeight = (spriteSize + spritePadding) * (clientParty.capacity)
+        return slotPartyHeight + spritePadding + backgroundPaddingY * 2
+    }
+
+    private fun getBackgroundWidth(): Double {
+        return spriteSize + backgroundPaddingX * 2
     }
 
     private fun renderPartySlot(slot: Int) {
         val pokemonData = clientParty[slot] ?: return
 
-        val buffer = Tessellator.getInstance().buffer
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX)
+        val texture = getSpriteTexture(pokemonData)
 
-        bindSpriteTexture(pokemonData)
-
-        // TODO: Use this later
-        val height = Minecraft.getInstance().mainWindow.scaledHeight
-        val width = Minecraft.getInstance().mainWindow.scaledWidth
-
-        val x = 8.0
-        val y = 30.0 + (28 * slot)
-
-        buffer.pos(x, y + 24f, 0.0).tex(0f, 1f).endVertex()
-        buffer.pos(x + 24f, y + 24f, 0.0).tex(1f, 1f).endVertex()
-        buffer.pos(x + 24f, y, 0.0).tex(1f, 0f).endVertex()
-        buffer.pos(x, y, 0.0).tex(0f, 0f).endVertex()
+        val x = backgroundStartX + backgroundPaddingX
+        val y = backgroundStartY + spritePadding + backgroundPaddingY + ((spriteSize + spritePadding) * slot)
 
         RenderSystem.enableAlphaTest()
-        Tessellator.getInstance().draw()
+        renderImage(texture, x, y, spriteSize, spriteSize)
         RenderSystem.disableAlphaTest()
     }
 
     private fun renderSelectedSlotBorder() {
         val selectedSlot = clientParty.selectedSlot ?: return
 
-        val buffer = Tessellator.getInstance().buffer
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR)
+        val x = backgroundStartX + (spritePadding / 2)
+        val y = backgroundStartY + (spritePadding / 2) + backgroundPaddingY + ((spriteSize + spritePadding) * selectedSlot)
 
-        val x = 8.0
-        val y = 30.0 + (28 * selectedSlot)
-
-        buffer.pos(x, y + 24f, 0.0).color(255, 255, 255, 255).endVertex()
-        buffer.pos(x + 24f, y + 24f, 0.0).color(255, 255, 255, 255).endVertex()
-        buffer.pos(x + 24f, y, 0.0).color(255, 255, 255, 255).endVertex()
-        buffer.pos(x, y, 0.0).color(255, 255, 255, 255).endVertex()
-
-        Tessellator.getInstance().draw()
+        RenderSystem.enableAlphaTest()
+        renderImage(selectedSlotTexture, x, y, selectedSlotSize, selectedSlotSize)
+        RenderSystem.disableAlphaTest()
     }
 
-    private fun bindSpriteTexture(pokemonData: ClientPokemonData) {
+    private fun getSpriteTexture(pokemonData: ClientPokemonData): ResourceLocation {
         // If the pokemon has a custom texture, try to fetch a sprite for it, otherwise fall back on default sprite
         if (pokemonData.texture != null) {
             val customSprite = getSpriteLocation(pokemonData.species, pokemonData.form, pokemonData.texture)
             if (spriteTextureExists(customSprite)) {
-                return textureManager.bindTexture(customSprite)
+                return customSprite
             }
         }
-
-        val defaultSprite = getSpriteLocation(pokemonData.species, pokemonData.form)
-        textureManager.bindTexture(defaultSprite)
+        return getSpriteLocation(pokemonData.species, pokemonData.form)
     }
 
     private fun spriteTextureExists(location: ResourceLocation): Boolean {
