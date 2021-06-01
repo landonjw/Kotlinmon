@@ -1,8 +1,6 @@
 package ca.landonjw.kotlinmon.server
 
-import ca.landonjw.kotlinmon.server.command.CreatePokemon
-import ca.landonjw.kotlinmon.server.command.GivePokeBall
-import ca.landonjw.kotlinmon.server.command.SendPokemonCommand
+import ca.landonjw.kotlinmon.server.command.*
 import ca.landonjw.kotlinmon.server.command.arguments.PokeBallArgument
 import ca.landonjw.kotlinmon.server.command.arguments.SpeciesArgument
 import com.mojang.brigadier.arguments.ArgumentType
@@ -19,7 +17,9 @@ object ServerInitialization {
 
         CreatePokemon.register(event.dispatcher)
         GivePokeBall.register(event.dispatcher)
-        SendPokemonCommand.register(event.dispatcher)
+        AddToPartyCommand.register(event.dispatcher)
+        SetToPartyCommand.register(event.dispatcher)
+        PopulateDevPartyCommand.register(event.dispatcher)
     }
 
     private fun registerCommandArguments() {

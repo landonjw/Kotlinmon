@@ -11,7 +11,6 @@ import net.minecraftforge.fml.DistExecutor
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
-import java.util.function.Supplier
 
 @Mod("kotlinmon")
 class Kotlinmon {

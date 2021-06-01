@@ -1,4 +1,4 @@
-package ca.landonjw.kotlinmon.api.player.storage.party
+package ca.landonjw.kotlinmon.api.player.storage.pokemon.party
 
 import net.minecraft.entity.player.ServerPlayerEntity
 import java.util.*

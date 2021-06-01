@@ -36,12 +36,12 @@ class PokemonPartyOverlay : AbstractGui() {
     private fun render() {
         // Render the background of the party
         renderPartyBackground()
+        // Render the slot that's currently selected
+        renderSelectedSlotBorder()
         // Render all the pokemon in the party, in their appropriate slot positions
         for (slot in 0 until clientParty.capacity) {
             renderPartySlot(slot)
         }
-        // Render the slot that's currently selected
-        renderSelectedSlotBorder()
     }
 
     private fun renderPartyBackground() {

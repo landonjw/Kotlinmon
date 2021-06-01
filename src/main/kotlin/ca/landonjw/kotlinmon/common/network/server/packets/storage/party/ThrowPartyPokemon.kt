@@ -1,7 +1,7 @@
 package ca.landonjw.kotlinmon.common.network.server.packets.storage.party
 
 import ca.landonjw.kotlinmon.KotlinmonDI
-import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorageRepository
+import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
 import ca.landonjw.kotlinmon.common.network.server.PacketToServer
