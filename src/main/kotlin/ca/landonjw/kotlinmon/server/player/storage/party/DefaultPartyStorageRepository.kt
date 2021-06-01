@@ -1,40 +1,21 @@
 package ca.landonjw.kotlinmon.server.player.storage.party
 
 import ca.landonjw.kotlinmon.KotlinmonDI
-import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorage
-import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorageRepository
-import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
-import ca.landonjw.kotlinmon.api.pokemon.data.species.ProvidedSpecies
+import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorage
+import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorageRepository
 import net.minecraft.entity.player.ServerPlayerEntity
 import java.util.*
 
 class DefaultPartyStorageRepository: PartyStorageRepository {
 
-    private val storageProvider: () -> PartyStorage by KotlinmonDI.injectProvider()
+    private val storageProvider: (UUID) -> PartyStorage by KotlinmonDI.injectFactory()
     // TODO: Make this cache async later probably
     private val playerStorage: MutableMap<UUID, PartyStorage> = mutableMapOf()
-
-    init {
-        // TODO: Remove in-memory data
-        val devUUID = UUID.fromString("380df991-f603-344c-a090-369bad2a924a")
-        val devParty = storageProvider()
-
-        val pokemonFactory: PokemonFactory by KotlinmonDI.inject()
-
-        devParty[0] = pokemonFactory.create(ProvidedSpecies.values().random().get())
-        devParty[1] = pokemonFactory.create(ProvidedSpecies.values().random().get())
-        devParty[2] = pokemonFactory.create(ProvidedSpecies.values().random().get())
-        devParty[3] = pokemonFactory.create(ProvidedSpecies.values().random().get())
-        devParty[4] = pokemonFactory.create(ProvidedSpecies.values().random().get())
-        devParty[5] = pokemonFactory.create(ProvidedSpecies.values().random().get())
-
-        playerStorage[devUUID] = devParty
-    }
 
     override fun get(player: ServerPlayerEntity): PartyStorage = get(player.uniqueID)
 
     override fun get(uuid: UUID): PartyStorage {
-        val storage = playerStorage[uuid] ?: storageProvider()
+        val storage = playerStorage[uuid] ?: storageProvider(uuid)
         if (playerStorage[uuid] == null) playerStorage[uuid] = storage
         return storage
     }

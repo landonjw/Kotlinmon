@@ -1,4 +1,4 @@
-package ca.landonjw.kotlinmon.api.player.storage.pc
+package ca.landonjw.kotlinmon.api.player.storage.pokemon.pc
 
 import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 

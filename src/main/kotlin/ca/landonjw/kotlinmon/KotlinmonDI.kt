@@ -1,8 +1,9 @@
 package ca.landonjw.kotlinmon
 
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
-import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorage
-import ca.landonjw.kotlinmon.api.player.storage.party.PartyStorageRepository
+import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyNetworkService
+import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorage
+import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallRepository
 import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
@@ -20,6 +21,7 @@ import ca.landonjw.kotlinmon.common.pokemon.data.species.DefaultPokemonSpeciesRe
 import ca.landonjw.kotlinmon.common.pokemon.data.species.type.DefaultPokemonTypeRepository
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonDecoder
 import ca.landonjw.kotlinmon.common.pokemon.network.PokemonToClientDataEncoder
+import ca.landonjw.kotlinmon.server.player.storage.party.DefaultPartyNetworkService
 import ca.landonjw.kotlinmon.server.player.storage.party.DefaultPartyStorage
 import ca.landonjw.kotlinmon.server.player.storage.party.DefaultPartyStorageRepository
 import net.minecraftforge.api.distmarker.Dist
@@ -31,6 +33,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.kodein.di.*
+import java.util.*
 
 object KotlinmonDI {
 
@@ -83,12 +86,11 @@ object KotlinmonDI {
 
             // Network
             bind<KotlinmonNetworkChannel> { eagerSingleton { SimpleChannelWrapper() } }
-
-            // Packets
+            bind<PartyNetworkService> { singleton { DefaultPartyNetworkService() } }
             bind<PokemonToClientDataEncoder> { singleton { PokemonToClientDataEncoder() } }
 
             // Party
-            bind<PartyStorage> { provider { DefaultPartyStorage() } }
+            bind<PartyStorage> { factory { owner: UUID -> DefaultPartyStorage(owner) } }
             bind<PartyStorageRepository> { singleton { DefaultPartyStorageRepository() } }
 
             // General Utilities

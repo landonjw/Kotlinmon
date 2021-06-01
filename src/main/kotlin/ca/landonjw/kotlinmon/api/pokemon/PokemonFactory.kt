@@ -1,6 +1,7 @@
 package ca.landonjw.kotlinmon.api.pokemon
 
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
+import ca.landonjw.kotlinmon.api.pokemon.data.species.ProvidedSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
 import net.minecraft.world.World
@@ -21,6 +22,16 @@ interface PokemonFactory {
      * @return a new instance of a pokemon
      */
     fun create(species: PokemonSpecies, form: PokemonForm? = null): Pokemon
+
+    /**
+     * Creates a new instance of a [Pokemon]
+     *
+     * @param species the species of the pokemon
+     * @param form the form of the pokemon, default form if empty
+     *
+     * @return a new instance of a pokemon
+     */
+    fun create(species: ProvidedSpecies, form: PokemonForm? = null): Pokemon = create(species.get(), form)
 
     /**
      * Creates an entity for a [Pokemon] instance
