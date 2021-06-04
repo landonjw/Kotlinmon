@@ -1,5 +1,5 @@
 buildscript {
-	ext.kotlin_version = '1.4.30'
+	ext.kotlin_version = '1.4.32'
 	repositories {
 		mavenCentral()
 		maven {
@@ -15,17 +15,12 @@ buildscript {
 
 plugins {
 	id 'java'
-	id 'com.github.johnrengelman.shadow' version '5.2.0'
+	id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 allprojects {
 	group = 'ca.landonjw.kotlinmon'
 	version = '1.0.0-SNAPSHOT'
-}
-
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
-compileJava {
-	sourceCompatibility = targetCompatibility = "1.8"
 }
 
 subprojects {
@@ -40,19 +35,6 @@ subprojects {
 
 	dependencies {
 		minecraft 'net.minecraftforge:forge:1.16.5-36.1.4'
-
-		compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-		compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-		compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-		compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-		compile "org.jetbrains:annotations:$annotations_version"
-		compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-		compile "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines_version"
-		compile "org.kodein.di:kodein-di:$kodein_version"
-	}
-
-	kotlinSourcesJar {
-		from(sourceSets.main.kotlin.srcDirs)
 	}
 
 	sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -62,6 +44,7 @@ subprojects {
 
 	tasks.withType(JavaCompile) {
 		options.encoding = 'UTF-8'
+		options.fork = true
 	}
 
 	tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -70,5 +53,20 @@ subprojects {
 		}
 	}
 
-	tasks.build.dependsOn kotlinSourcesJar
+	compileJava {
+		options.compilerArgs += ["-parameters"]
+		options.fork = true
+		options.forkOptions.executable = 'javac'
+	}
+
+	reobf {
+		shadowJar {
+		}
+	}
+
+}
+
+sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+compileJava {
+	sourceCompatibility = targetCompatibility = "1.8"
 }

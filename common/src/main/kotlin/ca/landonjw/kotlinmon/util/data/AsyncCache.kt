@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 class AsyncCache<K, V>(
     expirationTime: Long,
     expirationUnit: TimeUnit,
-    val supplier: suspend (K) -> V,
+    val supplier: suspend (K) -> V
 ) {
 
     private val cache: LoadingCache<K, Deferred<V>>

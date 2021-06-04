@@ -1,0 +1,5 @@
+$body default.smd
+$anim idle idle.smd
+$anim walk walk.smd
+$scale 0.025 0.025 0.025
+$rotation 90 0 0

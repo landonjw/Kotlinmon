@@ -6,7 +6,7 @@ import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 data class ClientPokemonData(
     val species: PokemonSpecies,
     val form: PokemonForm,
-    val texture: String? = null,
+    val texture: String? = null
     /* TODO: Add this shit when I eventually implement them
      *    EVs & IVs (maybe? is this ever rendered?)
      *    Ability

@@ -100,9 +100,9 @@ object KotlinmonDI {
         }
     }
 
-    inline fun <reified T> inject(tag: Any? = null): DIProperty<T> = container.instance(tag)
+    inline fun <reified T : Any> inject(tag: Any? = null): DIProperty<T> = container.instance(tag)
 
-    inline fun <reified T> injectProvider(tag: Any? = null): DIProperty<() -> T> = container.provider(tag)
+    inline fun <reified T : Any> injectProvider(tag: Any? = null): DIProperty<() -> T> = container.provider(tag)
 
     inline fun <reified A: Any, reified T: Any> injectFactory(tag: Any? = null): DIProperty<(A) -> T> = container.factory(tag)
 

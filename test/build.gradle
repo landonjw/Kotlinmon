@@ -54,6 +54,8 @@ dependencies {
     runtimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
 
+jar.finalizedBy('reobfShadowJar')
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

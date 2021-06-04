@@ -6,7 +6,7 @@ class BaseStats(
     val defense: Int,
     val specialAttack: Int,
     val specialDefense: Int,
-    val speed: Int,
+    val speed: Int
 ) {
 
     fun getBaseStatTotal(): Int = health + attack + defense + specialAttack + specialDefense + speed

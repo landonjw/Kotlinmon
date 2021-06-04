@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "kotlinmon:block/testblock" }
+  }
+}

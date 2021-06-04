@@ -26,19 +26,19 @@ enum class Axis(val x: Float, val y: Float, val z: Float) {
             immutableArrayOf(1f,   0f,           0f,          0f),
             immutableArrayOf(0f,   cos(angle),   -sin(angle),  0f),
             immutableArrayOf(0f,   sin(angle),  cos(angle),  0f),
-            immutableArrayOf(0f,   0f,           0f,          1f),
+            immutableArrayOf(0f,   0f,           0f,          1f)
         ))
         Y_AXIS -> TransformationMatrix(immutableArrayOf(
             immutableArrayOf(cos(angle),  0f,   sin(angle), 0f),
             immutableArrayOf(0f,          1f,   0f,          0f),
             immutableArrayOf(-sin(angle),  0f,   cos(angle),  0f),
-            immutableArrayOf(0f,          0f,   0f,          1f),
+            immutableArrayOf(0f,          0f,   0f,          1f)
         ))
         Z_AXIS -> TransformationMatrix(immutableArrayOf(
             immutableArrayOf(cos(angle),  -sin(angle),  0f,  0f),
             immutableArrayOf(sin(angle),  cos(angle),   0f,  0f),
             immutableArrayOf(0f,          0f,           1f,  0f),
-            immutableArrayOf(0f,          0f,           0f,  1f),
+            immutableArrayOf(0f,          0f,           0f,  1f)
         ))
     }
 
