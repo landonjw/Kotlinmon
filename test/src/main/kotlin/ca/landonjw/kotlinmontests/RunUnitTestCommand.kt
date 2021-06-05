@@ -1,3 +1,5 @@
+package ca.landonjw.kotlinmontests
+
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
@@ -25,9 +27,10 @@ class RunUnitTestCommand : Command<CommandSource> {
         launcher.execute(request)
 
         val summary = listener.summary
-        PrintWriter(System.out).use {
-            summary.printTo(it)
-            summary.printFailuresTo(it)
+        PrintWriter(System.out).use { writer ->
+            summary.printTo(writer)
+//            summary.printFailuresTo(it)
+            summary.failures.forEach { failure -> failure.exception.printStackTrace(writer) }
         }
 
         context?.source?.asPlayer()?.sendMessage(StringTextComponent("""

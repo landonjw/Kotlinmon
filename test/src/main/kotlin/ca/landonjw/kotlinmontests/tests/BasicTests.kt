@@ -1,4 +1,4 @@
-package tests
+package ca.landonjw.kotlinmontests.tests
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

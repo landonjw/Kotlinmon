@@ -1,4 +1,6 @@
 rootProject.name = 'kotlinmon'
 
-include 'test'
-include 'common'
+include (
+		'test',
+		'common'
+)
