@@ -29,8 +29,7 @@ class RunUnitTestCommand : Command<CommandSource> {
         val summary = listener.summary
         PrintWriter(System.out).use { writer ->
             summary.printTo(writer)
-//            summary.printFailuresTo(it)
-            summary.failures.forEach { failure -> failure.exception.printStackTrace(writer) }
+            summary.printFailuresTo(writer)
         }
 
         context?.source?.asPlayer()?.sendMessage(StringTextComponent("""
