@@ -2,10 +2,10 @@ package ca.landonjw.kotlinmon.common.network
 
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
-import ca.landonjw.kotlinmon.common.network.client.PacketToClient
+import ca.landonjw.kotlinmon.api.network.PacketToClient
 import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.UpdateParty
 import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.UpdatePartySlot
-import ca.landonjw.kotlinmon.common.network.server.PacketToServer
+import ca.landonjw.kotlinmon.api.network.PacketToServer
 import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.SynchronizePartyRequest
 import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.ThrowPartyPokemon
 import net.minecraft.entity.player.ServerPlayerEntity

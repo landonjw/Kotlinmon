@@ -5,7 +5,7 @@ import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 import ca.landonjw.kotlinmon.common.EntityRegistry
-import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
+import ca.landonjw.kotlinmon.common.pokemon.entity.DefaultPokemonEntity
 import net.minecraft.world.World
 
 class DefaultPokemonFactory: PokemonFactory {
@@ -14,9 +14,9 @@ class DefaultPokemonFactory: PokemonFactory {
         return if (form == null) DefaultPokemon(species) else DefaultPokemon(species, form)
     }
 
-    override fun createEntity(pokemon: Pokemon, world: World): PokemonEntity {
+    override fun createEntity(pokemon: Pokemon, world: World): DefaultPokemonEntity {
         // TODO: Validate if pokemon already has an entity associated with it
-        return PokemonEntity(EntityRegistry.POKEMON.get(), world).apply { setPokemon(pokemon) }
+        return DefaultPokemonEntity(EntityRegistry.POKEMON.get(), world).apply { setPokemon(pokemon) }
     }
 
 }

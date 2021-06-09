@@ -34,14 +34,19 @@ class PokeBallItem : Item(Properties().setISTER { Callable{ PokeBallItemRenderer
 
     override fun onItemRightClick(world: World, player: PlayerEntity, hand: Hand): ActionResult<ItemStack> {
         if (!world.isRemote) {
+            // Get the type of poke ball the player is holding.
             val itemInHand = player.getHeldItem(hand)
             val pokeBall = getPokeBall(itemInHand) ?: ProvidedPokeBall.PokeBall
 
-            val pokeBallEntity = pokeBallFactory.createEntity(pokeBall, world).apply {
+            // Create the entity
+            val pokeBallEntity = pokeBallFactory.createEntity(pokeBall, world)
+            // Set it's motion to fly forwards from the player.
+            pokeBallEntity.asMinecraftEntity().apply {
                 setPosition(player.posX, player.posY, player.posZ)
                 setDirectionAndMovement(player, player.rotationPitch - 7, player.rotationYawHead, 0.0f, 1.5f, 1.0f)
             }
-            world.addEntity(pokeBallEntity)
+            // Spawn it in the world.
+            world.addEntity(pokeBallEntity.asMinecraftEntity())
         }
         return ActionResult.resultPass(player.getHeldItem(hand))
     }

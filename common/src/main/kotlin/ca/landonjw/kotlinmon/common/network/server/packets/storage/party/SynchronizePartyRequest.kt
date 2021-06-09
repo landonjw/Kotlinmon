@@ -4,7 +4,7 @@ import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
 import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.UpdateParty
-import ca.landonjw.kotlinmon.common.network.server.PacketToServer
+import ca.landonjw.kotlinmon.api.network.PacketToServer
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent

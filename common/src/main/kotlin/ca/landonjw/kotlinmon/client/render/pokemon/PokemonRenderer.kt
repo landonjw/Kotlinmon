@@ -4,7 +4,7 @@ import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.pokemon.getModelTextureLocation
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
-import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntity
+import ca.landonjw.kotlinmon.common.pokemon.entity.DefaultPokemonEntity
 import com.mojang.blaze3d.matrix.MatrixStack
 import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.culling.ClippingHelper
@@ -14,10 +14,10 @@ import net.minecraft.util.ResourceLocation
 
 class PokemonRenderer(
     manager: EntityRendererManager
-) : EntityRenderer<PokemonEntity>(manager) {
+) : EntityRenderer<DefaultPokemonEntity>(manager) {
 
     override fun render(
-        entity: PokemonEntity,
+        entity: DefaultPokemonEntity,
         entityYaw: Float,
         partialTicks: Float,
         matrixStack: MatrixStack,
@@ -48,11 +48,11 @@ class PokemonRenderer(
         if (modelTextureURL != null) model.skeleton.mesh.texture = texture
     }
 
-    override fun getEntityTexture(entity: PokemonEntity) = null
+    override fun getEntityTexture(entity: DefaultPokemonEntity) = null
 
     // TODO: Make better. Should take into account player frustum to prevent unnecessary rendering.
     override fun shouldRender(
-        livingEntityIn: PokemonEntity,
+        livingEntityIn: DefaultPokemonEntity,
         camera: ClippingHelper,
         camX: Double,
         camY: Double,

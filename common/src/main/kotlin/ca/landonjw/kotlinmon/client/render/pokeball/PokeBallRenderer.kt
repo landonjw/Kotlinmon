@@ -6,7 +6,7 @@ import ca.landonjw.kotlinmon.client.render.models.smd.renderer.RotationOffset
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.Scale
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.ModelRepository
-import ca.landonjw.kotlinmon.common.pokeball.entity.PokeBallEntity
+import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultPokeBallEntity
 import com.mojang.blaze3d.matrix.MatrixStack
 import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.culling.ClippingHelper
@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
 import net.minecraft.util.math.vector.Vector3f
 
-class PokeBallRenderer<T: PokeBallEntity>(manager: EntityRendererManager) : EntityRenderer<T>(manager) {
+class PokeBallRenderer<T: DefaultPokeBallEntity>(manager: EntityRendererManager) : EntityRenderer<T>(manager) {
 
     private val modelRepository: ModelRepository by KotlinmonDI.inject(tag = "async")
 
@@ -26,10 +26,15 @@ class PokeBallRenderer<T: PokeBallEntity>(manager: EntityRendererManager) : Enti
         buffer: IRenderTypeBuffer,
         packedLight: Int
     ) {
-        val pokeBall: PokeBall = entity.type
+        val pokeBall: PokeBall = entity.pokeBallType
         val pokeBallModel = modelRepository[pokeBall.modelLocation] ?: return
+        val pokeBallOrientation = Vector3f(
+            entity.orientation.x.toFloat(),
+            entity.orientation.y.toFloat(),
+            entity.orientation.z.toFloat()
+        )
 
-        pokeBallModel.replaceProperty(RotationOffset(entity.orientationController.orientation))
+        pokeBallModel.replaceProperty(RotationOffset(pokeBallOrientation))
         pokeBallModel.replaceProperty(Scale(Vector3f(0.1f, 0.1f, 0.1f)))
         SmdModelRenderer.render(matrixStack, pokeBallModel)
     }

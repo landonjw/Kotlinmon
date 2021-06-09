@@ -5,7 +5,7 @@ import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonDecoder
-import ca.landonjw.kotlinmon.common.network.client.PacketToClient
+import ca.landonjw.kotlinmon.api.network.PacketToClient
 import ca.landonjw.kotlinmon.common.pokemon.network.PokemonToClientDataEncoder
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent

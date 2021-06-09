@@ -15,17 +15,17 @@ class PokemonEntityClient(private val dataManager: EntityDataManager) {
     private val modelRepository: ModelRepository by KotlinmonDI.inject(tag = "async")
 
     val species: PokemonSpecies
-        get() = speciesRepository[dataManager.get(PokemonEntity.dwSpecies)] ?: throw IllegalStateException()
+        get() = speciesRepository[dataManager.get(DefaultPokemonEntity.dwSpecies)] ?: throw IllegalStateException()
 
     val form: PokemonForm
         get() {
-            val formOrdinal = dataManager.get(PokemonEntity.dwForm)
+            val formOrdinal = dataManager.get(DefaultPokemonEntity.dwForm)
             return if (formOrdinal == 0) species.defaultForm else species.alternativeForms[formOrdinal - 1]
         }
 
     val texture: String?
         get() {
-            val texture = dataManager.get(PokemonEntity.dwTexture)
+            val texture = dataManager.get(DefaultPokemonEntity.dwTexture)
             return if (texture.isNullOrEmpty()) null else texture
         }
 
