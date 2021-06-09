@@ -2,8 +2,7 @@ package ca.landonjw.kotlinmon.api.pokemon.data.species.type
 
 import net.minecraftforge.eventbus.api.Event
 
-class TypeRegistrationEvent: Event() {
-    private val repository: PokemonTypeRepository = TODO("figure out API dependency injection")
+class TypeRegistrationEvent(private val repository: PokemonTypeRepository): Event() {
 
     private val _customTypes: MutableMap<String, PokemonType> = mutableMapOf()
     val customTypes: Map<String, PokemonType>

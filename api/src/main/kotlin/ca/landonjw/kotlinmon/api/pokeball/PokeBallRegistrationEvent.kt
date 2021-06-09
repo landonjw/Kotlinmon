@@ -2,8 +2,7 @@ package ca.landonjw.kotlinmon.api.pokeball
 
 import net.minecraftforge.eventbus.api.Event
 
-class PokeBallRegistrationEvent: Event() {
-    private val repository: PokeBallRepository = TODO("figure out API dependency injection")
+class PokeBallRegistrationEvent(private val repository: PokeBallRepository): Event() {
 
     private val _customPokeBalls: MutableMap<String, PokeBall> = mutableMapOf()
     val customPokeBalls: Map<String, PokeBall>
