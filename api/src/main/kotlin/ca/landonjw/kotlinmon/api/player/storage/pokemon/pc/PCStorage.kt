@@ -6,9 +6,9 @@ interface PCStorage {
 
     val numBoxes: Int
 
-    fun getBox(slot: Int): ca.landonjw.kotlinmon.api.player.storage.pokemon.pc.PCBox?
+    fun getBox(slot: Int): PCBox?
 
-    fun getBoxes(): List<ca.landonjw.kotlinmon.api.player.storage.pokemon.pc.PCBox>
+    fun getBoxes(): List<PCBox>
 
     fun getAllPokemon(): List<Pokemon>
 
