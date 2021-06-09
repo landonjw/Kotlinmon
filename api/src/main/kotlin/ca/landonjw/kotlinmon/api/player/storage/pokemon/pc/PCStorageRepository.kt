@@ -4,6 +4,6 @@ import net.minecraft.entity.player.ServerPlayerEntity
 
 interface PCStorageRepository {
 
-    operator fun get(player: ServerPlayerEntity): ca.landonjw.kotlinmon.api.player.storage.pokemon.pc.PCStorage
+    operator fun get(player: ServerPlayerEntity): PCStorage
 
 }
