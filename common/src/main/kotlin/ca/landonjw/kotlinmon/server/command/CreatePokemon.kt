@@ -25,8 +25,8 @@ class CreatePokemon : Command<CommandSource> {
 
         // Create entity and spawn it at player's position
         val pokemonEntity = pokemonFactory.createEntity(pokemon, player.world)
-        pokemonEntity.setPosition(player.posX, player.posY, player.posZ)
-        player.world.addEntity(pokemonEntity)
+        pokemonEntity.asMinecraftEntity().setPosition(player.posX, player.posY, player.posZ)
+        player.world.addEntity(pokemonEntity.asMinecraftEntity())
         return 0
     }
 
