@@ -7,23 +7,14 @@ import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 import ca.landonjw.kotlinmon.api.pokemon.PokemonFactory
 import ca.landonjw.kotlinmon.api.pokemon.entity.PokemonEntity
 import ca.landonjw.kotlinmon.common.EntityRegistry
-import ca.landonjw.kotlinmon.common.pokemon.entity.DefaultPokemonEntity
 import net.minecraft.entity.EntityType
 import net.minecraft.network.IPacket
-import net.minecraft.util.math.EntityRayTraceResult
-import net.minecraft.util.math.RayTraceResult
 import net.minecraft.util.math.vector.Vector3d
 import net.minecraft.world.World
 import net.minecraftforge.fml.network.NetworkHooks
 
-/**
- * A poke ball that currently has a [Pokemon] occupying it.
- *
- * @author landonjw
- */
 class DefaultOccupiedPokeBallEntity : OccupiedPokeBallEntity, DefaultPokeBallEntity {
 
-    /** The pokemon that is occupying the poke ball. */
     override lateinit var occupant: Pokemon
         private set
 
@@ -45,16 +36,16 @@ class DefaultOccupiedPokeBallEntity : OccupiedPokeBallEntity, DefaultPokeBallEnt
         orientation?.let { this.orientation = it }
     }
 
-    /**
-     * Upon collision with a block, this will spawn an entity for the pokemon that is inside the poke ball.
-     */
     override fun onBlockImpact() {
         if (!world.isRemote) {
-            val pokemonEntity = pokemonFactory.createEntity(occupant, entityWorld).also {
-                it.setPosition(posX, posY, posZ)
-            }
-            entityWorld.addEntity(pokemonEntity)
+            // Remove the poke ball entity.
             setDead()
+
+            // Create pokemon entity and spawn it where the poke ball collided.
+            val pokemonEntity = pokemonFactory.createEntity(occupant, entityWorld).apply {
+                setPosition(posX, posY, posZ)
+            }
+            entityWorld.addEntity(pokemonEntity.asMinecraftEntity())
         }
     }
 

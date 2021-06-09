@@ -12,11 +12,6 @@ import net.minecraft.util.math.vector.Vector3d
 import net.minecraft.world.World
 import net.minecraftforge.fml.network.NetworkHooks
 
-/**
- * A poke ball that does not have a [Pokemon] inside of it.
- *
- * @author landonjw
- */
 class DefaultEmptyPokeBallEntity : EmptyPokeBallEntity, DefaultPokeBallEntity {
 
     private val pokeBallFactory: PokeBallFactory by KotlinmonDI.inject()
@@ -36,7 +31,7 @@ class DefaultEmptyPokeBallEntity : EmptyPokeBallEntity, DefaultPokeBallEntity {
     }
 
     override fun onBlockImpact() {
-        // Kill the entity.
+        // Remove the poke ball entity.
         setDead()
         // Spawn a poke ball item where the impact took place.
         val pokeBallItem = pokeBallFactory.createItem(pokeBallType)
