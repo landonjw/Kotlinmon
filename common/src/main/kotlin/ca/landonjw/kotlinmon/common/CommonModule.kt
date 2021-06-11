@@ -10,16 +10,16 @@ import org.kodein.di.*
 object CommonModule {
 
     val bindings = DI.Module(name = "Common") {
-        // Events
-        bind<IEventBus> { singleton { Kotlinmon.EVENT_BUS } }
-
-        // Registries
-        bind<EntityRegistry> { singleton { EntityRegistry() } }
-        bind<ItemRegistry> { singleton { ItemRegistry(provider()) } }
-
         import(PokeBallModule.bindings)
         import(PokemonModule.bindings)
         import(NetworkModule.bindings)
+
+        // Events
+        bind<IEventBus>() with singleton { Kotlinmon.EVENT_BUS }
+
+        // Registries
+        bind<EntityRegistry>() with singleton { EntityRegistry() }
+        bind<ItemRegistry>() with singleton { ItemRegistry(provider()) }
     }
 
 }

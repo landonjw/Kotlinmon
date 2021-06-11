@@ -15,13 +15,13 @@ import org.kodein.di.*
 object PokeBallModule {
 
     val bindings = DI.Module(name = "Poke Ball") {
-        bindFactory<Entity, PokeBallTypeController> { entity -> PokeBallTypeController(entity.dataManager, entity.javaClass, instance()) }
-        bindFactory<Entity, OrientationController> { entity -> OrientationController(entity.dataManager, entity.javaClass) }
-        bindFactory<PokeBallFactoryParams, EmptyPokeBallEntity> { params -> DefaultEmptyPokeBallEntity(params.world, params.pokeBall, factory(), factory(), instance(), instance()) }
-        bindFactory<PokeBallFactoryParams, OccupiedPokeBallEntity> { params -> DefaultOccupiedPokeBallEntity(params.world, params.pokeBall, params.occupant!!, instance(), factory(), factory(), instance()) }
-        bind<PokeBallFactory> { singleton { DefaultPokeBallFactory(instance(), factory(), factory()) } }
-        bind<PokeBallRepository> { singleton { DefaultPokeBallRepository(instance()) } }
-        bind<PokeBallItem> { singleton { PokeBallItem(instance(), instance()) } }
+        bind<PokeBallTypeController>() with factory { entity: Entity -> PokeBallTypeController(entity.dataManager, entity.javaClass, instance()) }
+        bind<OrientationController>() with factory { entity: Entity -> OrientationController(entity.dataManager, entity.javaClass) }
+        bind<EmptyPokeBallEntity>() with factory { params: PokeBallFactoryParams -> DefaultEmptyPokeBallEntity(params.world, params.pokeBall, factory(), factory(), instance(), instance()) }
+        bind<OccupiedPokeBallEntity>() with factory { params: PokeBallFactoryParams -> DefaultOccupiedPokeBallEntity(params.world, params.pokeBall, params.occupant!!, instance(), factory(), factory(), instance()) }
+        bind<PokeBallFactory>() with singleton { DefaultPokeBallFactory(instance(), factory(), factory()) }
+        bind<PokeBallRepository>() with singleton { DefaultPokeBallRepository(instance()) }
+        bind<PokeBallItem>() with singleton { PokeBallItem(instance(), instance()) }
     }
 
 }

@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 object NetworkModule {
 
     val bindings = DI.Module(name = "Network") {
-        bind<KotlinmonNetworkChannel> { singleton { SimpleChannelWrapper() } }
+        bind<KotlinmonNetworkChannel>() with singleton { SimpleChannelWrapper() }
     }
 
 }

@@ -9,14 +9,14 @@ import org.kodein.di.singleton
 object KeyBindingModule {
 
     val bindings = DI.Module(name = "Keybindings") {
-        bind<List<KeyBinding>> { singleton {
+        bind<List<KeyBinding>>() with singleton {
             listOf(
                 SelectPartySlotBinding(SelectPartySlotBinding.Direction.Previous, instance()),
                 SelectPartySlotBinding(SelectPartySlotBinding.Direction.Next, instance()),
                 ThrowPartyPokemonBinding(instance(), instance())
             )
-        } }
-        bind<KeyBindingController> { singleton { KeyBindingController(instance()) }}
+        }
+        bind<KeyBindingController>() with singleton { KeyBindingController(instance()) }
     }
 
 }

@@ -12,9 +12,9 @@ import java.util.*
 object StorageModule {
 
     val bindings = DI.Module(name = "Storage") {
-        bind<PartyStorageRepository> { singleton { DefaultPartyStorageRepository(factory()) } }
-        bindFactory<UUID, PartyStorage> { owner -> DefaultPartyStorage(owner, instance()) }
-        bind<PartyNetworkService> { singleton { DefaultPartyNetworkService(instance()) } }
+        bind<PartyStorageRepository>() with singleton { DefaultPartyStorageRepository(factory()) }
+        bind<PartyStorage>() with factory { owner: UUID -> DefaultPartyStorage(owner, instance()) }
+        bind<PartyNetworkService>() with singleton { DefaultPartyNetworkService(instance()) }
     }
 
 }

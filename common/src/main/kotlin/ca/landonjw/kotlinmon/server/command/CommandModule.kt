@@ -12,7 +12,8 @@ import org.kodein.di.singleton
 object CommandModule {
 
     val bindings = DI.Module(name = "Command") {
-        bind<List<KotlinmonCommand>> { singleton {
+        // Commands
+        bind<List<KotlinmonCommand>>() with singleton {
             listOf(
                 AddToPartyCommand(instance()),
                 CreatePokemon(instance(), instance()),
@@ -20,15 +21,15 @@ object CommandModule {
                 PopulateDevPartyCommand(instance(), instance()),
                 SetToPartyCommand(instance())
             )
-        } }
-        bind<PokeBallArgument> { singleton { PokeBallArgument(instance()) } }
-        bind<SpeciesArgument> { singleton { SpeciesArgument(instance()) } }
-        bind<List<KotlinmonCommandArgument<out Any>>> { singleton {
+        }
+
+        // Command Arguments
+        bind<List<KotlinmonCommandArgument<out Any>>>() with singleton {
             listOf(
-                instance<PokeBallArgument>(),
-                instance<SpeciesArgument>()
+                PokeBallArgument(instance()),
+                SpeciesArgument(instance())
             )
-        } }
+        }
     }
 
 }

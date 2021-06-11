@@ -12,7 +12,7 @@ object ServerModule {
     val bindings = DI.Module(name = "Server") {
         import(StorageModule.bindings)
         import(CommandModule.bindings)
-        bind<ServerInitialization> { singleton { ServerInitialization(instance(), instance()) } }
+        bind<ServerInitialization>() with singleton { ServerInitialization(instance(), instance()) }
     }
 
 }
