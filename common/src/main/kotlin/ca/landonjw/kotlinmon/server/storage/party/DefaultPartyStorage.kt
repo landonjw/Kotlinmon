@@ -1,20 +1,21 @@
-package ca.landonjw.kotlinmon.server.player.storage.party
+package ca.landonjw.kotlinmon.server.storage.party
 
-import ca.landonjw.kotlinmon.KotlinmonDI
-import ca.landonjw.kotlinmon.api.player.storage.StorageTransaction
-import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyNetworkService
-import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorage
+import ca.landonjw.kotlinmon.api.storage.StorageTransaction
+import ca.landonjw.kotlinmon.api.storage.pokemon.party.PartyNetworkService
+import ca.landonjw.kotlinmon.api.storage.pokemon.party.PartyStorage
 import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.util.text.TranslationTextComponent
 import net.minecraftforge.fml.server.ServerLifecycleHooks
 import java.util.*
 
-class DefaultPartyStorage(override val owner: UUID) : PartyStorage {
+class DefaultPartyStorage(
+    override val owner: UUID,
+    private val partyNetworkService: PartyNetworkService
+) : PartyStorage {
 
     override val capacity = 6
     private val pokemon: Array<Pokemon?> = arrayOfNulls(capacity)
-    private val partyNetworkService: PartyNetworkService by KotlinmonDI.inject()
 
     override fun get(slot: Int): Pokemon? {
         validateSlotInCapacity(slot)

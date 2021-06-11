@@ -2,8 +2,7 @@ package ca.landonjw.kotlinmon.api.pokemon.data.species
 
 import net.minecraftforge.eventbus.api.Event
 
-class SpeciesRegistrationEvent: Event() {
-    private val repository: PokemonSpeciesRepository = TODO("figure out API dependency injection")
+class SpeciesRegistrationEvent(private val repository: PokemonSpeciesRepository): Event() {
 
     private val _customSpecies: MutableMap<String, PokemonSpecies> = mutableMapOf()
     val customSpecies: Map<String, PokemonSpecies>
@@ -15,4 +14,5 @@ class SpeciesRegistrationEvent: Event() {
     }
 
     fun isRegistered(name: String): Boolean = _customSpecies[name] != null || repository[name] != null
+
 }

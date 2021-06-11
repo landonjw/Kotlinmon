@@ -1,6 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders.files
 
 import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.getParentPath
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.PQCAnimation
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.PQCSchema
@@ -25,14 +26,14 @@ internal object PQCFileLoader {
                     checkArgumentSize(2, split.size)
                     val modelFile = split[1]
                     checkFileFormat(".smd", modelFile)
-                    builder.modelPath = ResourceLocation(Kotlinmon.MODID, "$parentPath/$modelFile")
+                    builder.modelPath = ResourceLocation(Kotlinmon.MOD_ID, "$parentPath/$modelFile")
                 }
                 "\$anim" -> {
                     checkArgumentSize(3, split.size)
                     val animationName = split[1]
                     val animationFile = split[2]
                     checkFileFormat(".smd", animationFile)
-                    val resourceLoc = ResourceLocation(Kotlinmon.MODID, "$parentPath/animations/$animationFile")
+                    val resourceLoc = ResourceLocation(Kotlinmon.MOD_ID, "$parentPath/animations/$animationFile")
                     animations.add(PQCAnimation(animationName, resourceLoc))
                 }
                 "\$scale" -> {

@@ -1,6 +1,6 @@
-package ca.landonjw.kotlinmon.api.player.storage.pokemon.party
+package ca.landonjw.kotlinmon.api.storage.pokemon.party
 
-import ca.landonjw.kotlinmon.api.player.storage.StorageTransaction
+import ca.landonjw.kotlinmon.api.storage.StorageTransaction
 import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 import java.util.*
 

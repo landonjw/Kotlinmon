@@ -3,6 +3,8 @@ package ca.landonjw.kotlinmon.common.pokeball.entity
 import ca.landonjw.kotlinmon.api.pokeball.PokeBall
 import ca.landonjw.kotlinmon.api.pokeball.entity.PokeBallEntity
 import ca.landonjw.kotlinmon.api.pokemon.entity.PokemonEntity
+import ca.landonjw.kotlinmon.common.EntityRegistry
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.projectile.ThrowableEntity
 import net.minecraft.util.math.RayTraceResult
@@ -11,13 +13,28 @@ import net.minecraft.world.World
 
 abstract class DefaultPokeBallEntity : PokeBallEntity, ThrowableEntity {
 
-    override var pokeBallType: PokeBall by PokeBallTypeController.create(this)
-    override var orientation: Vector3d by OrientationController.create(this)
+    private lateinit var pokeBallController: PokeBallTypeController
+    private lateinit var orientationController: OrientationController
+
+    override var pokeBallType: PokeBall by pokeBallController
+    override var orientation: Vector3d by orientationController
 
     /**
      * Used for Minecraft's entity type registration. **Do not use!**
      */
     constructor(type: EntityType<out DefaultPokeBallEntity>, world: World) : super(type, world)
+
+    constructor(
+        type: EntityType<out DefaultPokeBallEntity>,
+        world: World,
+        pokeBallType: PokeBall,
+        pokeBallControllerFactory: (Entity) -> PokeBallTypeController,
+        orientationControllerFactory: (Entity) -> OrientationController
+    ) : this(type, world) {
+        this.pokeBallController = pokeBallControllerFactory(this)
+        this.pokeBallType = pokeBallType
+        this.orientationController = orientationControllerFactory(this)
+    }
 
     override fun asMinecraftEntity(): ThrowableEntity = this
 

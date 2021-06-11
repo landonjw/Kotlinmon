@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.client.party
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
 import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.SynchronizePartyRequest
 import net.minecraft.client.Minecraft
@@ -17,12 +16,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent
  *
  * @author landonjw
  */
-object ClientPartySynchronizer {
+class ClientPartySynchronizer(
+    private val party: ClientPartyStorage,
+    private val networkChannel: KotlinmonNetworkChannel
+) {
 
-    private val party: ClientPartyStorage by KotlinmonDI.inject()
-    private val networkChannel: KotlinmonNetworkChannel by KotlinmonDI.inject()
-
-    private const val SYNC_CHECK_INTERVAL_TICKS: Int = 60
+    private val syncCheckIntervalTicks: Int = 60
     private var ticksSinceLastCheck: Int = 0
 
     /**
@@ -46,7 +45,7 @@ object ClientPartySynchronizer {
     fun onClientTick(event: TickEvent.ClientTickEvent) {
         // Check if player has had their party synchronized on interval
         if (event.phase == TickEvent.Phase.END) return
-        ticksSinceLastCheck = (ticksSinceLastCheck + 1) % SYNC_CHECK_INTERVAL_TICKS
+        ticksSinceLastCheck = (ticksSinceLastCheck + 1) % syncCheckIntervalTicks
         if (ticksSinceLastCheck == 0) {
             attemptSynchronization()
         }

@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.client.render.pokeball
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokeball.PokeBall
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.RotationOffset
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.Scale
@@ -14,9 +13,10 @@ import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
 import net.minecraft.util.math.vector.Vector3f
 
-class PokeBallRenderer<T: DefaultPokeBallEntity>(manager: EntityRendererManager) : EntityRenderer<T>(manager) {
-
-    private val modelRepository: ModelRepository by KotlinmonDI.inject(tag = "async")
+class PokeBallRenderer<T: DefaultPokeBallEntity>(
+    manager: EntityRendererManager,
+    private val modelRepository: ModelRepository
+) : EntityRenderer<T>(manager) {
 
     override fun render(
         entity: T,

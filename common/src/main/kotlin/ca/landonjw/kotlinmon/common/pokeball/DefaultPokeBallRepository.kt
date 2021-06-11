@@ -1,16 +1,15 @@
 package ca.landonjw.kotlinmon.common.pokeball
 
-import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokeball.PokeBall
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallRegistrationEvent
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallRepository
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
 import net.minecraftforge.eventbus.api.IEventBus
 
-class DefaultPokeBallRepository: PokeBallRepository {
+class DefaultPokeBallRepository(
+    private val eventBus: IEventBus
+): PokeBallRepository {
 
-    private val eventBus: IEventBus by KotlinmonDI.inject(tag = Kotlinmon.MODID)
     private val pokeBalls: MutableMap<String, PokeBall> = mutableMapOf()
 
     init {
@@ -21,7 +20,7 @@ class DefaultPokeBallRepository: PokeBallRepository {
     private fun getProvidedPokeBalls(): List<PokeBall> = ProvidedPokeBall.values().toList()
 
     private fun getCustomPokeBalls(): List<PokeBall> {
-        val registerEvent = PokeBallRegistrationEvent()
+        val registerEvent = PokeBallRegistrationEvent(this)
         eventBus.post(registerEvent)
         return registerEvent.customPokeBalls.values.toList()
     }

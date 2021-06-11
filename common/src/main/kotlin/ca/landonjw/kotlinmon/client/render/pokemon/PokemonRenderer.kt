@@ -1,6 +1,6 @@
 package ca.landonjw.kotlinmon.client.render.pokemon
 
-import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import ca.landonjw.kotlinmon.client.pokemon.getModelTextureLocation
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.SmdModelRenderer
@@ -44,7 +44,7 @@ class PokemonRenderer(
 
     private fun setModelTexture(model: SmdModel, texture: ResourceLocation) {
         // Check that texture exists in assets
-        val modelTextureURL = Kotlinmon::class.java.getResource("/assets/${texture.namespace}/${texture.path}")
+        val modelTextureURL = KotlinmonBootstrap::class.java.getResource("/assets/${texture.namespace}/${texture.path}")
         if (modelTextureURL != null) model.skeleton.mesh.texture = texture
     }
 

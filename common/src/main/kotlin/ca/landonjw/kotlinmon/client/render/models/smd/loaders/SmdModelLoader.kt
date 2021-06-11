@@ -1,6 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders
 
 import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.*
 import ca.landonjw.kotlinmon.client.render.models.smd.mesh.SmdMesh
@@ -52,7 +53,7 @@ object SmdModelLoader {
         val parentPath = split.subList(0, split.size - 1)
             .reduce { acc, s -> "$acc/$s" }
         val fileName = split.last().replace(".smd", "")
-        return ResourceLocation(Kotlinmon.MODID, "$parentPath/textures/$fileName.png")
+        return ResourceLocation(Kotlinmon.MOD_ID, "$parentPath/textures/$fileName.png")
     }
 
     private fun getSkeleton(schema: SmdModelFileDefinition, mesh: SmdMesh): SmdModelSkeleton {

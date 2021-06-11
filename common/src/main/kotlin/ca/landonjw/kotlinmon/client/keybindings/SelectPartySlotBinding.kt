@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.client.keybindings
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.client.util.InputMappings
@@ -10,7 +9,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent
 import org.lwjgl.glfw.GLFW
 
 class SelectPartySlotBinding(
-  private val direction: Direction
+  private val direction: Direction,
+  private val clientParty: ClientPartyStorage
 ) : KeyBinding(
     "key.kotlinmon.${direction.name.toLowerCase()}",
     KeyConflictContext.UNIVERSAL,
@@ -18,8 +18,6 @@ class SelectPartySlotBinding(
     direction.defaultKeyCode,
     "key.categories.kotlinmon"
 ) {
-
-    private val clientStorage: ClientPartyStorage by KotlinmonDI.inject()
 
     enum class Direction(val defaultKeyCode: Int) {
         Next(GLFW.GLFW_KEY_UP), Previous(GLFW.GLFW_KEY_DOWN)
@@ -29,8 +27,8 @@ class SelectPartySlotBinding(
     fun onKeyInput(event: InputEvent.KeyInputEvent) {
         if (isPressed) {
             when (direction) {
-                Direction.Next -> clientStorage.selectNextPokemon()
-                Direction.Previous -> clientStorage.selectPreviousPokemon()
+                Direction.Next -> clientParty.selectNextPokemon()
+                Direction.Previous -> clientParty.selectPreviousPokemon()
             }
         }
     }

@@ -1,13 +1,12 @@
 package ca.landonjw.kotlinmon.client.pokemon
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 import net.minecraft.network.PacketBuffer
 
-class ClientPokemonDecoder {
-
-    private val speciesRepository: PokemonSpeciesRepository by KotlinmonDI.inject()
+class ClientPokemonDecoder(
+    private val speciesRepository: PokemonSpeciesRepository
+) {
 
     fun decode(buf: PacketBuffer): ClientPokemonData {
         // Parse species from the packet information or exit out early

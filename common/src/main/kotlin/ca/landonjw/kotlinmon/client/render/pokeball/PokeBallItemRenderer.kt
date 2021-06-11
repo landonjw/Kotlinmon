@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.client.render.pokeball
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.RotationOffset
@@ -20,9 +19,10 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.math.vector.Vector3f
 import net.minecraftforge.client.ForgeHooksClient
 
-class PokeBallItemRenderer : ItemStackTileEntityRenderer() {
+class PokeBallItemRenderer(
+    private val modelRepository: ModelRepository
+) : ItemStackTileEntityRenderer() {
 
-    private val modelRepository: ModelRepository by KotlinmonDI.inject("async")
     private val itemRenderer: ItemRenderer
         get() = Minecraft.getInstance().itemRenderer
 

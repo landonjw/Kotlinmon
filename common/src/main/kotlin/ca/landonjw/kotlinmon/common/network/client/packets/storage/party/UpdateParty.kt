@@ -1,7 +1,7 @@
 package ca.landonjw.kotlinmon.common.network.client.packets.storage.party
 
-import ca.landonjw.kotlinmon.KotlinmonDI
-import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorage
+import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.api.storage.pokemon.party.PartyStorage
 import ca.landonjw.kotlinmon.client.party.ClientPartySynchronizer
 import ca.landonjw.kotlinmon.client.party.ClientPokemonSlot
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonDecoder
@@ -9,6 +9,7 @@ import ca.landonjw.kotlinmon.api.network.PacketToClient
 import ca.landonjw.kotlinmon.common.pokemon.network.PokemonToClientDataEncoder
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent
+import org.kodein.di.instance
 
 /**
  * Used to synchronize the client's party when they initially connect to a server.
@@ -18,18 +19,20 @@ import net.minecraftforge.fml.network.NetworkEvent
 class UpdateParty: PacketToClient {
 
     // Client Side -------------------------------------------------------------
-    private val decoder: ClientPokemonDecoder by KotlinmonDI.inject()
+    private val decoder: ClientPokemonDecoder by Kotlinmon.DI.instance()
     private val slotData: MutableList<ClientPokemonSlot> = mutableListOf()
     // -------------------------------------------------------------------------
 
     // Server Side -------------------------------------------------------------
-    private val encoder: PokemonToClientDataEncoder by KotlinmonDI.inject()
+    private val encoder: PokemonToClientDataEncoder by Kotlinmon.DI.instance()
     private lateinit var serverParty: PartyStorage
     // -------------------------------------------------------------------------
 
     constructor()
 
-    constructor(party: PartyStorage) {
+    constructor(
+        party: PartyStorage
+    ) {
         this.serverParty = party
     }
 
@@ -52,7 +55,8 @@ class UpdateParty: PacketToClient {
     }
 
     override fun processPacket(ctx: NetworkEvent.Context) {
-        ClientPartySynchronizer.synchronizeClientParty(this.slotData)
+        val synchronizer: ClientPartySynchronizer by Kotlinmon.DI.instance()
+        synchronizer.synchronizeClientParty(this.slotData)
     }
 
 }

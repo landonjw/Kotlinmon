@@ -9,7 +9,7 @@ import net.minecraft.util.math.vector.Vector3d
 import java.util.*
 import kotlin.reflect.KProperty
 
-open class OrientationController protected constructor(
+open class OrientationController constructor(
     private val dataManager: EntityDataManager,
     private val clazz: Class<out Entity>
 ) {
@@ -47,10 +47,6 @@ open class OrientationController protected constructor(
 
     companion object {
         private val orientationParams: MutableMap<Class<*>, DataParameter<Rotations>> = mutableMapOf()
-
-        fun create(entity: Entity): OrientationController {
-            return OrientationController(entity.dataManager, entity.javaClass)
-        }
     }
 
 }

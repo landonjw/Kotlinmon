@@ -1,16 +1,15 @@
 package ca.landonjw.kotlinmon.common.pokemon.data.species.type
 
-import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokemon.data.species.type.PokemonType
 import ca.landonjw.kotlinmon.api.pokemon.data.species.type.PokemonTypeRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.type.ProvidedType
 import ca.landonjw.kotlinmon.api.pokemon.data.species.type.TypeRegistrationEvent
 import net.minecraftforge.eventbus.api.IEventBus
 
-class DefaultPokemonTypeRepository: PokemonTypeRepository {
+class DefaultPokemonTypeRepository(
+    private val eventBus: IEventBus
+): PokemonTypeRepository {
 
-    private val eventBus: IEventBus by KotlinmonDI.inject(tag = Kotlinmon.MODID)
     private val types: MutableMap<String, PokemonType> = mutableMapOf()
 
     init {
@@ -21,7 +20,7 @@ class DefaultPokemonTypeRepository: PokemonTypeRepository {
     private fun getProvidedTypes(): List<PokemonType> = ProvidedType.values().toList()
 
     private fun getCustomTypes(): List<PokemonType> {
-        val registerEvent = TypeRegistrationEvent()
+        val registerEvent = TypeRegistrationEvent(this)
         eventBus.post(registerEvent)
         return registerEvent.customTypes.values.toList()
     }

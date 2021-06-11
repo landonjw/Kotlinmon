@@ -1,18 +1,19 @@
 package ca.landonjw.kotlinmon.common.network.server.packets.storage.party
 
-import ca.landonjw.kotlinmon.KotlinmonDI
+import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
-import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorageRepository
+import ca.landonjw.kotlinmon.api.storage.pokemon.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.UpdateParty
 import ca.landonjw.kotlinmon.api.network.PacketToServer
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent
+import org.kodein.di.instance
 
 class SynchronizePartyRequest : PacketToServer {
 
-    private val networkChannel: KotlinmonNetworkChannel by KotlinmonDI.inject()
-    private val partyStorageRepository: PartyStorageRepository by KotlinmonDI.inject()
+    private val networkChannel: KotlinmonNetworkChannel by Kotlinmon.DI.instance()
+    private val partyStorageRepository: PartyStorageRepository by Kotlinmon.DI.instance()
 
     override fun readPacketData(buf: PacketBuffer) {
     }

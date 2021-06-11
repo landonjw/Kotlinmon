@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.server.command.arguments
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import com.mojang.brigadier.StringReader
@@ -12,9 +11,11 @@ import net.minecraft.command.CommandException
 import net.minecraft.util.text.StringTextComponent
 import java.util.concurrent.CompletableFuture
 
-class SpeciesArgument: ArgumentType<PokemonSpecies> {
+class SpeciesArgument(
+    private val speciesRepository: PokemonSpeciesRepository
+): KotlinmonCommandArgument<PokemonSpecies> {
 
-    private val speciesRepository: PokemonSpeciesRepository by KotlinmonDI.inject()
+    override val name: String = "species"
 
     override fun parse(reader: StringReader?): PokemonSpecies {
         if (reader == null) throw CommandException(StringTextComponent("expected input to parse"))

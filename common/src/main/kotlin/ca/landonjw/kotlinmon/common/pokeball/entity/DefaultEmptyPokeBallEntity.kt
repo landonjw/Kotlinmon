@@ -1,11 +1,11 @@
 package ca.landonjw.kotlinmon.common.pokeball.entity
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokeball.PokeBall
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.entity.EmptyPokeBallEntity
 import ca.landonjw.kotlinmon.api.pokemon.entity.PokemonEntity
 import ca.landonjw.kotlinmon.common.EntityRegistry
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.network.IPacket
 import net.minecraft.util.math.vector.Vector3d
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.network.NetworkHooks
 
 class DefaultEmptyPokeBallEntity : EmptyPokeBallEntity, DefaultPokeBallEntity {
 
-    private val pokeBallFactory: PokeBallFactory by KotlinmonDI.inject()
+    private lateinit var pokeBallFactory: PokeBallFactory
 
     /**
      * Used for Minecraft's entity type registration. **Do not use!**
@@ -23,11 +23,13 @@ class DefaultEmptyPokeBallEntity : EmptyPokeBallEntity, DefaultPokeBallEntity {
 
     constructor(
         world: World,
-        pokeBallType: PokeBall? = null,
-        orientation: Vector3d? = null
-    ) : this(EntityRegistry.EMPTY_POKEBALL.get(), world) {
-        pokeBallType?.let { this.pokeBallType = it }
-        orientation?.let { this.orientation = it }
+        pokeBallType: PokeBall,
+        pokeBallControllerFactory: (Entity) -> PokeBallTypeController,
+        orientationControllerFactory: (Entity) -> OrientationController,
+        entityRegistry: EntityRegistry,
+        pokeBallFactory: PokeBallFactory
+    ) : super(entityRegistry.EMPTY_POKEBALL.get(), world, pokeBallType, pokeBallControllerFactory, orientationControllerFactory) {
+        this.pokeBallFactory = pokeBallFactory
     }
 
     override fun onBlockImpact() {

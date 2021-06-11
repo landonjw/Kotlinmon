@@ -21,7 +21,8 @@ import net.minecraftforge.fml.network.NetworkHooks
 
 class DefaultPokemonEntity : PokemonEntity, TameableEntity {
 
-    val clientComponent = PokemonEntityClient(dataManager)
+    lateinit var clientComponent: PokemonEntityClient
+        private set
 
     override lateinit var pokemon: Pokemon
         private set
@@ -35,7 +36,13 @@ class DefaultPokemonEntity : PokemonEntity, TameableEntity {
         dataManager.register(dwTexture, "")
     }
 
-    constructor(world: World, pokemon: Pokemon) : this(EntityRegistry.POKEMON.get(), world) {
+    constructor(
+        world: World,
+        pokemon: Pokemon,
+        entityRegistry: EntityRegistry,
+        clientComponentFactory: (EntityDataManager) -> PokemonEntityClient
+    ) : this(entityRegistry.POKEMON.get(), world) {
+        this.clientComponent = clientComponentFactory(this.dataManager)
         setPokemon(pokemon)
     }
 

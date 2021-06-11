@@ -1,19 +1,20 @@
 package ca.landonjw.kotlinmon.common.network.server.packets.storage.party
 
-import ca.landonjw.kotlinmon.KotlinmonDI
-import ca.landonjw.kotlinmon.api.player.storage.pokemon.party.PartyStorageRepository
+import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.api.storage.pokemon.party.PartyStorageRepository
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
 import ca.landonjw.kotlinmon.api.network.PacketToServer
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent
+import org.kodein.di.instance
 
 class ThrowPartyPokemon : PacketToServer {
 
     private var slot: Int
 
-    private val partyStorageRepository: PartyStorageRepository by KotlinmonDI.inject()
-    private val pokeBallFactory: PokeBallFactory by KotlinmonDI.inject()
+    private val partyStorageRepository: PartyStorageRepository by Kotlinmon.DI.instance()
+    private val pokeBallFactory: PokeBallFactory by Kotlinmon.DI.instance()
 
     constructor() {
         slot = -1

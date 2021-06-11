@@ -17,9 +17,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.DeferredRegister
 import net.minecraftforge.registries.ForgeRegistries
 
-@Mod.EventBusSubscriber(modid = Kotlinmon.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-object EntityRegistry {
-    val ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Kotlinmon.MODID)
+@Mod.EventBusSubscriber(modid = Kotlinmon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+class EntityRegistry {
+
+    val ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Kotlinmon.MOD_ID)
 
     val POKEMON: RegistryObject<EntityType<DefaultPokemonEntity>> = registerEntity(
         name = "pokemon",
@@ -48,7 +49,7 @@ object EntityRegistry {
         crossinline factory: (EntityType<T>, World) -> T,
         builderModifiers: (EntityType.Builder<T>) -> EntityType.Builder<T>
     ): RegistryObject<EntityType<T>> {
-        val resourceLoc = ResourceLocation(Kotlinmon.MODID, name)
+        val resourceLoc = ResourceLocation(Kotlinmon.MOD_ID, name)
         val entityFactory: EntityType.IFactory<T> = EntityType.IFactory { type, world ->
             return@IFactory factory(type, world)
         }
@@ -57,7 +58,6 @@ object EntityRegistry {
         return ENTITIES.register(name) { registry }
     }
 
-    @JvmStatic
     @SubscribeEvent
     fun onEntityAttributeCreation(event: EntityAttributeCreationEvent) {
         event.put(POKEMON.get(), DefaultPokemonEntity.prepareAttributes())

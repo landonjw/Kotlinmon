@@ -1,4 +1,4 @@
-package ca.landonjw.kotlinmon.api.player.storage
+package ca.landonjw.kotlinmon.api.storage
 
 import net.minecraft.util.text.ITextComponent
 

@@ -1,6 +1,6 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders.files
 
-import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import net.minecraft.util.ResourceLocation
 import java.io.InputStream
 import java.util.regex.Matcher
@@ -17,7 +17,7 @@ internal fun readLinesFromResource(location: ResourceLocation): List<String> {
 private fun getResourceStream(location: ResourceLocation): InputStream {
     val namespace = location.namespace
     val path = location.path
-    val stream = Kotlinmon::class.java.getResourceAsStream("/assets/$namespace/$path")
+    val stream = KotlinmonBootstrap::class.java.getResourceAsStream("/assets/$namespace/$path")
     return stream
 }
 

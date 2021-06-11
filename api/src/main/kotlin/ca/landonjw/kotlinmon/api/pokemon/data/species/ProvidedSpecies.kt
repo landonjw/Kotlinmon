@@ -1,5 +1,8 @@
 package ca.landonjw.kotlinmon.api.pokemon.data.species
 
+import ca.landonjw.kotlinmon.Kotlinmon
+import org.kodein.di.instance
+
 enum class ProvidedSpecies {
     Bulbasaur,
     Ivysaur,
@@ -19,7 +22,7 @@ enum class ProvidedSpecies {
      *      - Obviously bloats the hell out of this class and isn't very feasible.
      */
     fun get(): PokemonSpecies {
-        val speciesRepository: PokemonSpeciesRepository = TODO("figure out API dependency injection")
+        val speciesRepository: PokemonSpeciesRepository by Kotlinmon.DI.instance()
         return speciesRepository[this]
     }
 

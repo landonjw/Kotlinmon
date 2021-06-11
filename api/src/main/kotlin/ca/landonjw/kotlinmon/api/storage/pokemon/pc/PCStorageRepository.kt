@@ -1,4 +1,4 @@
-package ca.landonjw.kotlinmon.api.player.storage.pokemon.pc
+package ca.landonjw.kotlinmon.api.storage.pokemon.pc
 
 import net.minecraft.entity.player.ServerPlayerEntity
 

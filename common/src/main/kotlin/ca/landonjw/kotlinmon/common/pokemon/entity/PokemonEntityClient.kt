@@ -1,6 +1,5 @@
 package ca.landonjw.kotlinmon.common.pokemon.entity
 
-import ca.landonjw.kotlinmon.KotlinmonDI
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
@@ -9,10 +8,11 @@ import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.ModelRepository
 import net.minecraft.network.datasync.EntityDataManager
 
-class PokemonEntityClient(private val dataManager: EntityDataManager) {
-
-    private val speciesRepository: PokemonSpeciesRepository by KotlinmonDI.inject()
-    private val modelRepository: ModelRepository by KotlinmonDI.inject(tag = "async")
+class PokemonEntityClient(
+    private val dataManager: EntityDataManager,
+    private val speciesRepository: PokemonSpeciesRepository,
+    private val modelRepository: ModelRepository
+) {
 
     val species: PokemonSpecies
         get() = speciesRepository[dataManager.get(DefaultPokemonEntity.dwSpecies)] ?: throw IllegalStateException()

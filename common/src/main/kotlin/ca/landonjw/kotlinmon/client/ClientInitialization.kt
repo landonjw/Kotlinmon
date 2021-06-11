@@ -7,6 +7,8 @@ import ca.landonjw.kotlinmon.client.render.party.PokemonPartyOverlay
 import ca.landonjw.kotlinmon.client.render.pokeball.PokeBallRenderer
 import ca.landonjw.kotlinmon.client.render.pokemon.PokemonRenderer
 import ca.landonjw.kotlinmon.common.EntityRegistry
+import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultEmptyPokeBallEntity
+import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultOccupiedPokeBallEntity
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
 import net.minecraft.client.renderer.model.IBakedModel
@@ -21,12 +23,19 @@ import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.client.registry.RenderingRegistry
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 
-object ClientInitialization {
+class ClientInitialization(
+    private val entityRegistry: EntityRegistry,
+    private val emptyPokeBallRendererFactory: (EntityRendererManager) -> PokeBallRenderer<DefaultEmptyPokeBallEntity>,
+    private val occupiedPokeBallRendererFactory: (EntityRendererManager) -> PokeBallRenderer<DefaultOccupiedPokeBallEntity>,
+    private val pokemonPartyOverlay: PokemonPartyOverlay,
+    private val clientPartySynchronizer: ClientPartySynchronizer,
+    private val keyBindingController: KeyBindingController
+) {
 
     private fun registerRenderers() {
-        registerEntityRenderer(EntityRegistry.POKEMON) { PokemonRenderer(it) }
-        registerEntityRenderer(EntityRegistry.EMPTY_POKEBALL) { PokeBallRenderer(it) }
-        registerEntityRenderer(EntityRegistry.OCCUPIED_POKEBALL) { PokeBallRenderer(it) }
+        registerEntityRenderer(entityRegistry.POKEMON) { PokemonRenderer(it) }
+        registerEntityRenderer(entityRegistry.EMPTY_POKEBALL, emptyPokeBallRendererFactory)
+        registerEntityRenderer(entityRegistry.OCCUPIED_POKEBALL, occupiedPokeBallRendererFactory)
     }
 
     private fun <T : Entity> registerEntityRenderer(
@@ -38,9 +47,9 @@ object ClientInitialization {
 
     fun onClientSetup(event: FMLClientSetupEvent) {
         registerRenderers()
-        MinecraftForge.EVENT_BUS.register(PokemonPartyOverlay())
-        MinecraftForge.EVENT_BUS.register(ClientPartySynchronizer)
-        KeyBindingController.registerBindings()
+        MinecraftForge.EVENT_BUS.register(pokemonPartyOverlay)
+        MinecraftForge.EVENT_BUS.register(clientPartySynchronizer)
+        keyBindingController.registerBindings()
     }
 
     /* TODO: I KNOW there is a better way to do this, but it's going to end up in a rabbit hole

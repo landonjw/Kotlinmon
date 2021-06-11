@@ -4,8 +4,7 @@ import net.minecraftforge.eventbus.api.BusBuilder
 import net.minecraftforge.eventbus.api.IEventBus
 import org.kodein.di.DI as KodeinDI
 
-
-object KotlinmonAPI {
+object Kotlinmon {
 
     const val MOD_ID = "kotlinmon"
     const val MOD_NAME = "Kotlinmon"

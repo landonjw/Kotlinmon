@@ -1,6 +1,6 @@
 package ca.landonjw.kotlinmon.client.party
 
-import ca.landonjw.kotlinmon.api.player.storage.StorageTransaction
+import ca.landonjw.kotlinmon.api.storage.StorageTransaction
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
 import net.minecraft.util.text.TranslationTextComponent
 

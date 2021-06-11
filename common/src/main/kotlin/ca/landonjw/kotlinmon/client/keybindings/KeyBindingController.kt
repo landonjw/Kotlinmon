@@ -4,12 +4,12 @@ import net.minecraft.client.settings.KeyBinding
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.client.registry.ClientRegistry
 
-object KeyBindingController {
+class KeyBindingController(
+    private val bindings: List<KeyBinding>
+) {
 
     fun registerBindings() {
-        registerBinding(SelectPartySlotBinding(SelectPartySlotBinding.Direction.Previous))
-        registerBinding(SelectPartySlotBinding(SelectPartySlotBinding.Direction.Next))
-        registerBinding(ThrowPartyPokemonBinding())
+        bindings.forEach { binding -> registerBinding(binding) }
     }
 
     private fun registerBinding(binding: KeyBinding) {

@@ -1,7 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.party
 
 import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.KotlinmonDI
+import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
 import ca.landonjw.kotlinmon.client.pokemon.getSpriteLocation
@@ -12,11 +12,11 @@ import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 
-class PokemonPartyOverlay : AbstractGui() {
+class PokemonPartyOverlay(
+    private val clientParty: ClientPartyStorage
+) : AbstractGui() {
 
-    private val clientParty: ClientPartyStorage by KotlinmonDI.inject()
-
-    private val backgroundTexture: ResourceLocation = ResourceLocation(Kotlinmon.MODID, "party/background.png")
+    private val backgroundTexture: ResourceLocation = ResourceLocation(Kotlinmon.MOD_ID, "party/background.png")
     private val backgroundStartX: Double = 0.0
     private val backgroundStartY: Double = 70.0
     private val backgroundPaddingX: Double = 8.0
@@ -25,7 +25,7 @@ class PokemonPartyOverlay : AbstractGui() {
     private val spriteSize: Double = 24.0
     private val spritePadding: Double = 8.0
 
-    private val selectedSlotTexture: ResourceLocation = ResourceLocation(Kotlinmon.MODID, "party/selected_slot.png")
+    private val selectedSlotTexture: ResourceLocation = ResourceLocation(Kotlinmon.MOD_ID, "party/selected_slot.png")
     private val selectedSlotSize: Double = 32.0
 
     @SubscribeEvent
@@ -102,7 +102,7 @@ class PokemonPartyOverlay : AbstractGui() {
 
     private fun spriteTextureExists(location: ResourceLocation): Boolean {
         // TODO: Does this have performance implications?
-        return Kotlinmon::class.java.getResource("/assets/${location.namespace}/${location.path}") != null
+        return KotlinmonBootstrap::class.java.getResource("/assets/${location.namespace}/${location.path}") != null
     }
 
 }

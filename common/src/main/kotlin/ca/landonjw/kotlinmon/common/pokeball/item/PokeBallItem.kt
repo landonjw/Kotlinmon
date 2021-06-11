@@ -1,11 +1,10 @@
 package ca.landonjw.kotlinmon.common.pokeball.item
 
-import ca.landonjw.kotlinmon.KotlinmonDI
+import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.pokeball.PokeBall
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallRepository
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
-import ca.landonjw.kotlinmon.client.render.models.smd.repository.ModelRepository
 import ca.landonjw.kotlinmon.client.render.pokeball.PokeBallItemRenderer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -15,12 +14,15 @@ import net.minecraft.util.Hand
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.StringTextComponent
 import net.minecraft.world.World
+import org.kodein.di.instance
 import java.util.concurrent.Callable
 
-class PokeBallItem : Item(Properties().setISTER { Callable{ PokeBallItemRenderer() } }) {
+class PokeBallItem(
+    private val pokeBallRepository: PokeBallRepository,
+    private val itemRenderer: PokeBallItemRenderer
+) : Item(Properties().setISTER { Callable{ itemRenderer } }) {
 
-    private val pokeBallRepository: PokeBallRepository by KotlinmonDI.inject()
-    private val pokeBallFactory: PokeBallFactory by KotlinmonDI.inject()
+    private val pokeBallFactory: PokeBallFactory by Kotlinmon.DI.instance()
 
     override fun getDisplayName(stack: ItemStack): ITextComponent {
         val name = getPokeBall(stack)?.name ?: "Poke Ball"

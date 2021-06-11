@@ -1,30 +1,22 @@
 package ca.landonjw.kotlinmon.server
 
-import ca.landonjw.kotlinmon.server.command.*
-import ca.landonjw.kotlinmon.server.command.arguments.PokeBallArgument
-import ca.landonjw.kotlinmon.server.command.arguments.SpeciesArgument
+import ca.landonjw.kotlinmon.server.command.arguments.KotlinmonCommandArgument
+import ca.landonjw.kotlinmon.server.command.executors.KotlinmonCommand
 import com.mojang.brigadier.arguments.ArgumentType
 import net.minecraft.command.arguments.ArgumentSerializer
 import net.minecraft.command.arguments.ArgumentTypes
 import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 
-object ServerInitialization {
+class ServerInitialization(
+    private val commandArguments: List<KotlinmonCommandArgument<out Any>>,
+    private val commands: List<KotlinmonCommand>
+) {
 
     @SubscribeEvent
     fun onCommandRegistration(event: RegisterCommandsEvent) {
-        registerCommandArguments()
-
-        CreatePokemon.register(event.dispatcher)
-        GivePokeBall.register(event.dispatcher)
-        AddToPartyCommand.register(event.dispatcher)
-        SetToPartyCommand.register(event.dispatcher)
-        PopulateDevPartyCommand.register(event.dispatcher)
-    }
-
-    private fun registerCommandArguments() {
-        registerCommandArgument("poke_ball") { PokeBallArgument() }
-        registerCommandArgument("species") { SpeciesArgument() }
+        commandArguments.forEach { argument -> registerCommandArgument(argument.name) { argument } }
+        commands.forEach { command -> command.register(event.dispatcher) }
     }
 
     private inline fun <reified T : ArgumentType<*>> registerCommandArgument(name: String, crossinline supplier: () -> T) {

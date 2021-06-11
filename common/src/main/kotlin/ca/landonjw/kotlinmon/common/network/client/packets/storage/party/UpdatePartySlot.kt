@@ -1,6 +1,6 @@
 package ca.landonjw.kotlinmon.common.network.client.packets.storage.party
 
-import ca.landonjw.kotlinmon.KotlinmonDI
+import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
 import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
@@ -9,6 +9,7 @@ import ca.landonjw.kotlinmon.api.network.PacketToClient
 import ca.landonjw.kotlinmon.common.pokemon.network.PokemonToClientDataEncoder
 import net.minecraft.network.PacketBuffer
 import net.minecraftforge.fml.network.NetworkEvent
+import org.kodein.di.instance
 
 /**
  * Updates a party slot on the client.
@@ -21,13 +22,13 @@ import net.minecraftforge.fml.network.NetworkEvent
 class UpdatePartySlot : PacketToClient {
 
     // Client Side -------------------------------------------------------------
-    private val decoder: ClientPokemonDecoder by KotlinmonDI.inject()
+    private val decoder: ClientPokemonDecoder by Kotlinmon.DI.instance()
     private var clientPokemon: ClientPokemonData? = null
-    private val clientParty: ClientPartyStorage by KotlinmonDI.inject()
+    private val clientParty: ClientPartyStorage by Kotlinmon.DI.instance()
     // -------------------------------------------------------------------------
 
     // Server Side -------------------------------------------------------------
-    private val encoder: PokemonToClientDataEncoder by KotlinmonDI.inject()
+    private val encoder: PokemonToClientDataEncoder by Kotlinmon.DI.instance()
     private var pokemon: Pokemon? = null
     // -------------------------------------------------------------------------
 
