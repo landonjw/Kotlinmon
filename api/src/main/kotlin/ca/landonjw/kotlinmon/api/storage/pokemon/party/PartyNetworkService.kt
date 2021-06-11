@@ -4,8 +4,8 @@ import net.minecraft.entity.player.ServerPlayerEntity
 
 interface PartyNetworkService {
 
-    fun sendParty(player: ServerPlayerEntity)
+    fun sendParty(player: ServerPlayerEntity, party: PartyStorage)
 
-    fun updatePartySlot(player: ServerPlayerEntity, slot: Int)
+    fun updatePartySlot(player: ServerPlayerEntity, party: PartyStorage, slot: Int)
 
 }

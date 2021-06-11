@@ -14,7 +14,7 @@ object StorageModule {
     val bindings = DI.Module(name = "Storage") {
         bind<PartyStorageRepository> { singleton { DefaultPartyStorageRepository(factory()) } }
         bindFactory<UUID, PartyStorage> { owner -> DefaultPartyStorage(owner, instance()) }
-        bind<PartyNetworkService> { singleton { DefaultPartyNetworkService(instance(), instance()) } }
+        bind<PartyNetworkService> { singleton { DefaultPartyNetworkService(instance()) } }
     }
 
 }

@@ -29,8 +29,8 @@ class DefaultPartyStorage(
     override fun set(slot: Int, pokemon: Pokemon?): StorageTransaction {
         validateSlotInCapacity(slot)
         this.pokemon[slot] = pokemon
-        getOwnerAsPlayer()?.let {
-            this.partyNetworkService.updatePartySlot(it, slot)
+        getOwnerAsPlayer()?.let { owner ->
+            this.partyNetworkService.updatePartySlot(owner, this, slot)
         }
         return StorageTransaction(StorageTransaction.Result.SUCCESS)
     }
@@ -40,8 +40,8 @@ class DefaultPartyStorage(
         if (emptyIndex == -1) return StorageTransaction.fail(TranslationTextComponent("kotlinmon.storage.party.party-full"))
 
         this.pokemon[emptyIndex] = pokemon
-        getOwnerAsPlayer()?.let {
-            this.partyNetworkService.updatePartySlot(it, emptyIndex)
+        getOwnerAsPlayer()?.let { owner ->
+            this.partyNetworkService.updatePartySlot(owner, this, emptyIndex)
         }
         return StorageTransaction.success()
     }

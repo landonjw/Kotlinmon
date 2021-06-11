@@ -10,6 +10,7 @@ import ca.landonjw.kotlinmon.common.pokemon.data.species.loader.PokemonTypeAdapt
 import ca.landonjw.kotlinmon.common.pokemon.data.species.type.DefaultPokemonTypeRepository
 import ca.landonjw.kotlinmon.common.pokemon.entity.DefaultPokemonEntity
 import ca.landonjw.kotlinmon.common.pokemon.entity.PokemonEntityClient
+import ca.landonjw.kotlinmon.common.pokemon.network.PokemonToClientDataEncoder
 import net.minecraft.network.datasync.EntityDataManager
 import org.kodein.di.*
 
@@ -23,6 +24,7 @@ object PokemonModule {
         bind<PokemonTypeAdapter> { singleton { PokemonTypeAdapter(instance()) } }
         bind<PokemonSpeciesLoader> { singleton { PokemonSpeciesLoader(instance()) } }
         bind<PokemonFactory> { singleton { DefaultPokemonFactory(factory()) } }
+        bind<PokemonToClientDataEncoder> { singleton { PokemonToClientDataEncoder() } }
     }
 
 }
