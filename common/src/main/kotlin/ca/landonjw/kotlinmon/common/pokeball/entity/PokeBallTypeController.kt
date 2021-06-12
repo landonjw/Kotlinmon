@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.network.datasync.DataParameter
 import net.minecraft.network.datasync.DataSerializers
 import net.minecraft.network.datasync.EntityDataManager
-import kotlin.reflect.KProperty
 
 open class PokeBallTypeController constructor(
     private val dataManager: EntityDataManager,
@@ -26,11 +25,11 @@ open class PokeBallTypeController constructor(
         return pokeBallTypeParams[clazz]!!
     }
 
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): PokeBall {
+    fun get(): PokeBall {
         return pokeBallRepository[dataManager.get(getOrCreateDataParam())] ?: ProvidedPokeBall.PokeBall
     }
 
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: PokeBall) {
+    fun set(value: PokeBall) {
         dataManager.set(getOrCreateDataParam(), value.name)
     }
 

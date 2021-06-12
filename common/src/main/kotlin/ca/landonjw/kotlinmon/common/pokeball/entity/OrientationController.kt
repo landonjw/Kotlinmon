@@ -37,11 +37,11 @@ open class OrientationController constructor(
 
     private fun Vector3d.toRotations(): Rotations = Rotations(this.x.toFloat(), this.y.toFloat(), this.z.toFloat())
 
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): Vector3d {
+    fun get(): Vector3d {
         return dataManager.get(getOrCreateDataParam()).toVector3d()
     }
 
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Vector3d) {
+    fun set(value: Vector3d) {
         dataManager.set(getOrCreateDataParam(), value.toRotations())
     }
 

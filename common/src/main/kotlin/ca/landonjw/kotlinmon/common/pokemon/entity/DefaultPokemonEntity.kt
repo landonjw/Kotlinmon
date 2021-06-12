@@ -5,6 +5,7 @@ import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 import ca.landonjw.kotlinmon.api.pokemon.entity.PokemonEntity
 import ca.landonjw.kotlinmon.common.EntityRegistry
+import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultOccupiedPokeBallEntity
 import net.minecraft.entity.AgeableEntity
 import net.minecraft.entity.EntitySize
 import net.minecraft.entity.EntityType
@@ -21,29 +22,36 @@ import net.minecraftforge.fml.network.NetworkHooks
 
 class DefaultPokemonEntity : PokemonEntity, TameableEntity {
 
-    lateinit var clientComponent: PokemonEntityClient
-        private set
+    val clientComponent: PokemonEntityClient
 
     override lateinit var pokemon: Pokemon
         private set
 
     /**
-     * Used for Minecraft's entity type registration. **Do not use!**
+     * Primary constructor.
+     *
+     * @param type The type of the entity being registered. This will likely always be [DefaultPokemonEntity].
+     * @param world The world the entity is being added to.
+     * @param pokemon The pokemon that this entity represents. **This should always be non-null server-side!**.
+     *                This is nullable to allow for client side to initialize the entity without failing exceptionally,
+     *                as the pokemon only exists on the server side.
+     * @param clientComponentFactory A factory for creating the controller for the client representation.
      */
-    constructor(type: EntityType<out DefaultPokemonEntity>, world: World) : super(type, world) {
+    constructor(
+        type: EntityType<out DefaultPokemonEntity>,
+        world: World,
+        pokemon: Pokemon?,
+        clientComponentFactory: (EntityDataManager) -> PokemonEntityClient
+    ) : super(type, world) {
+        registerDefaultDataParams()
+        this.clientComponent = clientComponentFactory(this.dataManager)
+        if (pokemon != null) setPokemon(pokemon)
+    }
+
+    private fun registerDefaultDataParams() {
         dataManager.register(dwSpecies, "")
         dataManager.register(dwForm, 0)
         dataManager.register(dwTexture, "")
-    }
-
-    constructor(
-        world: World,
-        pokemon: Pokemon,
-        entityRegistry: EntityRegistry,
-        clientComponentFactory: (EntityDataManager) -> PokemonEntityClient
-    ) : this(entityRegistry.POKEMON.get(), world) {
-        this.clientComponent = clientComponentFactory(this.dataManager)
-        setPokemon(pokemon)
     }
 
     override fun asMinecraftEntity() = this

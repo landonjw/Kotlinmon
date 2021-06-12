@@ -9,14 +9,16 @@ import ca.landonjw.kotlinmon.common.EntityRegistry
 import ca.landonjw.kotlinmon.common.ItemRegistry
 import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultEmptyPokeBallEntity
 import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultOccupiedPokeBallEntity
+import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultPokeBallEntity
 import net.minecraft.entity.EntityType
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
 
 class DefaultPokeBallFactory(
     private val itemRegistry: ItemRegistry,
-    private val emptyBallFactory: (PokeBallFactoryParams) -> EmptyPokeBallEntity,
-    private val occupiedBallFactory: (PokeBallFactoryParams) -> OccupiedPokeBallEntity
+    private val entityRegistry: EntityRegistry,
+    private val emptyBallFactory: (EmptyPokeBallFactoryParams) -> EmptyPokeBallEntity,
+    private val occupiedBallFactory: (OccupiedPokeBallFactoryParams) -> OccupiedPokeBallEntity
 ): PokeBallFactory {
 
     override fun createItem(pokeBall: PokeBall, amount: Int): ItemStack {
@@ -26,19 +28,26 @@ class DefaultPokeBallFactory(
     }
 
     override fun createEntity(pokeBall: PokeBall, world: World): EmptyPokeBallEntity {
-        val params = PokeBallFactoryParams(pokeBall, world)
+        val params = EmptyPokeBallFactoryParams(entityRegistry.EMPTY_POKEBALL.get(), pokeBall, world)
         return emptyBallFactory(params)
     }
 
     override fun createEntity(pokeBall: PokeBall, world: World, occupant: Pokemon): OccupiedPokeBallEntity {
-        val params = PokeBallFactoryParams(pokeBall, world, occupant)
+        val params = OccupiedPokeBallFactoryParams(entityRegistry.OCCUPIED_POKEBALL.get(), pokeBall, world, occupant)
         return occupiedBallFactory(params)
     }
 
 }
 
-data class PokeBallFactoryParams(
+data class EmptyPokeBallFactoryParams(
+    val type: EntityType<out DefaultEmptyPokeBallEntity>,
+    val pokeBall: PokeBall,
+    val world: World
+)
+
+data class OccupiedPokeBallFactoryParams(
+    val type: EntityType<out DefaultOccupiedPokeBallEntity>,
     val pokeBall: PokeBall,
     val world: World,
-    val occupant: Pokemon? = null
+    val occupant: Pokemon
 )

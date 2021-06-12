@@ -4,14 +4,11 @@ import ca.landonjw.kotlinmon.server.command.arguments.KotlinmonCommandArgument
 import ca.landonjw.kotlinmon.server.command.arguments.PokeBallArgument
 import ca.landonjw.kotlinmon.server.command.arguments.SpeciesArgument
 import ca.landonjw.kotlinmon.server.command.executors.*
-import org.kodein.di.DI
-import org.kodein.di.bind
-import org.kodein.di.instance
-import org.kodein.di.singleton
+import org.kodein.di.*
 
 object CommandModule {
 
-    val bindings = DI.Module(name = "Command") {
+    operator fun invoke() = DI.Module(name = "Command") {
         // Commands
         bind<List<KotlinmonCommand>>() with singleton {
             listOf(
@@ -24,10 +21,12 @@ object CommandModule {
         }
 
         // Command Arguments
+        bind<SpeciesArgument>() with provider { SpeciesArgument(instance()) }
+        bind<PokeBallArgument>() with provider { PokeBallArgument(instance()) }
         bind<List<KotlinmonCommandArgument<out Any>>>() with singleton {
             listOf(
-                PokeBallArgument(instance()),
-                SpeciesArgument(instance())
+                instance<SpeciesArgument>(),
+                instance<PokeBallArgument>()
             )
         }
     }

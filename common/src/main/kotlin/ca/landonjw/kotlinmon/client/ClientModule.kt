@@ -17,8 +17,8 @@ import org.kodein.di.*
 
 object ClientModule {
 
-    val bindings = DI.Module(name = "Client") {
-        import(KeyBindingModule.bindings)
+    operator fun invoke() = DI.Module(name = "Client") {
+        import(KeyBindingModule())
         bind<ClientInitialization>() with singleton { ClientInitialization(instance(), factory(), factory(), instance(), instance(), instance()) }
         bind<PokeBallRenderer<DefaultEmptyPokeBallEntity>>() with factory { manager: EntityRendererManager -> PokeBallRenderer(manager, instance(tag = "async")) }
         bind<PokeBallRenderer<DefaultOccupiedPokeBallEntity>>() with factory { manager: EntityRendererManager -> PokeBallRenderer(manager, instance(tag = "async")) }

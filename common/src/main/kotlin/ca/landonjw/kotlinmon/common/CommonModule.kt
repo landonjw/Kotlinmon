@@ -9,17 +9,17 @@ import org.kodein.di.*
 
 object CommonModule {
 
-    val bindings = DI.Module(name = "Common") {
-        import(PokeBallModule.bindings)
-        import(PokemonModule.bindings)
-        import(NetworkModule.bindings)
+    operator fun invoke() = DI.Module(name = "Common") {
+        import(PokeBallModule())
+        import(PokemonModule())
+        import(NetworkModule())
 
         // Events
         bind<IEventBus>() with singleton { Kotlinmon.EVENT_BUS }
 
         // Registries
-        bind<EntityRegistry>() with singleton { EntityRegistry() }
-        bind<ItemRegistry>() with singleton { ItemRegistry(provider()) }
+        bind<EntityRegistry>() with eagerSingleton { EntityRegistry(factory(), factory(), factory()) }
+        bind<ItemRegistry>() with eagerSingleton { ItemRegistry(provider()) }
     }
 
 }

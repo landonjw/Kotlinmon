@@ -7,6 +7,7 @@ import ca.landonjw.kotlinmon.server.ServerInitialization
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.client.event.ModelBakeEvent
 import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent
 import net.minecraftforge.fml.DistExecutor
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
@@ -32,6 +33,10 @@ class KotlinmonInitialization(
                     clientInitialization.onClientSetup(event)
                 }
             }
+        }
+
+        FMLJavaModLoadingContext.get().modEventBus.addListener{ event: EntityAttributeCreationEvent ->
+            entityRegistry.registryAttributes(event)
         }
 
         // Register entities and items

@@ -51,6 +51,18 @@ class RotationOffset : SmdRenderProperty<Vector3f> {
     }
 }
 
+class GlobalRotationOffset : SmdRenderProperty<Vector3f> {
+    override val value: Vector3f
+
+    constructor(angles: Vector3f) {
+        value = angles
+    }
+
+    constructor(angle: Float, axis: Axis) {
+        value = Vector3f(axis.x * angle, axis.y * angle, axis.z * angle)
+    }
+}
+
 /**
  * Defines a global translation for a model.
  *

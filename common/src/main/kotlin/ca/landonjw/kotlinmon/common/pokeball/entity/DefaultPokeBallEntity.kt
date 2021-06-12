@@ -13,16 +13,16 @@ import net.minecraft.world.World
 
 abstract class DefaultPokeBallEntity : PokeBallEntity, ThrowableEntity {
 
-    private lateinit var pokeBallController: PokeBallTypeController
-    private lateinit var orientationController: OrientationController
+    private val pokeBallController: PokeBallTypeController
+    private val orientationController: OrientationController
 
-    override var pokeBallType: PokeBall by pokeBallController
-    override var orientation: Vector3d by orientationController
+    override var pokeBallType: PokeBall
+        get() = pokeBallController.get()
+        set(value) = pokeBallController.set(value)
 
-    /**
-     * Used for Minecraft's entity type registration. **Do not use!**
-     */
-    constructor(type: EntityType<out DefaultPokeBallEntity>, world: World) : super(type, world)
+    override var orientation: Vector3d
+        get() = orientationController.get()
+        set(value) = orientationController.set(value)
 
     constructor(
         type: EntityType<out DefaultPokeBallEntity>,
@@ -30,17 +30,18 @@ abstract class DefaultPokeBallEntity : PokeBallEntity, ThrowableEntity {
         pokeBallType: PokeBall,
         pokeBallControllerFactory: (Entity) -> PokeBallTypeController,
         orientationControllerFactory: (Entity) -> OrientationController
-    ) : this(type, world) {
+    ) : super(type, world) {
         this.pokeBallController = pokeBallControllerFactory(this)
-        this.pokeBallType = pokeBallType
         this.orientationController = orientationControllerFactory(this)
+
+        this.pokeBallType = pokeBallType
     }
 
     override fun asMinecraftEntity(): ThrowableEntity = this
 
     override fun tick() {
         // Rotate the ball every tick to make it spin
-        this.orientation = this.orientation.add(4.0, 4.0, 0.0)
+        this.orientation = this.orientation.add(8.0, 4.0, 0.0)
         super.tick()
     }
 

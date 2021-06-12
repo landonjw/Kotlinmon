@@ -11,7 +11,7 @@ import java.util.*
 
 object StorageModule {
 
-    val bindings = DI.Module(name = "Storage") {
+    operator fun invoke() = DI.Module(name = "Storage") {
         bind<PartyStorageRepository>() with singleton { DefaultPartyStorageRepository(factory()) }
         bind<PartyStorage>() with factory { owner: UUID -> DefaultPartyStorage(owner, instance()) }
         bind<PartyNetworkService>() with singleton { DefaultPartyNetworkService(instance()) }

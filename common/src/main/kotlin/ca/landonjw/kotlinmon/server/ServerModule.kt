@@ -9,9 +9,9 @@ import org.kodein.di.singleton
 
 object ServerModule {
 
-    val bindings = DI.Module(name = "Server") {
-        import(StorageModule.bindings)
-        import(CommandModule.bindings)
+    operator fun invoke() = DI.Module(name = "Server") {
+        import(StorageModule())
+        import(CommandModule())
         bind<ServerInitialization>() with singleton { ServerInitialization(instance(), instance()) }
     }
 

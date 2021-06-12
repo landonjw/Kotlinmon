@@ -4,6 +4,7 @@ import ca.landonjw.kotlinmon.client.ClientModule
 import ca.landonjw.kotlinmon.common.CommonModule
 import ca.landonjw.kotlinmon.server.ServerModule
 import net.minecraftforge.fml.common.Mod
+import org.kodein.di.description
 import org.kodein.di.instance
 import org.kodein.di.newInstance
 
@@ -11,7 +12,11 @@ import org.kodein.di.newInstance
 class KotlinmonBootstrap {
 
     init {
-        Kotlinmon.initialize(listOf(CommonModule.bindings, ServerModule.bindings, ClientModule.bindings))
+        Kotlinmon.initialize(listOf(CommonModule(), ServerModule(), ClientModule()))
+        println("""
+            
+            ${Kotlinmon.DI.container.tree.bindings.description()}
+        """.trimIndent())
         val initializer by Kotlinmon.DI.newInstance { KotlinmonInitialization(instance(), instance(), instance(), instance()) }
         initializer.initialize()
     }

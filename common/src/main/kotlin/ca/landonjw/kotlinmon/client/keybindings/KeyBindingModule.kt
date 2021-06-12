@@ -8,7 +8,7 @@ import org.kodein.di.singleton
 
 object KeyBindingModule {
 
-    val bindings = DI.Module(name = "Keybindings") {
+    operator fun invoke() = DI.Module(name = "Keybindings") {
         bind<List<KeyBinding>>() with singleton {
             listOf(
                 SelectPartySlotBinding(SelectPartySlotBinding.Direction.Previous, instance()),
