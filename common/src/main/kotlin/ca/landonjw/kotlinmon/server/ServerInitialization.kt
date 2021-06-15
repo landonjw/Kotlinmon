@@ -1,5 +1,11 @@
 package ca.landonjw.kotlinmon.server
 
+import ca.landonjw.kotlinmon.Kotlinmon
+import ca.landonjw.kotlinmon.common.network.PacketHandlerRegistrationEvent
+import ca.landonjw.kotlinmon.common.network.packets.party.SynchronizePartyRequest
+import ca.landonjw.kotlinmon.common.network.packets.party.ThrowPartyPokemon
+import ca.landonjw.kotlinmon.common.network.server.handlers.storage.party.SynchronizePartyRequestHandler
+import ca.landonjw.kotlinmon.common.network.server.handlers.storage.party.ThrowPartyPokemonHandler
 import ca.landonjw.kotlinmon.server.command.arguments.KotlinmonCommandArgument
 import ca.landonjw.kotlinmon.server.command.executors.KotlinmonCommand
 import com.mojang.brigadier.arguments.ArgumentType
@@ -10,8 +16,15 @@ import net.minecraftforge.eventbus.api.SubscribeEvent
 
 class ServerInitialization(
     private val commandArguments: List<KotlinmonCommandArgument<out Any>>,
-    private val commands: List<KotlinmonCommand>
+    private val commands: List<KotlinmonCommand>,
+    private val synchronizePartyRequestHandler: SynchronizePartyRequestHandler,
+    private val throwPartyPokemonHandler: ThrowPartyPokemonHandler
 ) {
+
+    init {
+        // TODO: Remove on module split
+        Kotlinmon.EVENT_BUS.register(this)
+    }
 
     @SubscribeEvent
     fun onCommandRegistration(event: RegisterCommandsEvent) {
@@ -27,6 +40,12 @@ class ServerInitialization(
             // Means argument is already registered, when running only on client side.
             // TODO: More elegant way of handling this? Curious why this is even registered at this point...
         }
+    }
+
+    @SubscribeEvent
+    fun onPacketRegistration(event: PacketHandlerRegistrationEvent) {
+        event.registerServerPacketHandler(SynchronizePartyRequest::class.java, synchronizePartyRequestHandler)
+        event.registerServerPacketHandler(ThrowPartyPokemon::class.java, throwPartyPokemonHandler)
     }
 
 }

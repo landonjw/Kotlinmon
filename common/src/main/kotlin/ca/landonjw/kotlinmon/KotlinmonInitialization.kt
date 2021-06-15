@@ -3,6 +3,7 @@ package ca.landonjw.kotlinmon
 import ca.landonjw.kotlinmon.client.ClientInitialization
 import ca.landonjw.kotlinmon.common.EntityRegistry
 import ca.landonjw.kotlinmon.common.ItemRegistry
+import ca.landonjw.kotlinmon.common.network.PacketRegistrationEvent
 import ca.landonjw.kotlinmon.server.ServerInitialization
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.client.event.ModelBakeEvent
@@ -20,6 +21,8 @@ class KotlinmonInitialization(
 ) {
 
     fun initialize() {
+        Kotlinmon.EVENT_BUS.start()
+
         // Setup server initialization hooks
         MinecraftForge.EVENT_BUS.register(serverInitialization)
 
@@ -35,13 +38,16 @@ class KotlinmonInitialization(
             }
         }
 
-        FMLJavaModLoadingContext.get().modEventBus.addListener{ event: EntityAttributeCreationEvent ->
+        FMLJavaModLoadingContext.get().modEventBus.addListener { event: EntityAttributeCreationEvent ->
             entityRegistry.registryAttributes(event)
         }
 
         // Register entities and items
         entityRegistry.register()
         itemRegistry.register()
+
+        // Register packets
+        Kotlinmon.EVENT_BUS.post(PacketRegistrationEvent())
     }
 
 }

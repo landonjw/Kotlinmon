@@ -1,5 +1,6 @@
 package ca.landonjw.kotlinmon.client
 
+import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.keybindings.KeyBindingController
 import ca.landonjw.kotlinmon.client.party.ClientPartySynchronizer
 import ca.landonjw.kotlinmon.client.render.models.CustomModelDecorator
@@ -7,6 +8,11 @@ import ca.landonjw.kotlinmon.client.render.party.PokemonPartyOverlay
 import ca.landonjw.kotlinmon.client.render.pokeball.PokeBallRenderer
 import ca.landonjw.kotlinmon.client.render.pokemon.PokemonRenderer
 import ca.landonjw.kotlinmon.common.EntityRegistry
+import ca.landonjw.kotlinmon.common.network.PacketHandlerRegistrationEvent
+import ca.landonjw.kotlinmon.common.network.client.handlers.storage.party.UpdatePartyHandler
+import ca.landonjw.kotlinmon.common.network.client.handlers.storage.party.UpdatePartySlotHandler
+import ca.landonjw.kotlinmon.common.network.packets.party.UpdateParty
+import ca.landonjw.kotlinmon.common.network.packets.party.UpdatePartySlot
 import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultEmptyPokeBallEntity
 import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultOccupiedPokeBallEntity
 import net.minecraft.client.renderer.entity.EntityRenderer
@@ -29,8 +35,15 @@ class ClientInitialization(
     private val occupiedPokeBallRendererFactory: (EntityRendererManager) -> PokeBallRenderer<DefaultOccupiedPokeBallEntity>,
     private val pokemonPartyOverlay: PokemonPartyOverlay,
     private val clientPartySynchronizer: ClientPartySynchronizer,
-    private val keyBindingController: KeyBindingController
+    private val keyBindingController: KeyBindingController,
+    private val updatePartyHandler: UpdatePartyHandler,
+    private val updatePartySlotHandler: UpdatePartySlotHandler
 ) {
+
+    init {
+        // TODO: Remove on module split
+        Kotlinmon.EVENT_BUS.register(this)
+    }
 
     private fun registerRenderers() {
         registerEntityRenderer(entityRegistry.POKEMON) { PokemonRenderer(it) }
@@ -68,6 +81,12 @@ class ClientInitialization(
             val model = registry[location]
             registry[location] = CustomModelDecorator(model!!)
         }
+    }
+
+    @SubscribeEvent
+    fun onPacketRegistration(event: PacketHandlerRegistrationEvent) {
+        event.registerClientPacketHandler(UpdateParty::class.java, updatePartyHandler)
+        event.registerClientPacketHandler(UpdatePartySlot::class.java, updatePartySlotHandler)
     }
 
 }

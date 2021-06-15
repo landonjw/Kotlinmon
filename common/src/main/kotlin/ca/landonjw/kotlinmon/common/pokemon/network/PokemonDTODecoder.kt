@@ -1,14 +1,15 @@
-package ca.landonjw.kotlinmon.client.pokemon
+package ca.landonjw.kotlinmon.common.pokemon.network
 
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
+import ca.landonjw.kotlinmon.common.pokemon.PokemonDTO
 import net.minecraft.network.PacketBuffer
 
-class ClientPokemonDecoder(
+class PokemonDTODecoder(
     private val speciesRepository: PokemonSpeciesRepository
 ) {
 
-    fun decode(buf: PacketBuffer): ClientPokemonData {
+    fun decode(buf: PacketBuffer): PokemonDTO {
         // Parse species from the packet information or exit out early
         val speciesName = buf.readString()
         val species = speciesRepository[speciesName]
@@ -26,7 +27,7 @@ class ClientPokemonDecoder(
 
         val texture = buf.readString()
 
-        return ClientPokemonData(
+        return PokemonDTO(
             species = species,
             form = form,
             texture = if (texture.isNullOrEmpty()) null else texture

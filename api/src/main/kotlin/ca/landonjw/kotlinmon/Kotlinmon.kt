@@ -9,7 +9,7 @@ object Kotlinmon {
     const val MOD_ID = "kotlinmon"
     const val MOD_NAME = "Kotlinmon"
 
-    val EVENT_BUS: IEventBus = BusBuilder().build()
+    val EVENT_BUS: IEventBus = BusBuilder.builder().startShutdown().build()
 
     lateinit var DI: KodeinDI
         private set

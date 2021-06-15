@@ -1,7 +1,9 @@
 package ca.landonjw.kotlinmon.client.party
 
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
-import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.SynchronizePartyRequest
+import ca.landonjw.kotlinmon.api.storage.StorageSlot
+import ca.landonjw.kotlinmon.common.network.packets.party.SynchronizePartyRequest
+import ca.landonjw.kotlinmon.common.pokemon.PokemonDTO
 import net.minecraft.client.Minecraft
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.TickEvent
@@ -92,12 +94,12 @@ class ClientPartySynchronizer(
      * This should be delegated to when initially synchronizing from the server in order
      * to mark that the party has been synchronized and stop sending requests.
      */
-    fun synchronizeClientParty(slots: List<ClientPokemonSlot>) {
+    fun synchronizeClientParty(slots: List<StorageSlot<PokemonDTO>>) {
         // Clears the party to make sure there's no garbage left over from previous sessions
         party.clear()
         // Sets the slots in the client party storage
         for (slot in slots) {
-            party[slot.index] = slot.pokemon
+            party[slot.index] = slot.item
         }
         // Marks the party as synchronized
         partySynchronized = true

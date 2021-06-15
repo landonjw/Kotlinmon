@@ -1,22 +1,11 @@
 package ca.landonjw.kotlinmon.api.network
 
-import net.minecraft.network.PacketBuffer
-import net.minecraftforge.fml.network.NetworkEvent
-
 /**
- * A packet that is received and handled by the client.
+ * A packet that is to be distributed to a client.
  *
- * This is the basis of all packets responded by the client in Kotlinmon.
+ * This is the basis of all packets sent to clients in Kotlinmon.
  * To communicate between client and server, see [KotlinmonNetworkChannel]
  *
  * @author landonjw
  */
-interface PacketToClient {
-
-    fun readPacketData(buf: PacketBuffer)
-
-    fun writePacketData(buf: PacketBuffer)
-
-    fun processPacket(ctx: NetworkEvent.Context)
-
-}
+interface PacketToClient : Packet

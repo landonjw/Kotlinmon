@@ -3,7 +3,7 @@ package ca.landonjw.kotlinmon.client
 import ca.landonjw.kotlinmon.client.keybindings.KeyBindingModule
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
 import ca.landonjw.kotlinmon.client.party.ClientPartySynchronizer
-import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonDecoder
+import ca.landonjw.kotlinmon.common.pokemon.network.PokemonDTODecoder
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.AsyncModelRepository
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.ModelRepository
 import ca.landonjw.kotlinmon.client.render.models.smd.repository.SyncModelRepository
@@ -19,7 +19,7 @@ object ClientModule {
 
     operator fun invoke() = DI.Module(name = "Client") {
         import(KeyBindingModule())
-        bind<ClientInitialization>() with singleton { ClientInitialization(instance(), factory(), factory(), instance(), instance(), instance()) }
+        bind<ClientInitialization>() with eagerSingleton { ClientInitialization(instance(), factory(), factory(), instance(), instance(), instance(), instance(), instance()) }
         bind<PokeBallRenderer<DefaultEmptyPokeBallEntity>>() with factory { manager: EntityRendererManager -> PokeBallRenderer(manager, instance(tag = "async")) }
         bind<PokeBallRenderer<DefaultOccupiedPokeBallEntity>>() with factory { manager: EntityRendererManager -> PokeBallRenderer(manager, instance(tag = "async")) }
         bind<PokeBallItemRenderer>() with singleton { PokeBallItemRenderer(instance(tag = "async")) }
@@ -28,7 +28,7 @@ object ClientModule {
         bind<ModelRepository>("sync") with singleton { SyncModelRepository() }
         bind<ClientPartySynchronizer>() with singleton { ClientPartySynchronizer(instance(), instance()) }
         bind<ClientPartyStorage>() with singleton { ClientPartyStorage() }
-        bind<ClientPokemonDecoder>() with singleton { ClientPokemonDecoder(instance()) }
+        bind<PokemonDTODecoder>() with singleton { PokemonDTODecoder(instance()) }
     }
 
 }

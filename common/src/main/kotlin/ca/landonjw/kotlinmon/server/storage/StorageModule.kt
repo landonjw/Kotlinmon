@@ -14,7 +14,7 @@ object StorageModule {
     operator fun invoke() = DI.Module(name = "Storage") {
         bind<PartyStorageRepository>() with singleton { DefaultPartyStorageRepository(factory()) }
         bind<PartyStorage>() with factory { owner: UUID -> DefaultPartyStorage(owner, instance()) }
-        bind<PartyNetworkService>() with singleton { DefaultPartyNetworkService(instance()) }
+        bind<PartyNetworkService>() with singleton { DefaultPartyNetworkService(instance(), factory(), factory()) }
     }
 
 }

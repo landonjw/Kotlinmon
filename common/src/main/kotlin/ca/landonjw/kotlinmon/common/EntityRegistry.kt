@@ -66,7 +66,6 @@ class EntityRegistry(
     }
 
     fun registryAttributes(event: EntityAttributeCreationEvent) {
-        println("onEntityAttributeCreation")
         event.put(POKEMON.get(), DefaultPokemonEntity.prepareAttributes())
     }
 

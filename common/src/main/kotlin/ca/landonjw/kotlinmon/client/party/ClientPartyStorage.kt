@@ -1,13 +1,13 @@
 package ca.landonjw.kotlinmon.client.party
 
 import ca.landonjw.kotlinmon.api.storage.StorageTransaction
-import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
+import ca.landonjw.kotlinmon.common.pokemon.PokemonDTO
 import net.minecraft.util.text.TranslationTextComponent
 
 class ClientPartyStorage {
 
     val capacity: Int = 6
-    private val slots: Array<ClientPokemonData?> = arrayOfNulls(capacity)
+    private val slots: Array<PokemonDTO?> = arrayOfNulls(capacity)
 
     val isEmpty: Boolean
         get() = slots.isEmpty()
@@ -24,7 +24,7 @@ class ClientPartyStorage {
             }
         }
 
-    fun add(pokemon: ClientPokemonData): StorageTransaction {
+    fun add(pokemon: PokemonDTO): StorageTransaction {
         val emptyIndex = this.slots.indexOfFirst { it == null }
 
         if (emptyIndex == -1) {
@@ -51,7 +51,7 @@ class ClientPartyStorage {
         }
     }
 
-    operator fun set(slot: Int, pokemon: ClientPokemonData?): StorageTransaction {
+    operator fun set(slot: Int, pokemon: PokemonDTO?): StorageTransaction {
         validateSlotInCapacity(slot)
         this.slots[slot] = pokemon
         checkForSelectedSlotUpdate()
@@ -70,7 +70,7 @@ class ClientPartyStorage {
         return StorageTransaction(StorageTransaction.Result.SUCCESS)
     }
 
-    operator fun get(slot: Int): ClientPokemonData? {
+    operator fun get(slot: Int): PokemonDTO? {
         validateSlotInCapacity(slot)
         return slots[slot]
     }
@@ -80,7 +80,7 @@ class ClientPartyStorage {
         if (slots[selectedSlot!!] == null) selectedSlot = getAvailablePokemonSlot()
     }
 
-    fun getSelectedPokemon(): ClientPokemonData? = if (selectedSlot == null) null else slots[selectedSlot!!]
+    fun getSelectedPokemon(): PokemonDTO? = if (selectedSlot == null) null else slots[selectedSlot!!]
 
     fun selectPreviousPokemon() {
         when (selectedSlot) {

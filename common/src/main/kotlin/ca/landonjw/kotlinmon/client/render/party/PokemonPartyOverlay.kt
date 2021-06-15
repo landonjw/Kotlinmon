@@ -3,7 +3,7 @@ package ca.landonjw.kotlinmon.client.render.party
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import ca.landonjw.kotlinmon.client.party.ClientPartyStorage
-import ca.landonjw.kotlinmon.client.pokemon.ClientPokemonData
+import ca.landonjw.kotlinmon.common.pokemon.PokemonDTO
 import ca.landonjw.kotlinmon.client.pokemon.getSpriteLocation
 import ca.landonjw.kotlinmon.client.render.renderImage
 import com.mojang.blaze3d.systems.RenderSystem
@@ -89,7 +89,7 @@ class PokemonPartyOverlay(
         RenderSystem.disableAlphaTest()
     }
 
-    private fun getSpriteTexture(pokemonData: ClientPokemonData): ResourceLocation {
+    private fun getSpriteTexture(pokemonData: PokemonDTO): ResourceLocation {
         // If the pokemon has a custom texture, try to fetch a sprite for it, otherwise fall back on default sprite
         if (pokemonData.texture != null) {
             val customSprite = getSpriteLocation(pokemonData.species, pokemonData.form, pokemonData.texture)

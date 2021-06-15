@@ -1,69 +1,41 @@
 package ca.landonjw.kotlinmon.common.network
 
-import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
+import ca.landonjw.kotlinmon.api.network.Packet
 import ca.landonjw.kotlinmon.api.network.PacketToClient
 import ca.landonjw.kotlinmon.api.network.PacketToServer
-import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.UpdateParty
-import ca.landonjw.kotlinmon.common.network.client.packets.storage.party.UpdatePartySlot
-import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.SynchronizePartyRequest
-import ca.landonjw.kotlinmon.common.network.server.packets.storage.party.ThrowPartyPokemon
 import net.minecraft.entity.player.ServerPlayerEntity
 import net.minecraft.network.PacketBuffer
-import net.minecraft.util.ResourceLocation
+import net.minecraftforge.eventbus.api.IEventBus
+import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.network.NetworkDirection
-import net.minecraftforge.fml.network.NetworkEvent
-import net.minecraftforge.fml.network.NetworkRegistry
 import net.minecraftforge.fml.network.simple.SimpleChannel
 import java.util.function.BiConsumer
-import java.util.function.Supplier
 
-class SimpleChannelWrapper: KotlinmonNetworkChannel {
+class SimpleChannelWrapper(
+    private val channel: SimpleChannel,
+    private val eventBus: IEventBus,
+    private val packetRegistrations: List<(SimpleChannelWrapper) -> Unit>,
+) : KotlinmonNetworkChannel {
 
     val version = "1.0.0"
-    private var packetId = 0
-    private val channel: SimpleChannel
+    private var packetId: Int = 0
+
+    private val packetBuildersByClass: MutableMap<Class<out Packet>, SimpleChannel.MessageBuilder<out Packet>> = mutableMapOf()
 
     init {
-        channel = NetworkRegistry.ChannelBuilder.named(ResourceLocation(Kotlinmon.MOD_ID, "main"))
-            .networkProtocolVersion { version }
-            .clientAcceptedVersions { it == version }
-            .serverAcceptedVersions { it == version }
-            .simpleChannel()
-
-        registerPackets()
+        eventBus.register(this)
     }
 
-    private fun registerPackets() {
-        // Server-To-Client Packets
-        registerPacketToClient { UpdateParty() }
-        registerPacketToClient { UpdatePartySlot() }
+    @SubscribeEvent
+    fun onPacketRegistration(event: PacketRegistrationEvent) {
+        // Register all the packets in Kotlinmon.
+        packetRegistrations.forEach { it(this) }
 
-        // Client-To-Server Packets
-        registerPacketToServer { ThrowPartyPokemon() }
-        registerPacketToServer { SynchronizePartyRequest() }
-    }
-
-    private inline fun <reified T: PacketToClient> registerPacketToClient(crossinline packetFactory: () -> T) {
-        channel.messageBuilder(T::class.java, packetId++, NetworkDirection.PLAY_TO_CLIENT)
-            .encoder { msg: T, buf: PacketBuffer -> msg.writePacketData(buf) }
-            .decoder { buf: PacketBuffer -> packetFactory().apply { readPacketData(buf) } }
-            .consumer(BiConsumer { msg: T, ctx: Supplier<NetworkEvent.Context> ->
-                msg.processPacket(ctx.get())
-                ctx.get().packetHandled = true
-            })
-            .add()
-    }
-
-    private inline fun <reified T: PacketToServer> registerPacketToServer(crossinline packetFactory: () -> T) {
-        channel.messageBuilder(T::class.java, packetId++, NetworkDirection.PLAY_TO_SERVER)
-            .encoder { msg: T, buf: PacketBuffer -> msg.writePacketData(buf) }
-            .decoder { buf -> packetFactory().apply { readPacketData(buf) } }
-            .consumer(BiConsumer { msg: T, ctx: Supplier<NetworkEvent.Context> ->
-                msg.processPacket(ctx.get())
-                ctx.get().packetHandled = true
-            })
-            .add()
+        // Send an event to signal the registration of packets into the channel, allowing them to bind handlers.
+        val registerEvent = PacketHandlerRegistrationEvent(packetBuildersByClass)
+        eventBus.post(registerEvent)
+        registerEvent.packetBuildersByClass.values.forEach { builder -> builder.add() }
     }
 
     override fun sendToServer(packet: PacketToServer) {
@@ -72,6 +44,30 @@ class SimpleChannelWrapper: KotlinmonNetworkChannel {
 
     override fun sendToClient(packet: PacketToClient, target: ServerPlayerEntity) {
         channel.sendTo(packet, target.connection.netManager, NetworkDirection.PLAY_TO_CLIENT)
+    }
+
+    fun <T : PacketToClient> registerClientPacket(clazz: Class<T>, provider: () -> T) {
+        val builder = getOrCreateBuilder(clazz, NetworkDirection.PLAY_TO_CLIENT)
+        builder.encoder { msg: T, buf: PacketBuffer -> msg.encodeData(buf) }
+        builder.decoder { buf: PacketBuffer -> provider().apply { decodeData(buf) } }
+        builder.consumer(BiConsumer { msg, ctx -> ctx.get().packetHandled = true })
+    }
+
+    fun <T : PacketToServer> registerServerPacket(clazz: Class<T>, provider: () -> T) {
+        val builder = getOrCreateBuilder(clazz, NetworkDirection.PLAY_TO_SERVER)
+        builder.encoder { msg: T, buf: PacketBuffer -> msg.encodeData(buf) }
+        builder.decoder { buf: PacketBuffer -> provider().apply { decodeData(buf) } }
+        builder.consumer(BiConsumer { msg, ctx -> ctx.get().packetHandled = true })
+    }
+
+    fun <T : Packet> getOrCreateBuilder(clazz: Class<T>, direction: NetworkDirection): SimpleChannel.MessageBuilder<T> {
+        // Return the builder if it's already populated in the map.
+        if (packetBuildersByClass[clazz] != null) return packetBuildersByClass[clazz] as SimpleChannel.MessageBuilder<T>
+
+        // If it's not populated in the map, create a builder, add it to the map, and then return it.
+        val builder = channel.messageBuilder(clazz, packetId++, direction)
+        packetBuildersByClass[clazz] = builder
+        return builder
     }
 
 }

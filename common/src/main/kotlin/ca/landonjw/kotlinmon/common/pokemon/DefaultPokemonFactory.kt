@@ -26,9 +26,3 @@ class DefaultPokemonFactory(
     }
 
 }
-
-data class PokemonEntityFactoryParams(
-    val type: EntityType<out DefaultPokemonEntity>,
-    val pokemon: Pokemon,
-    val world: World
-)
