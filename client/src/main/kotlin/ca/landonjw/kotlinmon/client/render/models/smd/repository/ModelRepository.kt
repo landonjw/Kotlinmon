@@ -5,7 +5,7 @@ import net.minecraft.util.ResourceLocation
 
 interface ModelRepository {
 
-    operator fun get(location: ResourceLocation): SmdModel? = getModel(location)
+    suspend fun getModelAsync(location: ResourceLocation): SmdModel?
 
     fun getModel(location: ResourceLocation): SmdModel?
 

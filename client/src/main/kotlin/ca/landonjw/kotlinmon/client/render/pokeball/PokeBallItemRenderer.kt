@@ -42,7 +42,7 @@ class PokeBallItemRenderer(
     ) {
         val item = stack.item as? PokeBallItem ?: return
         val pokeBall = item.getPokeBall(stack) ?: ProvidedPokeBall.PokeBall
-        val pokeBallModel = modelRepository[pokeBall.modelLocation] ?: return
+        val pokeBallModel = modelRepository.getModel(pokeBall.modelLocation) ?: return // TODO: This is synchronous
 
         // Do different transformations depending on where the item is being rendered.
         when (p_239207_2_) {

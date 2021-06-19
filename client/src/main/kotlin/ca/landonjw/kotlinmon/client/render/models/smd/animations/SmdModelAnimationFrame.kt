@@ -1,6 +1,6 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.animations
 
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.SmdBoneMovement
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.SmdBoneTransformationSchema
 import ca.landonjw.kotlinmon.client.render.models.smd.skeleton.SmdModelSkeleton
 import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
 
@@ -11,12 +11,12 @@ import ca.landonjw.kotlinmon.util.math.geometry.TransformationMatrix
  * @property skeleton the skeleton of the model to apply animation frame to
  * @property boneTransformations the transformations to apply to each bone
  *                               key is bone id, value is the transformation matrix
- * @param movements the movements within the frame
+ * @param transformations the transformations within the frame
  *
  * @author landonjw
  */
 class SmdModelAnimationFrame(
-    movements: List<SmdBoneMovement>,
+    transformations: List<SmdBoneTransformationSchema>,
     private val skeleton: SmdModelSkeleton
 ) {
 
@@ -24,10 +24,10 @@ class SmdModelAnimationFrame(
 
     init {
         // Create map to prevent too much iteration
-        val boneIdToMovement = movements.map { it.boneId to it }.toMap()
+        val boneIdToMovement = transformations.map { it.boneId to it }.toMap()
 
         val boneTransformations = mutableMapOf<Int, TransformationMatrix>()
-        movements.forEach { boneTransformations[it.boneId] = it.transformation }
+        transformations.forEach { boneTransformations[it.boneId] = it.transformation }
 
         // Iterate through each bone, and apply parent transformation to propagate skeleton movements
         for (index in 0 until boneTransformations.size) {

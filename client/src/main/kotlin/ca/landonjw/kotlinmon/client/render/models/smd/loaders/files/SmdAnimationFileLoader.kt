@@ -1,18 +1,16 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders.files
 
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.SmdAnimationFrame
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.SmdBoneMovement
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.SmdModelAnimationFileDefinition
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.*
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.vector.Vector3f
 
-internal object SmdModelAnimationFileLoader {
+class SmdAnimationFileLoader {
 
-    fun load(location: ResourceLocation): SmdModelAnimationFileDefinition {
+    fun load(location: ResourceLocation): SmdAnimationSchema {
         val lines = readLinesFromResource(location)
 
-        var builder = SmdModelAnimationFileDefinitionBuilder()
+        var builder = SmdAnimationSchemaBuilder()
 
         var lineIndex = 0
 
@@ -24,7 +22,7 @@ internal object SmdModelAnimationFileLoader {
     private fun parseAnimationFrames(
         lines: List<String>,
         startIndex: Int,
-        builder: SmdModelAnimationFileDefinitionBuilder
+        builder: SmdAnimationSchemaBuilder
     ): Int {
         var lineIndex = startIndex
         var line = lines[startIndex]
@@ -32,16 +30,16 @@ internal object SmdModelAnimationFileLoader {
 
         line = lines[++lineIndex]
 
-        val frames: MutableList<SmdAnimationFrame> = mutableListOf()
+        val frames: MutableList<SmdAnimationFrameSchema> = mutableListOf()
         while (line != "end") {
             val frame = parseFrame(line)
-            val transformations: MutableList<SmdBoneMovement> = mutableListOf()
+            val transformations: MutableList<SmdBoneTransformationSchema> = mutableListOf()
             line = lines[++lineIndex]
             while (!line.startsWith("time") && line != "end") {
                 transformations.add(parseBoneTransformation(line))
                 line = lines[++lineIndex]
             }
-            frames.add(SmdAnimationFrame(frame, transformations))
+            frames.add(SmdAnimationFrameSchema(frame, transformations))
         }
 
         builder.frames = frames
@@ -56,7 +54,7 @@ internal object SmdModelAnimationFileLoader {
         return frame
     }
 
-    private fun parseBoneTransformation(line: String): SmdBoneMovement {
+    private fun parseBoneTransformation(line: String): SmdBoneTransformationSchema {
         val values = line.splitSmdValues()
         if (values.size != 7) throw IllegalStateException("expected 7 arguments for bone transformation")
 
@@ -71,17 +69,17 @@ internal object SmdModelAnimationFileLoader {
         val zRot = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z rotation")
         val rotation = Vector3f(xRot, -yRot, -zRot)
 
-        return SmdBoneMovement(boneId, translation, rotation)
+        return SmdBoneTransformationSchema(boneId, translation, rotation)
     }
 
 }
 
-data class SmdModelAnimationFileDefinitionBuilder(
-    var frames: List<SmdAnimationFrame> = mutableListOf()
+data class SmdAnimationSchemaBuilder(
+    var frames: List<SmdAnimationFrameSchema> = mutableListOf()
 ) {
-    fun build(): SmdModelAnimationFileDefinition {
+    fun build(): SmdAnimationSchema {
         validateBuild()
-        return SmdModelAnimationFileDefinition(frames)
+        return SmdAnimationSchema(frames)
     }
 
     private fun validateBuild() {

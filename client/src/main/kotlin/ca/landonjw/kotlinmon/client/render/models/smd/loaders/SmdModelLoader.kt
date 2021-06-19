@@ -17,7 +17,9 @@ import net.minecraft.util.ResourceLocation
  *
  * @author landonjw
  */
-object SmdModelLoader {
+class SmdModelLoader(
+    private val smdModelFileLoader: SmdModelFileLoader
+) {
 
     /**
      * Loads a [SmdModel] from a `.smd` file.
@@ -27,7 +29,7 @@ object SmdModelLoader {
      * @return an smd model from the location
      */
     fun load(location: ResourceLocation): SmdModel {
-        val schema = SmdModelFileLoader.load(location)
+        val schema = smdModelFileLoader.load(location)
 
         val texture = getDefaultTexture(location)
         val vertices = getMeshVertices(schema)
@@ -37,12 +39,12 @@ object SmdModelLoader {
         return SmdModel(skeleton)
     }
 
-    private fun getMeshVertices(schema: SmdModelFileDefinition): List<SmdMeshVertex> {
+    private fun getMeshVertices(schema: SmdModelSchema): List<SmdMeshVertex> {
         val meshVertices = mutableListOf<SmdMeshVertex>()
         schema.polygonMesh.forEach {
-            meshVertices.add(getMeshVertexFromDefinition(it.vertex1))
-            meshVertices.add(getMeshVertexFromDefinition(it.vertex2))
-            meshVertices.add(getMeshVertexFromDefinition(it.vertex3))
+            meshVertices.add(getMeshVertexFromSchema(it.vertex1))
+            meshVertices.add(getMeshVertexFromSchema(it.vertex2))
+            meshVertices.add(getMeshVertexFromSchema(it.vertex3))
         }
         return meshVertices
     }
@@ -55,37 +57,37 @@ object SmdModelLoader {
         return ResourceLocation(Kotlinmon.MOD_ID, "$parentPath/textures/$fileName.png")
     }
 
-    private fun getSkeleton(schema: SmdModelFileDefinition, mesh: SmdMesh): SmdModelSkeleton {
-        val boneLocationDefById = mutableMapOf<Int, SmdBoneLocationDefinition>()
+    private fun getSkeleton(schema: SmdModelSchema, mesh: SmdMesh): SmdModelSkeleton {
+        val boneLocationDefById = mutableMapOf<Int, SmdBoneLocationSchema>()
         schema.boneLocations.forEach { boneLocationDefById[it.boneId] = it }
 
         val modelBones = mutableListOf<SmdModelBone>()
         for (boneDef in schema.bones) {
             val boneLocDef = boneLocationDefById[boneDef.id] ?: continue
-            modelBones.add(getBoneFromDefinition(boneDef, boneLocDef))
+            modelBones.add(getBoneFromSchema(boneDef, boneLocDef))
         }
         linkBones(schema.bones, modelBones)
         return SmdModelSkeleton(modelBones, mesh)
     }
 
-    private fun getBoneFromDefinition(
-        boneDef: SmdBoneDefinition,
-        locationDef: SmdBoneLocationDefinition
+    private fun getBoneFromSchema(
+        boneSchema: SmdBoneSchema,
+        locationSchema: SmdBoneLocationSchema
     ): SmdModelBone {
-        return SmdModelBone(boneDef.id, boneDef.name, locationDef.location, locationDef.orientation)
+        return SmdModelBone(boneSchema.id, boneSchema.name, locationSchema.location, locationSchema.orientation)
     }
 
-    private fun linkBones(boneDefinitions: List<SmdBoneDefinition>, bones: List<SmdModelBone>) {
+    private fun linkBones(boneSchemas: List<SmdBoneSchema>, bones: List<SmdModelBone>) {
         val boneById = mutableMapOf<Int, SmdModelBone>()
         bones.forEach { boneById[it.id] = it }
-        for (boneDef in boneDefinitions) {
+        for (boneDef in boneSchemas) {
             val bone = boneById[boneDef.id] ?: continue
             val parent = boneById[boneDef.parent] ?: continue
             bone.parent = parent
         }
     }
 
-    private fun getMeshVertexFromDefinition(vertex: SmdVertex): SmdMeshVertex {
+    private fun getMeshVertexFromSchema(vertex: SmdMeshVertexSchema): SmdMeshVertex {
         return SmdMeshVertex(
             weights = vertex.links ?: mapOf(),
             basePosition = vertex.position,

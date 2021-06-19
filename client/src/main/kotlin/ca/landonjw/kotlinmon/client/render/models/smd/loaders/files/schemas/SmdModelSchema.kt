@@ -5,35 +5,35 @@ import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import net.minecraft.util.Tuple
 import net.minecraft.util.math.vector.Vector3f
 
-data class SmdModelFileDefinition(
+data class SmdModelSchema(
     val version: Int = 1,
-    val bones: List<SmdBoneDefinition>,
-    val boneLocations: List<SmdBoneLocationDefinition>,
-    val polygonMesh: List<SmdTriangle>
+    val bones: List<SmdBoneSchema>,
+    val boneLocations: List<SmdBoneLocationSchema>,
+    val polygonMesh: List<SmdMeshTriangleSchema>
 )
 
-data class SmdBoneDefinition(
+data class SmdBoneSchema(
     val id: Int,
     val name: String,
     val parent: Int
 )
 
-data class SmdBoneLocationDefinition(
+data class SmdBoneLocationSchema(
     val boneId: Int,
     val location: GeometricPoint,
     val orientation: Vector3f
 )
 
-data class SmdTriangle(
+data class SmdMeshTriangleSchema(
     // Defines the material to apply to triangle. File format should be ignored.
     // Paths should NOT be included.
     val material: String,
-    val vertex1: SmdVertex,
-    val vertex2: SmdVertex,
-    val vertex3: SmdVertex
+    val vertex1: SmdMeshVertexSchema,
+    val vertex2: SmdMeshVertexSchema,
+    val vertex3: SmdMeshVertexSchema
 )
 
-data class SmdVertex(
+data class SmdMeshVertexSchema(
     // The unique identifier of the parent bone
     val parentId: Int,
     val position: GeometricPoint,

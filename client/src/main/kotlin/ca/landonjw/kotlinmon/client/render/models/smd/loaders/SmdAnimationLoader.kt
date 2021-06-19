@@ -3,7 +3,7 @@ package ca.landonjw.kotlinmon.client.render.models.smd.loaders
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
 import ca.landonjw.kotlinmon.client.render.models.smd.animations.SmdModelAnimation
 import ca.landonjw.kotlinmon.client.render.models.smd.animations.SmdModelAnimationFrame
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.SmdModelAnimationFileLoader
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.SmdAnimationFileLoader
 import net.minecraft.util.ResourceLocation
 
 /**
@@ -13,7 +13,9 @@ import net.minecraft.util.ResourceLocation
  *
  * @author landonjw
  */
-object SmdAnimationLoader {
+class SmdAnimationLoader(
+    private val smdAnimationFileLoader: SmdAnimationFileLoader
+) {
 
     /**
      * Loads a [SmdModelAnimation] from a `.smd` file.
@@ -22,7 +24,7 @@ object SmdAnimationLoader {
      * @return an animation from the location
      */
     fun load(location: ResourceLocation, model: SmdModel): SmdModelAnimation {
-        val schema = SmdModelAnimationFileLoader.load(location)
+        val schema = smdAnimationFileLoader.load(location)
         val animationFrames = mutableListOf<SmdModelAnimationFrame>()
         for (frame in schema.frames) {
             animationFrames.add(SmdModelAnimationFrame(frame.transformations, model.skeleton))
