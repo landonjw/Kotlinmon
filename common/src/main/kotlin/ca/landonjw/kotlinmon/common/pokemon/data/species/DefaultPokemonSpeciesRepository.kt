@@ -1,7 +1,6 @@
 package ca.landonjw.kotlinmon.common.pokemon.data.species
 
 import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.ProvidedSpecies

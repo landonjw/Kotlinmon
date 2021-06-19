@@ -27,6 +27,8 @@ class DefaultPokemonEntity : PokemonEntity, TameableEntity {
     override lateinit var pokemon: Pokemon
         private set
 
+    
+
     /**
      * Primary constructor.
      *

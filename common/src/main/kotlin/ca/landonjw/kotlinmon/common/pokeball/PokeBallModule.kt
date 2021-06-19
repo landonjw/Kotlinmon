@@ -23,7 +23,7 @@ object PokeBallModule {
         bind<OccupiedPokeBallEntity>() with factory { params: OccupiedPokeBallFactoryParams -> DefaultOccupiedPokeBallEntity(params.type, params.world, params.pokeBall, params.occupant, factory(), factory(), instance()) }
         bind<PokeBallFactory>() with singleton { DefaultPokeBallFactory(instance(), instance(), factory(), factory()) }
         bind<PokeBallRepository>() with singleton { DefaultPokeBallRepository(instance()) }
-        bind<PokeBallItem>() with singleton { PokeBallItem(instance(), instance()) }
+        bind<PokeBallItem>() with singleton { PokeBallItem(instance(), instance("pokeball")) }
         bind<DefaultEmptyPokeBallEntity>() with factory { params: EntityFactoryParams<DefaultEmptyPokeBallEntity> -> DefaultEmptyPokeBallEntity(params.type, params.world, ProvidedPokeBall.PokeBall, factory(), factory()) }
         bind<DefaultOccupiedPokeBallEntity>() with factory { params: EntityFactoryParams<DefaultOccupiedPokeBallEntity> -> DefaultOccupiedPokeBallEntity(params.type, params.world, ProvidedPokeBall.PokeBall, null, factory(), factory(), instance()) }
     }

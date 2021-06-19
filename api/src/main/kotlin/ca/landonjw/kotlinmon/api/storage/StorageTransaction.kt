@@ -15,4 +15,5 @@ class StorageTransaction(val result: Result, val message: ITextComponent? = null
     enum class Result {
         SUCCESS, FAILURE
     }
+
 }

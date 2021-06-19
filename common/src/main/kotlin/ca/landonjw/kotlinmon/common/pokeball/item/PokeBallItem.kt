@@ -5,7 +5,7 @@ import ca.landonjw.kotlinmon.api.pokeball.PokeBall
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallFactory
 import ca.landonjw.kotlinmon.api.pokeball.PokeBallRepository
 import ca.landonjw.kotlinmon.api.pokeball.ProvidedPokeBall
-import ca.landonjw.kotlinmon.client.render.pokeball.PokeBallItemRenderer
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -19,7 +19,7 @@ import java.util.concurrent.Callable
 
 class PokeBallItem(
     private val pokeBallRepository: PokeBallRepository,
-    private val itemRenderer: PokeBallItemRenderer
+    private val itemRenderer: ItemStackTileEntityRenderer,
 ) : Item(Properties().setISTER { Callable{ itemRenderer } }) {
 
     private val pokeBallFactory: PokeBallFactory by Kotlinmon.DI.instance()

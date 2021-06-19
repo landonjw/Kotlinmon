@@ -2,19 +2,12 @@ package ca.landonjw.kotlinmon.common.network
 
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
-import ca.landonjw.kotlinmon.api.network.Packet
-import ca.landonjw.kotlinmon.api.network.PacketToClient
-import ca.landonjw.kotlinmon.api.network.PacketToServer
 import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 import ca.landonjw.kotlinmon.api.storage.pokemon.party.PartyStorage
-import ca.landonjw.kotlinmon.common.network.client.handlers.storage.party.UpdatePartyHandler
-import ca.landonjw.kotlinmon.common.network.client.handlers.storage.party.UpdatePartySlotHandler
 import ca.landonjw.kotlinmon.common.network.packets.party.SynchronizePartyRequest
 import ca.landonjw.kotlinmon.common.network.packets.party.ThrowPartyPokemon
 import ca.landonjw.kotlinmon.common.network.packets.party.UpdateParty
 import ca.landonjw.kotlinmon.common.network.packets.party.UpdatePartySlot
-import ca.landonjw.kotlinmon.common.network.server.handlers.storage.party.SynchronizePartyRequestHandler
-import ca.landonjw.kotlinmon.common.network.server.handlers.storage.party.ThrowPartyPokemonHandler
 import net.minecraft.util.ResourceLocation
 import net.minecraftforge.fml.network.NetworkRegistry
 import net.minecraftforge.fml.network.simple.SimpleChannel
@@ -33,12 +26,6 @@ object NetworkModule {
                 .serverAcceptedVersions { it == "1.0.0" }
                 .simpleChannel()
         }
-
-        // Packet Handlers
-        bind<UpdatePartyHandler>() with singleton { UpdatePartyHandler(instance()) }
-        bind<UpdatePartySlotHandler>() with singleton { UpdatePartySlotHandler(instance()) }
-        bind<SynchronizePartyRequestHandler>() with singleton { SynchronizePartyRequestHandler(instance(), instance(), factory()) }
-        bind<ThrowPartyPokemonHandler>() with singleton { ThrowPartyPokemonHandler(instance(), instance()) }
 
         // Packet Factories
         bind<SynchronizePartyRequest>() with provider { SynchronizePartyRequest() }

@@ -24,7 +24,7 @@ object PokemonModule {
         bind<PokemonSpeciesRepository>() with singleton { DefaultPokemonSpeciesRepository(instance(), instance()) }
         bind<PokemonTypeRepository>() with singleton { DefaultPokemonTypeRepository(instance()) }
         bind<PokemonEntity>() with factory { params: PokemonEntityFactoryParams -> DefaultPokemonEntity(params.type, params.world, params.pokemon, factory()) }
-        bind<PokemonEntityClient>() with factory { dataManager: EntityDataManager -> PokemonEntityClient(dataManager, instance(), instance("async")) }
+        bind<PokemonEntityClient>() with factory { dataManager: EntityDataManager -> PokemonEntityClient(dataManager, instance()) }
         bind<PokemonTypeAdapter>() with singleton { PokemonTypeAdapter(instance()) }
         bind<PokemonSpeciesLoader>() with singleton { PokemonSpeciesLoader(instance()) }
         bind<PokemonFactory>() with singleton { DefaultPokemonFactory(instance(), factory()) }

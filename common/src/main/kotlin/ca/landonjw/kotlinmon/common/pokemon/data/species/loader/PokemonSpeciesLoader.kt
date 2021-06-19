@@ -1,6 +1,6 @@
 package ca.landonjw.kotlinmon.common.pokemon.data.species.loader
 
-import ca.landonjw.kotlinmon.KotlinmonBootstrap
+import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.type.PokemonType
 import com.google.gson.GsonBuilder
@@ -24,7 +24,7 @@ class PokemonSpeciesLoader(typeAdapter: PokemonTypeAdapter) {
     private fun getResourceStream(location: ResourceLocation): InputStream {
         val namespace = location.namespace
         val path = location.path
-        val stream = KotlinmonBootstrap::class.java.getResourceAsStream("/assets/$namespace/$path")
+        val stream = Kotlinmon::class.java.getResourceAsStream("/assets/$namespace/$path")
         return stream
     }
 

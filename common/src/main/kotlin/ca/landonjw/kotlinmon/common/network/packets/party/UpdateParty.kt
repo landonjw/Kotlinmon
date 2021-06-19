@@ -32,6 +32,7 @@ class UpdateParty : PacketToClient {
             val pokemon = party[slot] ?: continue
             slots.add(StorageSlot(slot, pokemon.toDTO()))
         }
+        this.slotData = slots
     }
 
     /** Default constructor for internal use. Do not use. */

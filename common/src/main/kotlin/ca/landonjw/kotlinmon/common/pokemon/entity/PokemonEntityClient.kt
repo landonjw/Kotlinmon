@@ -3,15 +3,11 @@ package ca.landonjw.kotlinmon.common.pokemon.entity
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpeciesRepository
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
-import ca.landonjw.kotlinmon.client.pokemon.getModelLocation
-import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
-import ca.landonjw.kotlinmon.client.render.models.smd.repository.ModelRepository
 import net.minecraft.network.datasync.EntityDataManager
 
 class PokemonEntityClient(
     private val dataManager: EntityDataManager,
-    private val speciesRepository: PokemonSpeciesRepository,
-    private val modelRepository: ModelRepository
+    private val speciesRepository: PokemonSpeciesRepository
 ) {
 
     val species: PokemonSpecies
@@ -27,16 +23,6 @@ class PokemonEntityClient(
         get() {
             val texture = dataManager.get(DefaultPokemonEntity.dwTexture)
             return if (texture.isNullOrEmpty()) null else texture
-        }
-
-    val model: SmdModel?
-        get() {
-            return try {
-                 modelRepository[getModelLocation(species, form)]
-            }
-            catch (e: IllegalStateException) {
-                null
-            }
         }
 
 }

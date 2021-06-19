@@ -58,29 +58,6 @@ dependencies {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-shadowJar {
-    dependencies {
-        // Kotlin
-        include dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-        include dependency("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
-        include dependency("org.jetbrains.kotlin:kotlin-stdlib")
-
-        // Kotlin Reflect
-        include dependency("org.jetbrains.kotlin:kotlin-reflect")
-        include dependency("org.jetbrains.kotlin:kotlin-stdlib-common")
-        include dependency("org.jetbrains:annotations")
-
-        // Coroutines
-        include dependency("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-        include dependency("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
-
-        // Kodein
-        include dependency("org.kodein.di:kodein-di-jvm")
-        include dependency("org.kodein.type:kodein-type")
-        include dependency("org.kodein.type:kodein-type-jvm")
-    }
-}
-
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -92,5 +69,3 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 tasks.build.dependsOn kotlinSourcesJar
-tasks.build.dependsOn shadowJar
-tasks.build.dependsOn reobfShadowJar

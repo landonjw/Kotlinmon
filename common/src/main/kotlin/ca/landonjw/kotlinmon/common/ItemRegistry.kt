@@ -1,7 +1,6 @@
 package ca.landonjw.kotlinmon.common
 
 import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.KotlinmonBootstrap
 import ca.landonjw.kotlinmon.common.pokeball.item.PokeBallItem
 import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
