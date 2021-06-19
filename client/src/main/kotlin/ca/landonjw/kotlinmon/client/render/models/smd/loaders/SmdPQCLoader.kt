@@ -1,7 +1,7 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders
 
 import ca.landonjw.kotlinmon.client.render.models.smd.SmdModel
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.PQCFileLoader
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.SmdPQCFileLoader
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.PQCSchema
 import ca.landonjw.kotlinmon.client.render.models.smd.renderer.*
 import net.minecraft.util.ResourceLocation
@@ -14,7 +14,11 @@ import net.minecraft.util.ResourceLocation
  *
  * @author landonjw
  */
-object SmdPQCLoader {
+class SmdPQCLoader(
+    private val pqcFileLoader: SmdPQCFileLoader,
+    private val smdModelLoader: SmdModelLoader,
+    private val smdAnimationLoader: SmdAnimationLoader
+) {
 
     /**
      * Loads a [SmdModel] from a `.pqc` file, adding any optional
@@ -24,10 +28,10 @@ object SmdPQCLoader {
      * @return an smd model with any optional animations and/or properties added from the `.pqc` file
      */
     fun load(location: ResourceLocation): SmdModel {
-        val schema = PQCFileLoader.load(location)
-        val model = SmdModelLoader.load(schema.modelPath)
+        val schema = pqcFileLoader.load(location)
+        val model = smdModelLoader.load(schema.modelPath)
         for (pqcAnimation in schema.animations) {
-            val animation = SmdAnimationLoader.load(pqcAnimation.path, model)
+            val animation = smdAnimationLoader.load(pqcAnimation.path, model)
             model.addAnimation(pqcAnimation.name, animation)
         }
         addPropertiesToModel(model, schema)

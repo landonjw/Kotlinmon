@@ -7,12 +7,12 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Tuple
 import net.minecraft.util.math.vector.Vector3f
 
-internal object SmdModelFileLoader {
+class SmdModelFileLoader {
 
-    fun load(location: ResourceLocation): SmdModelFileDefinition {
+    fun load(location: ResourceLocation): SmdModelSchema {
         val lines = readLinesFromResource(location)
 
-        var builder = SmdModelFileDefinitionBuilder()
+        var builder = SmdModelSchemaBuilder()
 
         var lineIndex = 0
         lineIndex = parseVersion(lines, lineIndex, builder)
@@ -23,7 +23,7 @@ internal object SmdModelFileLoader {
         return builder.build()
     }
 
-    private fun parseVersion(lines: List<String>, startIndex: Int, builder: SmdModelFileDefinitionBuilder): Int {
+    private fun parseVersion(lines: List<String>, startIndex: Int, builder: SmdModelSchemaBuilder): Int {
         val line = lines[startIndex]
         if (!line.startsWith("version")) throw IllegalStateException("expected header and couldn't find version")
         val split: List<String> = line.split(" ")
@@ -34,14 +34,14 @@ internal object SmdModelFileLoader {
         return startIndex + 1
     }
 
-    private fun parseBones(lines: List<String>, startIndex: Int, builder: SmdModelFileDefinitionBuilder): Int {
+    private fun parseBones(lines: List<String>, startIndex: Int, builder: SmdModelSchemaBuilder): Int {
         var lineIndex = startIndex
         var line = lines[startIndex]
         if (line != "nodes") throw IllegalStateException("expected start of node block")
 
         line = lines[++lineIndex]
 
-        val bones: MutableList<SmdBoneDefinition> = mutableListOf()
+        val bones: MutableList<SmdBoneSchema> = mutableListOf()
         while (line != "end") {
             bones.add(parseBone(line))
             line = lines[++lineIndex]
@@ -51,17 +51,17 @@ internal object SmdModelFileLoader {
         return lineIndex + 1
     }
 
-    private fun parseBone(line: String): SmdBoneDefinition {
+    private fun parseBone(line: String): SmdBoneSchema {
         val values = line.splitSmdValues()
         if (values.size != 3) throw IllegalStateException("expected 3 arguments for bone")
         val boneId = values[0].toIntOrNull() ?: throw IllegalStateException("could not parse bone id")
         val boneName = values[1].replace("\"", "")
         val parentId = values[2].toIntOrNull() ?: throw IllegalStateException("could not parse parent bone id")
 
-        return SmdBoneDefinition(boneId, boneName, parentId)
+        return SmdBoneSchema(boneId, boneName, parentId)
     }
 
-    private fun parseBoneLocations(lines: List<String>, startIndex: Int, builder: SmdModelFileDefinitionBuilder): Int {
+    private fun parseBoneLocations(lines: List<String>, startIndex: Int, builder: SmdModelSchemaBuilder): Int {
         var lineIndex = startIndex
         var line = lines[startIndex]
         if (line != "skeleton") throw IllegalStateException("expected start of skeleton block")
@@ -69,7 +69,7 @@ internal object SmdModelFileLoader {
         lineIndex += 2 // Skip 'time 0' line
         line = lines[lineIndex]
 
-        val boneLocations: MutableList<SmdBoneLocationDefinition> = mutableListOf()
+        val boneLocations: MutableList<SmdBoneLocationSchema> = mutableListOf()
         while (line != "end") {
             boneLocations.add(parseBoneLocation(line))
             line = lines[++lineIndex]
@@ -79,7 +79,7 @@ internal object SmdModelFileLoader {
         return lineIndex + 1
     }
 
-    private fun parseBoneLocation(line: String): SmdBoneLocationDefinition {
+    private fun parseBoneLocation(line: String): SmdBoneLocationSchema {
         val values = line.splitSmdValues()
         if (values.size != 7) throw IllegalStateException("expected 7 arguments for bone location")
 
@@ -94,24 +94,24 @@ internal object SmdModelFileLoader {
         val zRot = values[6].toFloatOrNull() ?: throw IllegalStateException("could not parse z rotation")
         val orientation = Vector3f(xRot, -yRot, -zRot)
 
-        return SmdBoneLocationDefinition(boneId, location, orientation)
+        return SmdBoneLocationSchema(boneId, location, orientation)
     }
 
-    private fun parsePolygonMesh(lines: List<String>, startIndex: Int, builder: SmdModelFileDefinitionBuilder): Int {
+    private fun parsePolygonMesh(lines: List<String>, startIndex: Int, builder: SmdModelSchemaBuilder): Int {
         var lineIndex = startIndex
         var line = lines[startIndex]
         if (line != "triangles") throw IllegalStateException("expected start of triangles block")
 
         line = lines[++lineIndex]
 
-        val mesh: MutableList<SmdTriangle> = mutableListOf()
+        val mesh: MutableList<SmdMeshTriangleSchema> = mutableListOf()
         while (line != "end") {
             val material = lines[lineIndex++]
             val vertex1 = parsePolygonVertex(lines[lineIndex++])
             val vertex2 = parsePolygonVertex(lines[lineIndex++])
             val vertex3 = parsePolygonVertex(lines[lineIndex++])
 
-            mesh.add(SmdTriangle(material, vertex1, vertex2, vertex3))
+            mesh.add(SmdMeshTriangleSchema(material, vertex1, vertex2, vertex3))
             line = lines[lineIndex]
         }
 
@@ -119,7 +119,7 @@ internal object SmdModelFileLoader {
         return lineIndex + 1
     }
 
-    private fun parsePolygonVertex(line: String): SmdVertex {
+    private fun parsePolygonVertex(line: String): SmdMeshVertexSchema {
         val values = line.splitSmdValues()
         if (values.size < 9) throw java.lang.IllegalStateException("expected atleast 9 arguments for triangle vertex")
 
@@ -152,20 +152,20 @@ internal object SmdModelFileLoader {
             }
         }
 
-        return SmdVertex(parentBone, position, normal, uvMap, links)
+        return SmdMeshVertexSchema(parentBone, position, normal, uvMap, links)
     }
 
 }
 
-private data class SmdModelFileDefinitionBuilder(
+private data class SmdModelSchemaBuilder(
     var version: Int = -1,
-    var bones: List<SmdBoneDefinition> = mutableListOf(),
-    var boneLocations: List<SmdBoneLocationDefinition> = mutableListOf(),
-    var polygonMesh: List<SmdTriangle> = mutableListOf()
+    var bones: List<SmdBoneSchema> = mutableListOf(),
+    var boneLocations: List<SmdBoneLocationSchema> = mutableListOf(),
+    var polygonMesh: List<SmdMeshTriangleSchema> = mutableListOf()
 ) {
-    fun build(): SmdModelFileDefinition {
+    fun build(): SmdModelSchema {
         validateBuild()
-        return SmdModelFileDefinition(
+        return SmdModelSchema(
             version = version,
             bones = bones,
             boneLocations = boneLocations,
@@ -178,7 +178,7 @@ private data class SmdModelFileDefinitionBuilder(
         if (version == null) throw IllegalStateException("smd version not defined")
         validateBones()
 
-        val boneIdToBone = mutableMapOf<Int, SmdBoneDefinition>()
+        val boneIdToBone = mutableMapOf<Int, SmdBoneSchema>()
         bones.forEach { boneIdToBone[it.id] = it }
 
         validateBoneLocations(boneIdToBone)
@@ -195,7 +195,7 @@ private data class SmdModelFileDefinitionBuilder(
         }
     }
 
-    private fun validateBoneLocations(boneIdToBone: Map<Int, SmdBoneDefinition>) {
+    private fun validateBoneLocations(boneIdToBone: Map<Int, SmdBoneSchema>) {
         if (boneLocations.size != bones.size) throw IllegalStateException("all bone locations must be defined")
         for (location in boneLocations) {
             if (boneIdToBone[location.boneId] == null)
@@ -203,7 +203,7 @@ private data class SmdModelFileDefinitionBuilder(
         }
     }
 
-    private fun validatePolygonMesh(boneIdToBone: Map<Int, SmdBoneDefinition>) {
+    private fun validatePolygonMesh(boneIdToBone: Map<Int, SmdBoneSchema>) {
         for (polygon in polygonMesh) {
             validatePolygonVertex(polygon.vertex1, boneIdToBone)
             validatePolygonVertex(polygon.vertex2, boneIdToBone)
@@ -211,7 +211,7 @@ private data class SmdModelFileDefinitionBuilder(
         }
     }
 
-    private fun validatePolygonVertex(vertex: SmdVertex, boneIdToBone: Map<Int, SmdBoneDefinition>) {
+    private fun validatePolygonVertex(vertex: SmdMeshVertexSchema, boneIdToBone: Map<Int, SmdBoneSchema>) {
         if (boneIdToBone[vertex.parentId] == null)
             throw IllegalStateException("polygon vertex mapped to unknown bone id")
 

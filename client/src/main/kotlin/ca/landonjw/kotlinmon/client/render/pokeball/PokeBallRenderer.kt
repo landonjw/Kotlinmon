@@ -29,7 +29,7 @@ class PokeBallRenderer<T: DefaultPokeBallEntity>(
         packedLight: Int
     ) {
         val pokeBall: PokeBall = entity.pokeBallType
-        val pokeBallModel = modelRepository[pokeBall.modelLocation] ?: return
+        val pokeBallModel = modelRepository.getModel(pokeBall.modelLocation) ?: return // TODO: This is synchronous
         val pokeBallOrientation = Vector3f(
             entity.orientation.x.toFloat().toRadians(),
             entity.orientation.y.toFloat().toRadians(),

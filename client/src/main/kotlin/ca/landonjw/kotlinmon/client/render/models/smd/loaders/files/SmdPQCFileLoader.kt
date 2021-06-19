@@ -1,22 +1,22 @@
 package ca.landonjw.kotlinmon.client.render.models.smd.loaders.files
 
 import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.getParentPath
-import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.PQCAnimation
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.PQCAnimationSchema
 import ca.landonjw.kotlinmon.client.render.models.smd.loaders.files.schemas.PQCSchema
+import ca.landonjw.kotlinmon.client.render.models.smd.loaders.getParentPath
 import ca.landonjw.kotlinmon.util.math.geometry.GeometricPoint
 import ca.landonjw.kotlinmon.util.math.geometry.toRadians
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.vector.Vector3f
 
-internal object PQCFileLoader {
+class SmdPQCFileLoader {
 
     fun load(location: ResourceLocation): PQCSchema {
         val parentPath = getParentPath(location)
 
         val lines = readLinesFromResource(location)
         val builder = PQCSchemaBuilder()
-        val animations = mutableListOf<PQCAnimation>()
+        val animations = mutableListOf<PQCAnimationSchema>()
         for (line in lines) {
             val split = line.split(" ")
             if (split.isEmpty()) continue
@@ -33,7 +33,7 @@ internal object PQCFileLoader {
                     val animationFile = split[2]
                     checkFileFormat(".smd", animationFile)
                     val resourceLoc = ResourceLocation(Kotlinmon.MOD_ID, "$parentPath/animations/$animationFile")
-                    animations.add(PQCAnimation(animationName, resourceLoc))
+                    animations.add(PQCAnimationSchema(animationName, resourceLoc))
                 }
                 "\$scale" -> {
                     checkArgumentSize(4, split.size)
@@ -77,7 +77,7 @@ internal object PQCFileLoader {
 }
 
 private data class PQCSchemaBuilder(
-    var animations: List<PQCAnimation>? = null,
+    var animations: List<PQCAnimationSchema>? = null,
     var modelPath: ResourceLocation? = null,
     var scale: Vector3f? = null,
     var rotationOffset: Vector3f? = null,
