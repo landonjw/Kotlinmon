@@ -40,7 +40,7 @@ class KotlinmonInitialization(
         }
 
         FMLJavaModLoadingContext.get().modEventBus.addListener { event: EntityAttributeCreationEvent ->
-            entityRegistry.registryAttributes(event)
+            entityRegistry.registerAttributes(event)
         }
 
         // Register entities and items

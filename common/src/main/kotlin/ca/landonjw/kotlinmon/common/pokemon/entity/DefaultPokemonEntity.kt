@@ -4,8 +4,6 @@ import ca.landonjw.kotlinmon.api.pokemon.Pokemon
 import ca.landonjw.kotlinmon.api.pokemon.data.species.PokemonSpecies
 import ca.landonjw.kotlinmon.api.pokemon.data.species.form.PokemonForm
 import ca.landonjw.kotlinmon.api.pokemon.entity.PokemonEntity
-import ca.landonjw.kotlinmon.common.EntityRegistry
-import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultOccupiedPokeBallEntity
 import net.minecraft.entity.AgeableEntity
 import net.minecraft.entity.EntitySize
 import net.minecraft.entity.EntityType
@@ -26,8 +24,6 @@ class DefaultPokemonEntity : PokemonEntity, TameableEntity {
 
     override lateinit var pokemon: Pokemon
         private set
-
-    
 
     /**
      * Primary constructor.

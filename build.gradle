@@ -23,18 +23,93 @@ allprojects {
 	version = '1.0.0-SNAPSHOT'
 }
 
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'net.minecraftforge.gradle'
 	apply plugin: 'kotlin'
-	apply plugin: 'com.github.johnrengelman.shadow'
 
 	minecraft {
 		mappings channel: 'snapshot', version: '20210309-1.16.5'
+
+		runs {
+			client {
+				workingDirectory project.file('run')
+
+				property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+				property 'forge.logging.console.level', 'debug'
+
+				mods {
+					kotlinmon {
+						source sourceSets.main
+					}
+				}
+			}
+
+			server {
+				workingDirectory project.file('run')
+
+				property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+				property 'forge.logging.console.level', 'debug'
+
+				mods {
+					kotlinmon {
+						source sourceSets.main
+					}
+				}
+			}
+
+			data {
+				workingDirectory project.file('run')
+
+				property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+				property 'forge.logging.console.level', 'debug'
+
+				// Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+				args '--mod', 'kotlinmon', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+				mods {
+					kotlinmon {
+						source sourceSets.main
+					}
+				}
+			}
+		}
+	}
+
+	sourceSets.main.resources { srcDir 'src/main/resources' }
+
+	repositories {
+		mavenCentral()
+		maven { url 'https://jitpack.io' }
 	}
 
 	dependencies {
-		minecraft 'net.minecraftforge:forge:1.16.5-36.1.4'
+		minecraft 'net.minecraftforge:forge:1.16.5-36.0.48'
+
+		// Kotlin
+		implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32'
+		implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32'
+		implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.32'
+
+		// Kotlin Reflect
+		implementation 'org.jetbrains.kotlin:kotlin-reflect:1.4.32'
+		implementation 'org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32'
+		implementation 'org.jetbrains:annotations:16.0.3'
+
+		// Coroutines
+		implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.1'
+		implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.1'
+
+		// Kodein
+		implementation 'org.kodein.di:kodein-di-jvm:7.5.0'
+		implementation 'org.kodein.type:kodein-type:1.6.0'
+		implementation 'org.kodein.type:kodein-type-jvm:1.6.0'
+	}
+
+	kotlinSourcesJar {
+		from(sourceSets.main.kotlin.srcDirs)
 	}
 
 	sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -59,11 +134,7 @@ subprojects {
 		options.forkOptions.executable = 'javac'
 	}
 
-	reobf {
-		shadowJar {
-		}
-	}
-
+	tasks.build.dependsOn kotlinSourcesJar
 }
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.

@@ -1,8 +1,6 @@
 package ca.landonjw.kotlinmon.common
 
 import ca.landonjw.kotlinmon.Kotlinmon
-import ca.landonjw.kotlinmon.api.pokeball.entity.EmptyPokeBallEntity
-import ca.landonjw.kotlinmon.api.pokeball.entity.OccupiedPokeBallEntity
 import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultEmptyPokeBallEntity
 import ca.landonjw.kotlinmon.common.pokeball.entity.DefaultOccupiedPokeBallEntity
 import ca.landonjw.kotlinmon.common.pokemon.entity.DefaultPokemonEntity
@@ -11,23 +9,19 @@ import net.minecraft.entity.EntityClassification
 import net.minecraft.entity.EntityType
 import net.minecraft.util.ResourceLocation
 import net.minecraft.world.World
-import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent
-import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.RegistryObject
-import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.DeferredRegister
 import net.minecraftforge.registries.ForgeRegistries
 
-@Mod.EventBusSubscriber(modid = Kotlinmon.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 class EntityRegistry(
     private val pokemonEntityFactory: (EntityFactoryParams<DefaultPokemonEntity>) -> DefaultPokemonEntity,
     private val emptyPokeBallEntityFactory: (EntityFactoryParams<DefaultEmptyPokeBallEntity>) -> DefaultEmptyPokeBallEntity,
     private val occupiedPokeBallEntityFactory: (EntityFactoryParams<DefaultOccupiedPokeBallEntity>) -> DefaultOccupiedPokeBallEntity
 ) {
 
-    val ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Kotlinmon.MOD_ID)
+    private val ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Kotlinmon.MOD_ID)
 
     val POKEMON: RegistryObject<EntityType<DefaultPokemonEntity>> = registerEntity(
         name = "pokemon",
@@ -50,7 +44,7 @@ class EntityRegistry(
         builderModifiers = { builder -> builder.size(1f, 1f).immuneToFire() }
     )
 
-    inline fun <reified T : Entity> registerEntity(
+    private inline fun <reified T : Entity> registerEntity(
         name: String,
         classification: EntityClassification,
         crossinline factory: (EntityType<T>, World) -> T,
@@ -65,7 +59,7 @@ class EntityRegistry(
         return ENTITIES.register(name) { registry }
     }
 
-    fun registryAttributes(event: EntityAttributeCreationEvent) {
+    fun registerAttributes(event: EntityAttributeCreationEvent) {
         event.put(POKEMON.get(), DefaultPokemonEntity.prepareAttributes())
     }
 

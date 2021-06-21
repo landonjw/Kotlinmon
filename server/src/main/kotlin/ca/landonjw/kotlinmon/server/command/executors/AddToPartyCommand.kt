@@ -14,7 +14,7 @@ class AddToPartyCommand(
 
     override fun run(context: CommandContext<CommandSource>): Int {
         val player = context.source.asPlayer()
-        val bulbasaur = pokemonFactory.create(species = ProvidedSpecies.Bulbasaur)
+        val bulbasaur = pokemonFactory.create(species = ProvidedSpecies.values().random())
         player.party.add(bulbasaur)
         return 0
     }
