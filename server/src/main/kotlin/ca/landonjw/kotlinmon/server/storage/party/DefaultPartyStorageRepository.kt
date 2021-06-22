@@ -12,7 +12,7 @@ class DefaultPartyStorageRepository(
     // TODO: Make this cache async later probably
     private val playerStorage: MutableMap<UUID, PartyStorage> = mutableMapOf()
 
-    override fun get(player: ServerPlayerEntity): PartyStorage = get(player.uniqueID)
+    override fun get(player: ServerPlayerEntity): PartyStorage = get(player.uuid)
 
     override fun get(uuid: UUID): PartyStorage {
         val storage = playerStorage[uuid] ?: storageFactory(uuid)

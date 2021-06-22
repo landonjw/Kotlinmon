@@ -15,12 +15,12 @@ open class PokeBallTypeController constructor(
 ) {
 
     init {
-        this.dataManager.register(getOrCreateDataParam(), ProvidedPokeBall.PokeBall.name)
+        this.dataManager.define(getOrCreateDataParam(), ProvidedPokeBall.PokeBall.name)
     }
 
     private fun getOrCreateDataParam(): DataParameter<String> {
         if (pokeBallTypeParams[clazz] == null) {
-            pokeBallTypeParams[clazz] = EntityDataManager.createKey(clazz, DataSerializers.STRING)
+            pokeBallTypeParams[clazz] = EntityDataManager.defineId(clazz, DataSerializers.STRING)
         }
         return pokeBallTypeParams[clazz]!!
     }

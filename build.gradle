@@ -31,7 +31,7 @@ subprojects {
 	apply plugin: 'kotlin'
 
 	minecraft {
-		mappings channel: 'snapshot', version: '20210309-1.16.5'
+		mappings channel: 'official', version: '1.16.5'
 
 		runs {
 			client {
@@ -63,7 +63,7 @@ subprojects {
 			data {
 				workingDirectory project.file('run')
 
-				property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+				property 'forge.logging.markers', 'REGISTRIES'
 				property 'forge.logging.console.level', 'debug'
 
 				// Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.

@@ -98,9 +98,9 @@ data class TransformationMatrix internal constructor(val values: ImmutableArray<
          * @return a new transformation matrix for the given rotations
          */
         fun rotate(angles: Vector3f, matrix: TransformationMatrix? = null): TransformationMatrix {
-            val rotationX = Axis.X_AXIS.getRotationMatrix(angles.x)
-            val rotationY = Axis.Y_AXIS.getRotationMatrix(angles.y)
-            val rotationZ = Axis.Z_AXIS.getRotationMatrix(angles.z)
+            val rotationX = Axis.X_AXIS.getRotationMatrix(angles.x())
+            val rotationY = Axis.Y_AXIS.getRotationMatrix(angles.y())
+            val rotationZ = Axis.Z_AXIS.getRotationMatrix(angles.z())
             val transformation = rotationZ * rotationY * rotationX
             return if (matrix == null) transformation else matrix * transformation
         }

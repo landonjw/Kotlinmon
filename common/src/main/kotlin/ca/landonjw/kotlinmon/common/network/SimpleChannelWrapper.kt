@@ -43,7 +43,7 @@ class SimpleChannelWrapper(
     }
 
     override fun sendToClient(packet: PacketToClient, target: ServerPlayerEntity) {
-        channel.sendTo(packet, target.connection.netManager, NetworkDirection.PLAY_TO_CLIENT)
+        channel.sendTo(packet, target.connection.connection, NetworkDirection.PLAY_TO_CLIENT)
     }
 
     fun <T : PacketToClient> registerClientPacket(clazz: Class<T>, provider: () -> T) {

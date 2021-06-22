@@ -11,12 +11,12 @@ class PokemonDTODecoder(
 
     fun decode(buf: PacketBuffer): PokemonDTO {
         // Parse species from the packet information or exit out early
-        val speciesName = buf.readString()
+        val speciesName = buf.readUtf()
         val species = speciesRepository[speciesName]
             ?: throw IllegalArgumentException("species $speciesName is not registered")
 
         // Parse form from the packet information or exit out early
-        val formName = buf.readString()
+        val formName = buf.readUtf()
         val form: PokemonForm
         if (formName == "default") {
             form = species.defaultForm
@@ -25,7 +25,7 @@ class PokemonDTODecoder(
                 ?: throw IllegalStateException("form $formName is not registered")
         }
 
-        val texture = buf.readString()
+        val texture = buf.readUtf()
 
         return PokemonDTO(
             species = species,

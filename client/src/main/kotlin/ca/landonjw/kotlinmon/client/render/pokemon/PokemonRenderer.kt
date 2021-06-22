@@ -50,7 +50,7 @@ class PokemonRenderer(
         if (modelTextureURL != null) model.skeleton.mesh.texture = texture
     }
 
-    override fun getEntityTexture(entity: DefaultPokemonEntity) = null
+    override fun getTextureLocation(entity: DefaultPokemonEntity) = null
 
     // TODO: Make better. Should take into account player frustum to prevent unnecessary rendering.
     override fun shouldRender(

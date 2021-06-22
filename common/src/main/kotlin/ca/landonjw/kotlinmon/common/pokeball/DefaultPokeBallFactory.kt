@@ -23,7 +23,7 @@ class DefaultPokeBallFactory(
 
     override fun createItem(pokeBall: PokeBall, amount: Int): ItemStack {
         return ItemStack(itemRegistry.POKEBALL.get(), amount).apply {
-            getOrCreateChildTag("PokeBall").putString("Type", pokeBall.name)
+            getOrCreateTagElement("PokeBall").putString("Type", pokeBall.name)
         }
     }
 

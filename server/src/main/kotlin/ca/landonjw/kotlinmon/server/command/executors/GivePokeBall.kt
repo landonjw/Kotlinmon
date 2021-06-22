@@ -19,7 +19,7 @@ class GivePokeBall(
 
         val pokeBall = context.getArgument("type", PokeBall::class.java)
         val pokeBallItem = pokeBallFactory.createItem(pokeBall)
-        player.entityDropItem(pokeBallItem)
+        player.spawnAtLocation(pokeBallItem)
 
         return 0
     }
@@ -30,7 +30,7 @@ class GivePokeBall(
                 Commands.argument("type", pokeBallArgument)
                     .executes(this)
             )
-            .requires { it.hasPermissionLevel(0) }
+            .requires { it.hasPermission(0) }
 
         dispatcher.register(command)
     }

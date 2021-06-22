@@ -32,7 +32,8 @@ class PokeBallItemRenderer(
      *
      * @param p_239207_2_ where the item is being rendered (gui, first person hand, third person hand, etc.)
      */
-    override fun func_239207_a_(
+
+    override fun renderByItem(
         stack: ItemStack,
         p_239207_2_: ItemCameraTransforms.TransformType,
         matrixStack: MatrixStack,
@@ -99,10 +100,10 @@ class PokeBallItemRenderer(
     ) {
         if (stack.isEmpty) return
 
-        var itemModel = itemRenderer.itemModelMesher.getItemModel(stack)
+        var itemModel = itemRenderer.itemModelShaper.getItemModel(stack)
         itemModel = ForgeHooksClient.handleCameraTransforms(matrixStack, itemModel, cameraType, false)
 
-        matrixStack.push()
+        matrixStack.pushPose()
 
         if (itemModel.isLayered) {
             ForgeHooksClient.drawItemLayered(
@@ -116,11 +117,11 @@ class PokeBallItemRenderer(
                 true
             )
         } else {
-            val renderType = RenderTypeLookup.func_239219_a_(stack, true)
-            val vertexBuilder = ItemRenderer.getEntityGlintVertexBuilder(buffer, renderType, true, stack.hasEffect())
-            itemRenderer.renderModel(itemModel, stack, combinedLight, combinedOverlay, matrixStack, vertexBuilder)
+            val renderType = RenderTypeLookup.getRenderType(stack, true)
+            val vertexBuilder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.isEnchanted)
+            itemRenderer.renderModelLists(itemModel, stack, combinedLight, combinedOverlay, matrixStack, vertexBuilder)
         }
-        matrixStack.pop()
+        matrixStack.popPose()
     }
 
     private fun renderModel(matrixStack: MatrixStack, model: SmdModel, rotation: Vector3f, scalars: Vector3f) {

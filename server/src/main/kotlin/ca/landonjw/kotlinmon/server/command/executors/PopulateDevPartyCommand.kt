@@ -29,7 +29,7 @@ class PopulateDevPartyCommand(
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         val command = Commands.literal("populateparty")
             .executes(this)
-            .requires { it.hasPermissionLevel(0) }
+            .requires { it.hasPermission(0) }
 
         dispatcher.register(command)
     }

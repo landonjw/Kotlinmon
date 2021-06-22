@@ -45,10 +45,8 @@ abstract class DefaultPokeBallEntity : PokeBallEntity, ThrowableEntity {
         super.tick()
     }
 
-    override fun registerData() { }
-
-    override fun onImpact(result: RayTraceResult) {
-        if (!world.isRemote) {
+    override fun onHit(result: RayTraceResult) {
+        if (!level.isClientSide) {
             when (result.type) {
                 RayTraceResult.Type.BLOCK -> onBlockImpact()
                 RayTraceResult.Type.ENTITY -> {
@@ -58,8 +56,10 @@ abstract class DefaultPokeBallEntity : PokeBallEntity, ThrowableEntity {
                 }
             }
         }
-        super.onImpact(result)
+        super.onHit(result)
     }
+
+    override fun defineSynchedData() { }
 
     /**
      * Event for when a poke ball collides with a block.

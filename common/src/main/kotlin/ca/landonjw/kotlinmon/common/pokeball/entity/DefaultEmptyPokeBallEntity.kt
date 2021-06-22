@@ -26,16 +26,16 @@ class DefaultEmptyPokeBallEntity : EmptyPokeBallEntity, DefaultPokeBallEntity {
 
     override fun onBlockImpact() {
         // Remove the poke ball entity.
-        setDead()
+        kill()
         // Spawn a poke ball item where the impact took place.
         val pokeBallItem = pokeBallFactory.createItem(pokeBallType)
-        entityDropItem(pokeBallItem)
+        spawnAtLocation(pokeBallItem)
     }
 
     override fun onPokemonImpact(pokemon: PokemonEntity) {
         TODO("Add capture hooks")
     }
 
-    override fun createSpawnPacket(): IPacket<*> = NetworkHooks.getEntitySpawningPacket(this)
+    override fun getAddEntityPacket(): IPacket<*> = NetworkHooks.getEntitySpawningPacket(this)
 
 }

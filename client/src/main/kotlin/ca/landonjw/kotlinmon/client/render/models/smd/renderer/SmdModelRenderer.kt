@@ -25,10 +25,10 @@ class SmdModelRenderer {
 
     private val meshFormat = VertexFormat(
         ImmutableList.of(
-            DefaultVertexFormats.POSITION_3F,
-            DefaultVertexFormats.TEX_2F,
-            DefaultVertexFormats.NORMAL_3B,
-            DefaultVertexFormats.PADDING_1B
+            DefaultVertexFormats.ELEMENT_POSITION,
+            DefaultVertexFormats.ELEMENT_UV0,
+            DefaultVertexFormats.ELEMENT_NORMAL,
+            DefaultVertexFormats.ELEMENT_PADDING
         )
     )
 
@@ -47,17 +47,17 @@ class SmdModelRenderer {
         applyGlobalTransforms(matrix, model.renderProperties)
 
         // TODO: Check if this has performance impact
-        Minecraft.getInstance().textureManager.bindTexture(model.skeleton.mesh.texture)
+        Minecraft.getInstance().textureManager.bind(model.skeleton.mesh.texture)
 
         // Start drawing every vertex in the model's mesh
-        val buffer = Tessellator.getInstance().buffer
+        val buffer = Tessellator.getInstance().builder
         RenderSystem.enableDepthTest()
         buffer.begin(GL11.GL_TRIANGLES, meshFormat)
 
         model.skeleton.mesh.vertices.forEach { vertex ->
             renderVertex(matrix, buffer, vertex)
         }
-        Tessellator.getInstance().draw()
+        Tessellator.getInstance().end()
     }
 
     private fun renderVertex(
@@ -66,9 +66,9 @@ class SmdModelRenderer {
         vertex: SmdMeshVertex
     ) {
         buffer
-            .pos(matrix.last.matrix, vertex.position.x, vertex.position.y, vertex.position.z)
-            .tex(vertex.u, vertex.v)
-            .normal(matrix.last.normal, vertex.normal.x, vertex.normal.y, vertex.normal.z)
+            .vertex(matrix.last().pose(), vertex.position.x, vertex.position.y, vertex.position.z)
+            .uv(vertex.u, vertex.v)
+            .normal(matrix.last().normal(), vertex.normal.x, vertex.normal.y, vertex.normal.z)
             .endVertex()
     }
 
@@ -88,13 +88,13 @@ class SmdModelRenderer {
     }
 
     private fun applyGlobalRotation(matrix: MatrixStack, rotation: Vector3f) {
-        matrix.rotate(Quaternion(Vector3f.ZP, rotation.z, false))
-        matrix.rotate(Quaternion(Vector3f.YP, rotation.y, false))
-        matrix.rotate(Quaternion(Vector3f.XP, rotation.x, false))
+        matrix.mulPose(Quaternion(Vector3f.ZP, rotation.z(), false))
+        matrix.mulPose(Quaternion(Vector3f.YP, rotation.y(), false))
+        matrix.mulPose(Quaternion(Vector3f.XP, rotation.x(), false))
     }
 
     private fun applyGlobalScale(matrix: MatrixStack, scalars: Vector3f) {
-        matrix.scale(scalars.x, scalars.y, scalars.z)
+        matrix.scale(scalars.x(), scalars.y(), scalars.z())
     }
 
     private inline fun <reified T : SmdRenderProperty<*>> getProperty(properties: List<SmdRenderProperty<*>>): T? {

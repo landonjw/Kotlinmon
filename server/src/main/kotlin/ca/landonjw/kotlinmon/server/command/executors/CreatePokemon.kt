@@ -23,9 +23,9 @@ class CreatePokemon(
         val pokemon = pokemonFactory.create(species)
 
         // Create entity and spawn it at player's position
-        val pokemonEntity = pokemonFactory.createEntity(pokemon, player.world)
-        pokemonEntity.asMinecraftEntity().setPosition(player.posX, player.posY, player.posZ)
-        player.world.addEntity(pokemonEntity.asMinecraftEntity())
+        val pokemonEntity = pokemonFactory.createEntity(pokemon, player.level)
+        pokemonEntity.asMinecraftEntity().setPos(player.x, player.y, player.z)
+        player.level.addFreshEntity(pokemonEntity.asMinecraftEntity())
         return 0
     }
 
@@ -35,7 +35,7 @@ class CreatePokemon(
                 Commands.argument("species", speciesArgument)
                     .executes(this)
             )
-            .requires { it.hasPermissionLevel(0) }
+            .requires { it.hasPermission(0) }
 
         dispatcher.register(command)
     }

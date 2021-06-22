@@ -17,7 +17,7 @@ class KotlinmonUnitTestMod {
     fun registerTestRunner(event: RegisterCommandsEvent) {
         val command = Commands.literal("runtests")
             .executes(RunUnitTestCommand())
-            .requires { it.hasPermissionLevel(0) }
+            .requires { it.hasPermission(0) }
         event.dispatcher.register(command)
     }
 

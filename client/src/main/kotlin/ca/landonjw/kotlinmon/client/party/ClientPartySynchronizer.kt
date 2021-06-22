@@ -55,7 +55,7 @@ class ClientPartySynchronizer(
 
     @SubscribeEvent
     fun onWorldLoad(event: WorldEvent.Load) {
-        if (!event.world.isRemote) {
+        if (!event.world.isClientSide) {
             attemptSynchronization()
         }
     }
@@ -68,7 +68,7 @@ class ClientPartySynchronizer(
      */
     fun attemptSynchronization() {
         // Check if player is in a world and not just sitting at main screen
-        if (Minecraft.getInstance().world == null) {
+        if (Minecraft.getInstance().level == null) {
             // Reset the player's party if they're sitting in main screen to prevent desyncs.
             party.clear()
             partySynchronized = false

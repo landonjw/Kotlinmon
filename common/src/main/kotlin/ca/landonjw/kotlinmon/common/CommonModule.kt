@@ -4,7 +4,9 @@ import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.common.network.NetworkModule
 import ca.landonjw.kotlinmon.common.pokeball.PokeBallModule
 import ca.landonjw.kotlinmon.common.pokemon.PokemonModule
+import net.minecraft.entity.EntityType
 import net.minecraftforge.eventbus.api.IEventBus
+import net.minecraftforge.registries.IForgeRegistry
 import org.kodein.di.*
 
 object CommonModule {

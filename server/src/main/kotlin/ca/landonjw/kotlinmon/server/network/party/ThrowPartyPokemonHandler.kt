@@ -24,16 +24,16 @@ class ThrowPartyPokemonHandler(
             // Create the entity.
             val pokeBallEntity = pokeBallFactory.createEntity(
                 pokeBall = ProvidedPokeBall.PokeBall,
-                world = player.serverWorld,
+                world = player.getLevel(),
                 occupant = selectedPokemon
             )
             // Set it's motion to fly forwards from the player.
             pokeBallEntity.asMinecraftEntity().apply {
-                setPosition(player.posX, player.posY, player.posZ)
-                setDirectionAndMovement(player, player.rotationPitch - 7, player.rotationYawHead, 0.0f, 1.5f, 1.0f)
+                setPos(player.x, player.y, player.z)
+                shootFromRotation(player, player.xRot - 7, player.yRot, 0.0f, 1.5f, 1.0f)
             }
             // Spawn it in the world.
-            player.serverWorld.addEntity(pokeBallEntity.asMinecraftEntity())
+            player.getLevel().addFreshEntity(pokeBallEntity.asMinecraftEntity())
         }
     }
 

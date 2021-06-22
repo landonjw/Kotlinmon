@@ -23,7 +23,7 @@ class ThrowPartyPokemonBinding(
 
     @SubscribeEvent
     fun onKeyInput(event: InputEvent.KeyInputEvent) {
-        if (isPressed) {
+        if (isDown) {
             val selectedSlot = clientParty.selectedSlot ?: return
             networkChannel.sendToServer(ThrowPartyPokemon(selectedSlot))
         }

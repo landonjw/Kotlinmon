@@ -15,7 +15,7 @@ open class OrientationController constructor(
 ) {
 
     init {
-        this.dataManager.register(getOrCreateDataParam(), randomRotation())
+        this.dataManager.define(getOrCreateDataParam(), randomRotation())
     }
 
     private fun randomRotation(): Rotations {
@@ -28,7 +28,7 @@ open class OrientationController constructor(
 
     private fun getOrCreateDataParam(): DataParameter<Rotations> {
         if (orientationParams[clazz] == null) {
-            orientationParams[clazz] = EntityDataManager.createKey(clazz, DataSerializers.ROTATIONS)
+            orientationParams[clazz] = EntityDataManager.defineId(clazz, DataSerializers.ROTATIONS)
         }
         return orientationParams[clazz]!!
     }

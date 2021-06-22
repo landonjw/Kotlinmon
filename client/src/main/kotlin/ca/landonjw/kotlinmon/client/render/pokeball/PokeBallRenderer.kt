@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer
 import net.minecraft.client.renderer.culling.ClippingHelper
 import net.minecraft.client.renderer.entity.EntityRenderer
 import net.minecraft.client.renderer.entity.EntityRendererManager
+import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.vector.Vector3f
 
 class PokeBallRenderer<T: DefaultPokeBallEntity>(
@@ -41,7 +42,7 @@ class PokeBallRenderer<T: DefaultPokeBallEntity>(
         modelRenderer.render(matrixStack, pokeBallModel)
     }
 
-    override fun getEntityTexture(entity: T) = null
+    override fun getTextureLocation(entity: T) = null
 
     override fun shouldRender(
         livingEntityIn: T,

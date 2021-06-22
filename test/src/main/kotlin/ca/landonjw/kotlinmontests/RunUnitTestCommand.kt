@@ -32,7 +32,7 @@ class RunUnitTestCommand : Command<CommandSource> {
             summary.printFailuresTo(writer)
         }
 
-        context?.source?.asPlayer()?.sendMessage(StringTextComponent("""
+        context?.source?.playerOrException?.sendMessage(StringTextComponent("""
             ${TextFormatting.GREEN}${summary.testsSucceededCount} test(s) succeeded.
             ${TextFormatting.RED}${summary.testsFailedCount} test(s) failed.
         """.trimIndent()), UUID.randomUUID())

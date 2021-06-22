@@ -22,3 +22,18 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.3.3'
     testImplementation 'io.mockk:mockk:1.9.3'
 }
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "kotlinmon",
+                "Specification-Vendor"    : "landonjw",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.version,
+                "Implementation-Vendor"   : "landonjw",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "FMLModType": "LIBRARY"
+        ])
+    }
+}

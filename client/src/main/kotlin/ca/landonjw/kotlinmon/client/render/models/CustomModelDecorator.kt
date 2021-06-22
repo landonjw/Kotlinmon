@@ -2,6 +2,7 @@ package ca.landonjw.kotlinmon.client.render.models
 
 import net.minecraft.block.BlockState
 import net.minecraft.client.renderer.model.IBakedModel
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.util.Direction
 import java.util.*
 
@@ -16,15 +17,15 @@ class CustomModelDecorator(private val model: IBakedModel) : IBakedModel {
 
     override fun getQuads(state: BlockState?, side: Direction?, rand: Random) = model.getQuads(state, side, rand)
 
-    override fun isAmbientOcclusion() = model.isAmbientOcclusion
-
-    override fun getParticleTexture() =  model.particleTexture
+    override fun useAmbientOcclusion(): Boolean = model.useAmbientOcclusion()
 
     override fun isGui3d() = model.isGui3d
 
-    override fun isSideLit() = model.isSideLit
+    override fun usesBlockLight(): Boolean = model.usesBlockLight()
 
-    override fun isBuiltInRenderer() = true
+    override fun isCustomRenderer(): Boolean = true
+
+    override fun getParticleIcon(): TextureAtlasSprite = model.particleIcon
 
     override fun getOverrides() = model.overrides
 

@@ -49,15 +49,15 @@ class DefaultOccupiedPokeBallEntity : OccupiedPokeBallEntity, DefaultPokeBallEnt
 
     override fun onBlockImpact() {
         // Check the impact is on the server side.
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             // Remove the poke ball entity.
-            setDead()
+            kill()
 
             // Create pokemon entity and spawn it where the poke ball collided.
-            val pokemonEntity = pokemonFactory.createEntity(occupant, entityWorld).apply {
-                asMinecraftEntity().setPosition(posX, posY, posZ)
+            val pokemonEntity = pokemonFactory.createEntity(occupant, level).apply {
+                asMinecraftEntity().setPos(x, y, z)
             }
-            entityWorld.addEntity(pokemonEntity.asMinecraftEntity())
+            level.addFreshEntity(pokemonEntity.asMinecraftEntity())
         }
     }
 
@@ -65,6 +65,6 @@ class DefaultOccupiedPokeBallEntity : OccupiedPokeBallEntity, DefaultPokeBallEnt
         TODO("Add battle hooks")
     }
 
-    override fun createSpawnPacket(): IPacket<*> = NetworkHooks.getEntitySpawningPacket(this)
+    override fun getAddEntityPacket(): IPacket<*> = NetworkHooks.getEntitySpawningPacket(this)
 
 }

@@ -24,33 +24,33 @@ class PokeBallItem(
 
     private val pokeBallFactory: PokeBallFactory by Kotlinmon.DI.instance()
 
-    override fun getDisplayName(stack: ItemStack): ITextComponent {
+    override fun getName(stack: ItemStack): ITextComponent {
         val name = getPokeBall(stack)?.name ?: "Poke Ball"
         return StringTextComponent(name)
     }
 
     fun getPokeBall(stack: ItemStack): PokeBall? {
-        val type = stack.getOrCreateChildTag("PokeBall").getString("Type")
+        val type = stack.getOrCreateTagElement("PokeBall").getString("Type")
         return pokeBallRepository[type]
     }
 
-    override fun onItemRightClick(world: World, player: PlayerEntity, hand: Hand): ActionResult<ItemStack> {
-        if (!world.isRemote) {
+    override fun use(world: World, player: PlayerEntity, hand: Hand): ActionResult<ItemStack> {
+        if (!world.isClientSide) {
             // Get the type of poke ball the player is holding.
-            val itemInHand = player.getHeldItem(hand)
+            val itemInHand = player.getItemInHand(hand)
             val pokeBall = getPokeBall(itemInHand) ?: ProvidedPokeBall.PokeBall
 
             // Create the entity
             val pokeBallEntity = pokeBallFactory.createEntity(pokeBall, world)
             // Set it's motion to fly forwards from the player.
             pokeBallEntity.asMinecraftEntity().apply {
-                setPosition(player.posX, player.posY, player.posZ)
-                setDirectionAndMovement(player, player.rotationPitch - 7, player.rotationYawHead, 0.0f, 1.5f, 1.0f)
+                setPos(player.x, player.y, player.z)
+                shootFromRotation(player, player.xRot - 7, player.yRot, 0.0f, 1.5f, 1.0f)
             }
             // Spawn it in the world.
-            world.addEntity(pokeBallEntity.asMinecraftEntity())
+            world.addFreshEntity(pokeBallEntity.asMinecraftEntity())
         }
-        return ActionResult.resultPass(player.getHeldItem(hand))
+        return ActionResult.pass(player.getItemInHand(hand))
     }
 
 }

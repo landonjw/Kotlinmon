@@ -25,7 +25,7 @@ class SelectPartySlotBinding(
 
     @SubscribeEvent
     fun onKeyInput(event: InputEvent.KeyInputEvent) {
-        if (isPressed) {
+        if (isDown) {
             when (direction) {
                 Direction.Next -> clientParty.selectNextPokemon()
                 Direction.Previous -> clientParty.selectPreviousPokemon()

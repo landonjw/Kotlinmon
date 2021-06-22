@@ -54,7 +54,7 @@ class DefaultPartyStorage(
 
     private fun getOwnerAsPlayer(): ServerPlayerEntity? {
         val server = ServerLifecycleHooks.getCurrentServer()
-        return server.playerList.getPlayerByUUID(owner)
+        return server.playerList.getPlayer(owner)
     }
 
 }

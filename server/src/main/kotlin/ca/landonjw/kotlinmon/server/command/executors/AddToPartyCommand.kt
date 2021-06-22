@@ -13,7 +13,7 @@ class AddToPartyCommand(
 ) : KotlinmonCommand {
 
     override fun run(context: CommandContext<CommandSource>): Int {
-        val player = context.source.asPlayer()
+        val player = context.source.playerOrException
         val bulbasaur = pokemonFactory.create(species = ProvidedSpecies.values().random())
         player.party.add(bulbasaur)
         return 0
@@ -22,7 +22,7 @@ class AddToPartyCommand(
     override fun register(dispatcher: CommandDispatcher<CommandSource>) {
         val command = Commands.literal("addtoparty")
             .executes(this)
-            .requires { it.hasPermissionLevel(0) }
+            .requires { it.hasPermission(4) }
 
         dispatcher.register(command)
     }

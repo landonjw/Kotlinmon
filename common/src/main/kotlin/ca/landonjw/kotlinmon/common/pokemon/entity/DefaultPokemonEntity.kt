@@ -42,23 +42,23 @@ class DefaultPokemonEntity : PokemonEntity, TameableEntity {
         clientComponentFactory: (EntityDataManager) -> PokemonEntityClient
     ) : super(type, world) {
         registerDefaultDataParams()
-        this.clientComponent = clientComponentFactory(this.dataManager)
+        this.clientComponent = clientComponentFactory(this.entityData)
         if (pokemon != null) setPokemon(pokemon)
     }
 
     private fun registerDefaultDataParams() {
-        dataManager.register(dwSpecies, "")
-        dataManager.register(dwForm, 0)
-        dataManager.register(dwTexture, "")
+        entityData.define(dwSpecies, "")
+        entityData.define(dwForm, 0)
+        entityData.define(dwTexture, "")
     }
 
     override fun asMinecraftEntity() = this
 
     private fun setPokemon(pokemon: Pokemon) {
         this.pokemon = pokemon
-        dataManager.set(dwSpecies, pokemon.species.name)
-        dataManager.set(dwForm, getPokemonFormOrdinal(pokemon.species, pokemon.form))
-        dataManager.set(dwTexture, pokemon.texture ?: "")
+        entityData.set(dwSpecies, pokemon.species.name)
+        entityData.set(dwForm, getPokemonFormOrdinal(pokemon.species, pokemon.form))
+        entityData.set(dwTexture, pokemon.texture ?: "")
     }
 
     private fun getPokemonFormOrdinal(species: PokemonSpecies, form: PokemonForm): Int = when (form) {
@@ -67,22 +67,22 @@ class DefaultPokemonEntity : PokemonEntity, TameableEntity {
         else -> throw IllegalArgumentException("form not apart of given species")
     }
 
-    override fun getSize(poseIn: Pose): EntitySize = super.getSize(poseIn).scale(2f, 1f)
+    override fun getDimensions(poseIn: Pose): EntitySize = super.getDimensions(poseIn).scale(2f, 1f)
 
-    override fun createChild(world: ServerWorld, mate: AgeableEntity): AgeableEntity? = null
+    override fun getBreedOffspring(world: ServerWorld, mate: AgeableEntity): AgeableEntity? = null
 
-    override fun createSpawnPacket() = NetworkHooks.getEntitySpawningPacket(this)
+    override fun getAddEntityPacket() = NetworkHooks.getEntitySpawningPacket(this)
 
     companion object {
         fun prepareAttributes(): AttributeModifierMap {
-            return registerAttributes()
-                .createMutableAttribute(Attributes.FOLLOW_RANGE) // TODO: Probably not needed?
-                .create()
+            return createLivingAttributes()
+                .add(Attributes.FOLLOW_RANGE) // TODO: Probably not needed?
+                .build()
         }
 
-        val dwSpecies: DataParameter<String> = EntityDataManager.createKey(DefaultPokemonEntity::class.java, DataSerializers.STRING)
-        val dwForm: DataParameter<Int> = EntityDataManager.createKey(DefaultPokemonEntity::class.java, DataSerializers.VARINT)
-        val dwTexture: DataParameter<String> = EntityDataManager.createKey(DefaultPokemonEntity::class.java, DataSerializers.STRING)
+        val dwSpecies: DataParameter<String> = EntityDataManager.defineId(DefaultPokemonEntity::class.java, DataSerializers.STRING)
+        val dwForm: DataParameter<Int> = EntityDataManager.defineId(DefaultPokemonEntity::class.java, DataSerializers.INT)
+        val dwTexture: DataParameter<String> = EntityDataManager.defineId(DefaultPokemonEntity::class.java, DataSerializers.STRING)
     }
 
 }

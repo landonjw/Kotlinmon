@@ -14,11 +14,12 @@ import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
 import net.minecraftforge.registries.DeferredRegister
 import net.minecraftforge.registries.ForgeRegistries
+import net.minecraftforge.registries.IForgeRegistry
 
 class EntityRegistry(
     private val pokemonEntityFactory: (EntityFactoryParams<DefaultPokemonEntity>) -> DefaultPokemonEntity,
     private val emptyPokeBallEntityFactory: (EntityFactoryParams<DefaultEmptyPokeBallEntity>) -> DefaultEmptyPokeBallEntity,
-    private val occupiedPokeBallEntityFactory: (EntityFactoryParams<DefaultOccupiedPokeBallEntity>) -> DefaultOccupiedPokeBallEntity
+    private val occupiedPokeBallEntityFactory: (EntityFactoryParams<DefaultOccupiedPokeBallEntity>) -> DefaultOccupiedPokeBallEntity,
 ) {
 
     private val ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Kotlinmon.MOD_ID)
@@ -27,21 +28,21 @@ class EntityRegistry(
         name = "pokemon",
         classification = EntityClassification.MISC,
         factory = { type, world -> pokemonEntityFactory(EntityFactoryParams(type, world)) },
-        builderModifiers = { builder -> builder.size(1f, 1f).immuneToFire() }
+        builderModifiers = { builder -> builder.sized(1f, 1f).fireImmune() }
     )
 
     val EMPTY_POKEBALL: RegistryObject<EntityType<DefaultEmptyPokeBallEntity>> = registerEntity(
         name = "empty_pokeball",
         classification = EntityClassification.MISC,
         factory = { type, world -> emptyPokeBallEntityFactory(EntityFactoryParams(type, world)) },
-        builderModifiers = { builder -> builder.size(1f, 1f).immuneToFire() }
+        builderModifiers = { builder -> builder.sized(1f, 1f).fireImmune() }
     )
 
     val OCCUPIED_POKEBALL: RegistryObject<EntityType<DefaultOccupiedPokeBallEntity>> = registerEntity(
         name = "occupied_pokeball",
         classification = EntityClassification.MISC,
         factory = { type, world -> occupiedPokeBallEntityFactory(EntityFactoryParams(type, world)) },
-        builderModifiers = { builder -> builder.size(1f, 1f).immuneToFire() }
+        builderModifiers = { builder -> builder.sized(1f, 1f).fireImmune() }
     )
 
     private inline fun <reified T : Entity> registerEntity(
@@ -54,7 +55,7 @@ class EntityRegistry(
         val entityFactory: EntityType.IFactory<T> = EntityType.IFactory { type, world ->
             return@IFactory factory(type, world)
         }
-        val builder = EntityType.Builder.create(entityFactory, classification)
+        val builder = EntityType.Builder.of(entityFactory, classification)
         val registry = builderModifiers(builder).build(resourceLoc.toString())
         return ENTITIES.register(name) { registry }
     }

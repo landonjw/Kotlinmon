@@ -7,15 +7,15 @@ import net.minecraft.network.PacketBuffer
 class PokemonDTOEncoder {
 
     fun encode(buf: PacketBuffer, pokemon: Pokemon) {
-        buf.writeString(pokemon.species.name)
-        buf.writeString(pokemon.form.name)
-        buf.writeString(pokemon.texture ?: "")
+        buf.writeUtf(pokemon.species.name)
+        buf.writeUtf(pokemon.form.name)
+        buf.writeUtf(pokemon.texture ?: "")
     }
 
     fun encode(buf: PacketBuffer, pokemon: PokemonDTO) {
-        buf.writeString(pokemon.species.name)
-        buf.writeString(pokemon.form.name)
-        buf.writeString(pokemon.texture ?: "")
+        buf.writeUtf(pokemon.species.name)
+        buf.writeUtf(pokemon.form.name)
+        buf.writeUtf(pokemon.texture ?: "")
     }
 
 }

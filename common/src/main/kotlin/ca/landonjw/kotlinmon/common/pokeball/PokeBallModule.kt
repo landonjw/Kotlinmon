@@ -17,8 +17,8 @@ import org.kodein.di.*
 object PokeBallModule {
 
     operator fun invoke() = DI.Module(name = "Poke Ball") {
-        bind<PokeBallTypeController>() with factory { entity: Entity -> PokeBallTypeController(entity.dataManager, entity.javaClass, instance()) }
-        bind<OrientationController>() with factory { entity: Entity -> OrientationController(entity.dataManager, entity.javaClass) }
+        bind<PokeBallTypeController>() with factory { entity: Entity -> PokeBallTypeController(entity.entityData, entity.javaClass, instance()) }
+        bind<OrientationController>() with factory { entity: Entity -> OrientationController(entity.entityData, entity.javaClass) }
         bind<EmptyPokeBallEntity>() with factory { params: EmptyPokeBallFactoryParams -> DefaultEmptyPokeBallEntity(params.type, params.world, params.pokeBall, factory(), factory()) }
         bind<OccupiedPokeBallEntity>() with factory { params: OccupiedPokeBallFactoryParams -> DefaultOccupiedPokeBallEntity(params.type, params.world, params.pokeBall, params.occupant, factory(), factory(), instance()) }
         bind<PokeBallFactory>() with singleton { DefaultPokeBallFactory(instance(), instance(), factory(), factory()) }
