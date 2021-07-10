@@ -37,7 +37,8 @@ subprojects {
 			client {
 				workingDirectory project.file('run')
 
-				property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+				// Prints out the registries and scanned files during boot-up. Typically not needed and floods console.
+				// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 				property 'forge.logging.console.level', 'debug'
 
 				mods {
@@ -50,7 +51,8 @@ subprojects {
 			server {
 				workingDirectory project.file('run')
 
-				property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+				// Prints out the registries and scanned files during boot-up. Typically not needed and floods console.
+				// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 				property 'forge.logging.console.level', 'debug'
 
 				mods {

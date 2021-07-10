@@ -9,14 +9,11 @@ import org.kodein.di.description
 import org.kodein.di.instance
 import org.kodein.di.newInstance
 
-@Mod("kotlinmon")
+@Mod(Kotlinmon.MOD_ID)
 class KotlinmonBootstrap {
 
-    constructor() {
+    init {
         Kotlinmon.initialize(listOf(CommonModule(), ServerModule(), ClientModule()))
-        println("""
-            ${Kotlinmon.DI.container.tree.bindings.description(false, 0)}
-        """.trimIndent())
         val initializer by Kotlinmon.DI.newInstance { KotlinmonInitialization(instance(), instance(), instance(), instance()) }
         initializer.initialize()
     }

@@ -16,7 +16,7 @@ object Kotlinmon {
 
     fun initialize(modules: List<KodeinDI.Module>) {
         this.DI = KodeinDI {
-            importAll(modules, allowOverride = false)
+            importAll(modules, allowOverride = true)
         }
     }
 

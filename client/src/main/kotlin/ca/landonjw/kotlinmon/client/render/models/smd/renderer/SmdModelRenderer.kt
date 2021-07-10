@@ -35,7 +35,7 @@ class SmdModelRenderer {
     fun render(matrix: MatrixStack, model: SmdModel) {
         // Get the next frame of current animation, if there is one
         // TODO: Remove this and make a separate animation handler
-        if (model.currentAnimation != null) model.currentAnimation?.animate()
+//        if (model.currentAnimation != null) model.currentAnimation?.animate()
 
         /* Apply transformations that apply to every vertex in the model
          *
