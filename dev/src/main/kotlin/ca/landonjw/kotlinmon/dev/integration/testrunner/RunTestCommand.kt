@@ -1,27 +1,17 @@
 package ca.landonjw.kotlinmon.dev.integration.testrunner
 
-import ca.landonjw.kotlinmon.api.network.KotlinmonNetworkChannel
+import ca.landonjw.kotlinmon.dev.integration.server.command.unitTests
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.context.CommandContext
 import net.minecraft.command.CommandSource
-import net.minecraft.entity.player.ServerPlayerEntity
+import org.apache.logging.log4j.LogManager
+import org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 
-class RunTestCommand(
-    private val testArgInterpretor: TestArgumentInterpretor,
-    private val testRunner: TestRunner,
-    private val networkChannel: KotlinmonNetworkChannel
-) : Command<CommandSource> {
+class RunTestCommand : Command<CommandSource> {
 
     override fun run(context: CommandContext<CommandSource>?): Int {
-        val args: List<String> = TODO()
-
-        val serverSideTests = testArgInterpretor.getTestsToRun(args, Side.Server)
-        if (context!!.source.entity is ServerPlayerEntity) {
-            val clientSideTests = testArgInterpretor.getTestsToRun(args, Side.Client)
-            val clientTestPacket = SendTestsPacket(clientSideTests)
-            networkChannel.sendToClient(clientTestPacket, context!!.source.playerOrException)
-        }
-        testRunner.runTests(serverSideTests)
+        val testRunner = TestRunner(LogManager.getLogger("Kotlinmon Integration Tests"))
+        testRunner.runTests(unitTests.map { clazz -> selectClass(clazz) })
         return 0
     }
 

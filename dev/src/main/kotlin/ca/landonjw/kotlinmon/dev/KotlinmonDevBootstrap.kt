@@ -3,7 +3,6 @@ package ca.landonjw.kotlinmon.dev
 import ca.landonjw.kotlinmon.Kotlinmon
 import ca.landonjw.kotlinmon.client.ClientModule
 import ca.landonjw.kotlinmon.common.CommonModule
-import ca.landonjw.kotlinmon.dev.integration.client.ClientDevModule
 import ca.landonjw.kotlinmon.server.ServerModule
 import net.minecraftforge.fml.common.Mod
 import org.kodein.di.description
@@ -14,7 +13,7 @@ import org.kodein.di.newInstance
 class KotlinmonDevBootstrap {
 
     init {
-        Kotlinmon.initialize(listOf(CommonModule(), ServerModule(), ClientModule(), ClientDevModule()))
+        Kotlinmon.initialize(listOf(CommonModule(), ServerModule(), ClientModule()))
         println("""
             ${Kotlinmon.DI.container.tree.bindings.description(false, 0)}
         """.trimIndent())
